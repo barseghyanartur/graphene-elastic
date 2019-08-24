@@ -27,7 +27,7 @@ codebin.py
 /release/
 /releases/
 /deploy/
-/examples/app/db.sqlite3
+/examples/apps/db.sqlite3
 /var/
 /examples/tmp/
 /examples/logs/
