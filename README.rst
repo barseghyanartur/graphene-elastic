@@ -4,8 +4,8 @@ graphene-elastic
 `Elasticsearch (DSL) <https://elasticsearch-dsl.readthedocs.io/en/latest/>`__
 integration for `Graphene <http://graphene-python.org/>`__.
 
-.. image:: https://img.shields.io/pypi/v/django-elasticsearch-dsl-drf.svg
-   :target: https://pypi.python.org/pypi/django-elasticsearch-dsl-drf
+.. image:: https://img.shields.io/pypi/v/graphene-elastic.svg
+   :target: https://pypi.python.org/pypi/graphene-elastic
    :alt: PyPI Version
 
 .. image:: https://img.shields.io/pypi/pyversions/graphene-elastic.svg
@@ -17,7 +17,7 @@ integration for `Graphene <http://graphene-python.org/>`__.
     :alt: Build Status
 
 .. image:: https://img.shields.io/badge/license-GPL--2.0--only%20OR%20LGPL--2.1--or--later-blue.svg
-   :target: https://github.com/barseghyanartur/django-elasticsearch-dsl-drf/#License
+   :target: https://github.com/barseghyanartur/graphene-elastic/#License
    :alt: GPL-2.0-only OR LGPL-2.1-or-later
 
 .. image:: https://coveralls.io/repos/github/barseghyanartur/graphene-elastic/badge.svg?branch=master
