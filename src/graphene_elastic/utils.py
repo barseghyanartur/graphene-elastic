@@ -9,25 +9,27 @@ from elasticsearch_dsl import field as elasticsearch_fields
 from graphene import Node
 from graphene.utils.trim_docstring import trim_docstring
 
-__title__ = 'graphene_elastic.converter'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
+__title__ = "graphene_elastic.converter"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = (
-    'get_document_fields',
-    'get_field_description',
-    'get_node_from_global_id',
-    'get_type_for_document',
-    'import_single_dispatch',
-    'is_valid_elasticsearch_document',
+    "get_document_fields",
+    "get_field_description",
+    "get_node_from_global_id",
+    "get_type_for_document",
+    "import_single_dispatch",
+    "is_valid_elasticsearch_document",
 )
 
 
 def get_document_fields(document, excluding=None):
     excluding = excluding or []
-    attributes = {'_id': elasticsearch_fields.Keyword()}
-    for attr_name, attr \
-            in document._doc_type.mapping.properties.properties._d_.items():
+    attributes = {"_id": elasticsearch_fields.Keyword()}
+    for (
+        attr_name,
+        attr,
+    ) in document._doc_type.mapping.properties.properties._d_.items():
         if attr_name in excluding:
             continue
         attributes[attr_name] = attr
@@ -68,8 +70,9 @@ def import_single_dispatch():
 def get_type_for_document(schema, document):
     types = schema.types.values()
     for _type in types:
-        type_document = hasattr(_type, '_meta') and getattr(
-            _type._meta, 'document', None)
+        type_document = hasattr(_type, "_meta") and getattr(
+            _type._meta, "document", None
+        )
         if document == type_document:
             return _type
 
@@ -91,7 +94,7 @@ def get_field_description(field, registry=None):
     #     parts.append(field.help_text)
 
     # Adding string repr for doc-type. Name would stand for
-    if hasattr(field, 'name'):
+    if hasattr(field, "name"):
         parts.append(field.name)
 
     # if field.db_field != field.name:

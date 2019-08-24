@@ -16,30 +16,22 @@ from graphene.types.dynamic import Dynamic
 from graphene.types.structures import Structure
 from graphql_relay.connection.arrayconnection import connection_from_list_slice
 
-from .filter_backends import (
-    SearchFilterBackend,
-    FilteringFilterBackend,
-)
-from .advanced_types import (
-    FileFieldType, PointFieldType, MultiPolygonFieldType,
-)
+from .filter_backends import SearchFilterBackend, FilteringFilterBackend
+from .advanced_types import FileFieldType, PointFieldType, MultiPolygonFieldType
 from .converter import convert_elasticsearch_field, ElasticsearchConversionError
 from .registry import get_global_registry
 from .settings import graphene_settings
 from .types import ElasticsearchObjectType
 from .utils import get_node_from_global_id  #  , get_model_reference_fields
 
-__title__ = 'graphene_elastic.fields'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
-__all__ = (
-    'ElasticsearchConnectionField',
-)
+__title__ = "graphene_elastic.fields"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
+__all__ = ("ElasticsearchConnectionField",)
 
 
 class ElasticsearchConnectionField(ConnectionField):
-
     def __init__(self, type, *args, **kwargs):
         self.on = kwargs.pop("on", False)  # From graphene-django
         self.max_limit = kwargs.pop(
@@ -49,9 +41,11 @@ class ElasticsearchConnectionField(ConnectionField):
             "enforce_first_or_last",
             graphene_settings.RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST,
         )  # From graphene-django
-        get_queryset = kwargs.pop('get_queryset', None)
+        get_queryset = kwargs.pop("get_queryset", None)
         if get_queryset:
-            assert callable(get_queryset), "Attribute `get_queryset` on {} must be callable.".format(self)
+            assert callable(
+                get_queryset
+            ), "Attribute `get_queryset` on {} must be callable.".format(self)
         self._get_queryset = get_queryset
 
         # This is where we shall enrich!
@@ -59,9 +53,7 @@ class ElasticsearchConnectionField(ConnectionField):
         # import ptpdb; ptpdb.set_trace()
 
         super(ElasticsearchConnectionField, self).__init__(
-            type,
-            *args,
-            **kwargs
+            type, *args, **kwargs
         )
 
     @property
@@ -69,9 +61,12 @@ class ElasticsearchConnectionField(ConnectionField):
         # from .types import ElasticsearchObjectType
         _type = super(ConnectionField, self).type
         assert issubclass(
-            _type, ElasticsearchObjectType), "ElasticsearchConnectionField only accepts ElasticsearchObjectType types"
-        assert _type._meta.connection, "The type {} doesn't have a connection".format(
-            _type.__name__)
+            _type, ElasticsearchObjectType
+        ), "ElasticsearchConnectionField only accepts " \
+           "ElasticsearchObjectType types"
+        assert (
+            _type._meta.connection
+        ), "The type {} doesn't have a connection".format(_type.__name__)
         return _type._meta.connection
 
     # @property
@@ -101,48 +96,43 @@ class ElasticsearchConnectionField(ConnectionField):
 
     @property
     def registry(self):
-        return getattr(self.node_type._meta, 'registry', get_global_registry())
+        return getattr(self.node_type._meta, "registry", get_global_registry())
 
     @property
     def args(self):
         return to_arguments(
             self._base_args or OrderedDict(),
-            dict(self.field_args, **self.reference_args)
+            dict(self.field_args, **self.reference_args),
         )
 
     @property
     def filter_fields(self):
-        return getattr(self.node_type._meta, 'filter_fields', {})
+        return getattr(self.node_type._meta, "filter_fields", {})
 
     @property
     def filter_args_mapping(self):
         # TODO: Move this to backend
-        # return {'filter_{}'.format(k): k for k, v in self.filter_fields.items()}
         return {k: k for k, v in self.filter_fields.items()}
 
     @property
     def search_fields(self):
-        return getattr(self.node_type._meta, 'search_fields', {})
+        return getattr(self.node_type._meta, "search_fields", {})
 
     @property
     def search_args_mapping(self):
         # TODO: Move this to backend
-        # return {'search_{}'.format(k): k for k, v in self.search_fields.items()}
         return {k: k for k, v in self.search_fields.items()}
 
     @property
     def default_filter_backends(self):
-        return [
-            SearchFilterBackend,
-            FilteringFilterBackend,
-        ]
+        return [SearchFilterBackend, FilteringFilterBackend]
 
     @property
     def filter_backends(self):
         return getattr(
             self.node_type._meta,
-            'filter_backends',
-            self.default_filter_backends
+            "filter_backends",
+            self.default_filter_backends,
         )
 
     @args.setter
@@ -150,7 +140,6 @@ class ElasticsearchConnectionField(ConnectionField):
         self._base_args = args
 
     def _field_args(self, items):
-
         def is_filterable(k):
             """
             Args:
@@ -168,21 +157,20 @@ class ElasticsearchConnectionField(ConnectionField):
             try:
                 converted = convert_elasticsearch_field(
                     self.doc_type.mapping.properties.properties._d_.get(k),
-                    self.registry
+                    self.registry,
                 )
             except ElasticsearchConversionError:
                 return False
             if isinstance(converted, (ConnectionField, Dynamic)):
                 return False
-            if callable(getattr(converted, 'type', None)) \
-                    and isinstance(
-                        converted.type(),
-                        (
-                            FileFieldType,
-                            PointFieldType,
-                            MultiPolygonFieldType,
-                            graphene.Union,
-                        )
+            if callable(getattr(converted, "type", None)) and isinstance(
+                converted.type(),
+                (
+                    FileFieldType,
+                    PointFieldType,
+                    MultiPolygonFieldType,
+                    graphene.Union,
+                ),
             ):
                 return False
             return True
@@ -206,7 +194,7 @@ class ElasticsearchConnectionField(ConnectionField):
                 backend.get_backend_fields(
                     items=items,
                     is_filterable_func=is_filterable,
-                    get_type_func=get_type
+                    get_type_func=get_type,
                 )
             )
 
@@ -222,12 +210,14 @@ class ElasticsearchConnectionField(ConnectionField):
             field = kv[1]
             # TODO: Find out whether this is applicable to Elasticsearch (most
             # likely - NOT, since we have no references in Elastic).
-            if callable(getattr(field, 'get_type', None)):
+            if callable(getattr(field, "get_type", None)):
                 _type = field.get_type()
                 if _type:
                     node = _type._type._meta
-                    if 'id' in node.fields and not issubclass(node.document, (elasticsearch_dsl.InnerDoc,)):
-                        r.update({kv[0]: node.fields['id']._type.of_type()})
+                    if "id" in node.fields and not issubclass(
+                        node.document, (elasticsearch_dsl.InnerDoc,)
+                    ):
+                        r.update({kv[0]: node.fields["id"]._type.of_type()})
             return r
 
         return reduce(get_reference_field, self.fields.items(), {})
@@ -245,9 +235,7 @@ class ElasticsearchConnectionField(ConnectionField):
             for arg_name, arg in args.copy().items():
                 if arg_name in reference_fields:
                     reference_obj = get_node_from_global_id(
-                        reference_fields[arg_name],
-                        info,
-                        args.pop(arg_name)
+                        reference_fields[arg_name], info, args.pop(arg_name)
                     )
                     hydrated_references[arg_name] = reference_obj
             args.update(hydrated_references)
@@ -330,20 +318,20 @@ class ElasticsearchConnectionField(ConnectionField):
     def default_resolver(self, _root, info, **args):
         args = args or {}
         connection_args = {
-            'first': args.pop('first', None),
-            'last': args.pop('last', None),
-            'before': args.pop('before', None),
-            'after': args.pop('after', None),
+            "first": args.pop("first", None),
+            "last": args.pop("last", None),
+            "before": args.pop("before", None),
+            "after": args.pop("after", None),
         }
 
-        _id = args.pop('id', None)
+        _id = args.pop("id", None)
 
         if _id is not None:
             iterables = [get_node_from_global_id(self.node_type, info, _id)]
             list_length = 1
         # TODO: The next line never happens. We might want to make sure
         # functionality that must be there is present
-        elif callable(getattr(self.document, 'search', None)):
+        elif callable(getattr(self.document, "search", None)):
             iterables = self.get_queryset(self.document, info, **args).execute()
             list_length = 10  # Default page size
             # list_length = iterables.count()
@@ -410,7 +398,7 @@ class ElasticsearchConnectionField(ConnectionField):
             "Resolved value from the connection field have to be iterable or instance of {}. "
             'Received "{}"'
         ).format(connection_type, resolved)
-        _len = resolved.hits.total['value']
+        _len = resolved.hits.total["value"]
         connection = connection_from_list_slice(
             resolved.hits,
             args,
@@ -486,5 +474,8 @@ class ElasticsearchConnectionField(ConnectionField):
     def get_resolver(self, parent_resolver):
         super_resolver = self.resolver or parent_resolver
         resolver = partial(
-            self.chained_resolver, super_resolver, isinstance(super_resolver, partial))
+            self.chained_resolver,
+            super_resolver,
+            isinstance(super_resolver, partial),
+        )
         return partial(self.connection_resolver, resolver, self.type)

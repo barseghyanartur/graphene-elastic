@@ -1,14 +1,11 @@
 from enum import Enum
 import graphene
 
-__title__ = 'graphene_elastic.enums'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
-__all__ = (
-    'NoValue',
-    'convert_list_to_enum',
-)
+__title__ = "graphene_elastic.enums"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
+__all__ = ("NoValue", "convert_list_to_enum")
 
 
 class NoValue(Enum):
@@ -32,10 +29,10 @@ class NoValue(Enum):
     """
 
     def __repr__(self):
-        return '<%s.%s>' % (self.__class__.__name__, self.name)
+        return "<%s.%s>" % (self.__class__.__name__, self.name)
 
 
-def convert_list_to_enum(values, enum_name='DynamicEnum'):
+def convert_list_to_enum(values, enum_name="DynamicEnum"):
     """Prepare list values for creating an Enum.
 
     Example:

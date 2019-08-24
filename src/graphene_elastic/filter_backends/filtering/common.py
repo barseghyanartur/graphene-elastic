@@ -38,17 +38,15 @@ from ...constants import (
 )
 from ...enums import NoValue, convert_list_to_enum
 
-__title__ = 'graphene_elastic.filter_backends.filtering.common'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
-__all__ = (
-    'FilteringFilterBackend',
-)
+__title__ = "graphene_elastic.filter_backends.filtering.common"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
+__all__ = ("FilteringFilterBackend",)
 
 
 class FilteringFilterBackend(BaseBackend):
-    prefix = 'filter'
+    prefix = "filter"
 
     def field_belongs_to(self, field_name):
         return field_name in self.connection_field.filter_fields
@@ -60,40 +58,42 @@ class FilteringFilterBackend(BaseBackend):
         """
         lookups = []
         field_options = self.get_field_options(field_name)
-        if isinstance(field_options, dict) and 'lookups' in field_options:
-            lookups = field_options.get('lookups', [])
+        if isinstance(field_options, dict) and "lookups" in field_options:
+            lookups = field_options.get("lookups", [])
         else:
             lookups = list(ALL_LOOKUP_FILTERS_AND_QUERIES)
         params = {
             # FIELD: graphene.String(),  # Field to filter on. Required.
             # TODO: The line below shall relay to the ``base_field_type``
             # and not just a ``graphene.String``
-            VALUE: graphene.List(graphene.String),  # Value to filter on. Required.
+            VALUE: graphene.List(
+                graphene.String
+            )  # Value to filter on. Required.
         }
         if lookups:
-            params.update({
-                LOOKUP: graphene.Field(
-                    graphene.Enum.from_enum(
-                        convert_list_to_enum(
-                            lookups,
-                            enum_name='{}{}{}Enum'.format(
-                                DYNAMIC_CLASS_NAME_PREFIX,
-                                self.prefix,
-                                field_name.title()
+            params.update(
+                {
+                    LOOKUP: graphene.Field(
+                        graphene.Enum.from_enum(
+                            convert_list_to_enum(
+                                lookups,
+                                enum_name="{}{}{}Enum".format(
+                                    DYNAMIC_CLASS_NAME_PREFIX,
+                                    self.prefix,
+                                    field_name.title(),
+                                ),
                             )
                         )
                     )
-                )
-            })
+                }
+            )
         return graphene.Argument(
             type(
-                '{}{}{}'.format(
-                    DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix,
-                    field_name.title()
+                "{}{}{}".format(
+                    DYNAMIC_CLASS_NAME_PREFIX, self.prefix, field_name.title()
                 ),
                 (graphene.InputObjectType,),
-                params
+                params,
             )
         )
 
@@ -129,15 +129,13 @@ class FilteringFilterBackend(BaseBackend):
         if __len_values == 0:
             return {}
 
-        params = {
-            'gte': __values[0]
-        }
+        params = {"gte": __values[0]}
 
         if __len_values == 3:
-            params['lte'] = __values[1]
-            params['boost'] = __values[2]
+            params["lte"] = __values[1]
+            params["boost"] = __values[2]
         elif __len_values == 2:
-            params['lte'] = __values[1]
+            params["lte"] = __values[1]
 
         return params
 
@@ -168,12 +166,10 @@ class FilteringFilterBackend(BaseBackend):
         if __len_values == 0:
             return {}
 
-        params = {
-            lookup: __values[0]
-        }
+        params = {lookup: __values[0]}
 
         if __len_values == 2:
-            params['boost'] = __values[1]
+            params["boost"] = __values[1]
 
         return params
 
@@ -201,8 +197,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['term'],
-            kwargs={options['field']: value}
+            args=["term"],
+            kwargs={options["field"]: value},
         )
 
     @classmethod
@@ -241,8 +237,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['terms'],
-            kwargs={options['field']: __values}
+            args=["terms"],
+            kwargs={options["field"]: __values},
         )
 
     @classmethod
@@ -272,8 +268,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['range'],
-            kwargs={options['field']: cls.get_range_params(value)}
+            args=["range"],
+            kwargs={options["field"]: cls.get_range_params(value)},
         )
 
     @classmethod
@@ -304,13 +300,13 @@ class FilteringFilterBackend(BaseBackend):
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[Q("exists", field=options['field'])]
+                args=[Q("exists", field=options["field"])],
             )
         elif _value_lower in FALSE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[~Q("exists", field=options['field'])]
+                args=[~Q("exists", field=options["field"])],
             )
         return queryset
 
@@ -338,8 +334,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['prefix'],
-            kwargs={options['field']: value}
+            args=["prefix"],
+            kwargs={options["field"]: value},
         )
 
     @classmethod
@@ -368,7 +364,7 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_query(
             queryset=queryset,
             options=options,
-            args=[Q('wildcard', **{options['field']: value})]
+            args=[Q("wildcard", **{options["field"]: value})],
         )
 
     @classmethod
@@ -395,7 +391,7 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_query(
             queryset=queryset,
             options=options,
-            args=[Q('wildcard', **{options['field']: '*{}*'.format(value)})]
+            args=[Q("wildcard", **{options["field"]: "*{}*".format(value)})],
         )
 
     @classmethod
@@ -422,7 +418,7 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_query(
             queryset=queryset,
             options=options,
-            args=[Q('wildcard', **{options['field']: '*{}'.format(value)})]
+            args=[Q("wildcard", **{options["field"]: "*{}".format(value)})],
         )
 
     @classmethod
@@ -452,15 +448,13 @@ class FilteringFilterBackend(BaseBackend):
         __values = cls.split_lookup_complex_value(value)
         __queries = []
         for __value in __values:
-            __queries.append(
-                Q('term', **{options['field']: __value})
-            )
+            __queries.append(Q("term", **{options["field"]: __value}))
 
         if __queries:
             queryset = cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[six.moves.reduce(operator.or_, __queries)]
+                args=[six.moves.reduce(operator.or_, __queries)],
             )
 
         return queryset
@@ -491,8 +485,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['range'],
-            kwargs={options['field']: cls.get_gte_lte_params(value, 'gt')}
+            args=["range"],
+            kwargs={options["field"]: cls.get_gte_lte_params(value, "gt")},
         )
 
     @classmethod
@@ -521,8 +515,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['range'],
-            kwargs={options['field']: cls.get_gte_lte_params(value, 'gte')}
+            args=["range"],
+            kwargs={options["field"]: cls.get_gte_lte_params(value, "gte")},
         )
 
     @classmethod
@@ -551,8 +545,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['range'],
-            kwargs={options['field']: cls.get_gte_lte_params(value, 'lt')}
+            args=["range"],
+            kwargs={options["field"]: cls.get_gte_lte_params(value, "lt")},
         )
 
     @classmethod
@@ -581,8 +575,8 @@ class FilteringFilterBackend(BaseBackend):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=['range'],
-            kwargs={options['field']: cls.get_gte_lte_params(value, 'lte')}
+            args=["range"],
+            kwargs={options["field"]: cls.get_gte_lte_params(value, "lte")},
         )
 
     @classmethod
@@ -613,13 +607,13 @@ class FilteringFilterBackend(BaseBackend):
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[~Q("exists", field=options['field'])]
+                args=[~Q("exists", field=options["field"])],
             )
         elif _value_lower in FALSE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[Q("exists", field=options['field'])]
+                args=[Q("exists", field=options["field"])],
             )
         return queryset
 
@@ -652,15 +646,13 @@ class FilteringFilterBackend(BaseBackend):
 
         __queries = []
         for __value in __values:
-            __queries.append(
-                ~Q('term', **{options['field']: __value})
-            )
+            __queries.append(~Q("term", **{options["field"]: __value}))
 
         if __queries:
             queryset = cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[six.moves.reduce(operator.or_, __queries)]
+                args=[six.moves.reduce(operator.or_, __queries)],
             )
 
         return queryset
@@ -758,23 +750,21 @@ class FilteringFilterBackend(BaseBackend):
                 filter_fields.update(
                     {
                         field: {
-                            'field': options or field,
-                            'default_lookup': LOOKUP_FILTER_TERM,
-                            'lookups': tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)
+                            "field": options or field,
+                            "default_lookup": LOOKUP_FILTER_TERM,
+                            "lookups": tuple(ALL_LOOKUP_FILTERS_AND_QUERIES),
                         }
                     }
                 )
-            elif 'field' not in options:
+            elif "field" not in options:
                 filter_fields.update({field: options})
-                filter_fields[field]['field'] = field
+                filter_fields[field]["field"] = field
             else:
                 filter_fields.update({field: options})
 
-            if field in filter_fields and 'lookups' not in filter_fields[field]:
+            if field in filter_fields and "lookups" not in filter_fields[field]:
                 filter_fields[field].update(
-                    {
-                        'lookups': tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)
-                    }
+                    {"lookups": tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)}
                 )
         return filter_fields
 
@@ -796,7 +786,7 @@ class FilteringFilterBackend(BaseBackend):
             if isinstance(value, dict):
                 # For constructions like:
                 # {filter:{title:{query:"Produce."}, category:{query:["Aaa"]}}}
-                _query = value.pop('query')
+                _query = value.pop("query")
                 _field_options = copy.copy(value)
                 value = _query
                 # field_options.update(_field_options)
@@ -809,10 +799,8 @@ class FilteringFilterBackend(BaseBackend):
         :param field_name:
         :return:
         """
-        field_options = dict(self.args) \
-            .get(self.prefix, {}) \
-            .get(field_name, {})
-        return field_options.get('lookup', None)
+        field_options = dict(self.args).get(self.prefix, {}).get(field_name, {})
+        return field_options.get("lookup", None)
 
     def get_filter_query_params(self):
         """Get query params to be filtered on.
@@ -830,23 +818,19 @@ class FilteringFilterBackend(BaseBackend):
         filter_fields = self.prepare_filter_fields()
 
         for field_name, values in query_params.items():
-            query_param_list = self.split_lookup_filter(
-                field_name,
-                maxsplit=1
-            )
+            query_param_list = self.split_lookup_filter(field_name, maxsplit=1)
             # field_name = query_param_list[0]
 
             if field_name in filter_fields:
                 lookup_param = self.get_field_lookup_param(field_name)
 
-                valid_lookups = filter_fields[field_name]['lookups']
+                valid_lookups = filter_fields[field_name]["lookups"]
 
                 # If we have default lookup given use it as a default and
                 # do not require further suffix specification.
                 default_lookup = None
-                if 'default_lookup' in filter_fields[field_name]:
-                    default_lookup = \
-                        filter_fields[field_name]['default_lookup']
+                if "default_lookup" in filter_fields[field_name]:
+                    default_lookup = filter_fields[field_name]["default_lookup"]
 
                 if lookup_param is None or lookup_param in valid_lookups:
 
@@ -858,23 +842,20 @@ class FilteringFilterBackend(BaseBackend):
                     if isinstance(values, (list, tuple)):
                         values = [
                             __value.strip()
-                            for __value
-                            in values
-                            if __value.strip() != ''
+                            for __value in values
+                            if __value.strip() != ""
                         ]
                     else:
                         values = [values]
 
                     if values:
                         filter_query_params[field_name] = {
-                            'lookup': lookup_param,
-                            'values': values,
-                            'field': filter_fields[field_name].get(
-                                'field',
-                                field_name
+                            "lookup": lookup_param,
+                            "values": values,
+                            "field": filter_fields[field_name].get(
+                                "field", field_name
                             ),
-                            'type': self.connection_field.document._doc_type \
-                                        .mapping.properties.name
+                            "type": self.connection_field.document._doc_type.mapping.properties.name,
                         }
         return filter_query_params
 
@@ -901,97 +882,79 @@ class FilteringFilterBackend(BaseBackend):
 
             # For all other cases, when we don't have multiple values,
             # we follow the normal flow.
-            for value in options['values']:
+            for value in options["values"]:
 
-                if options['lookup'] == LOOKUP_FILTER_TERMS:
-                    queryset = self.apply_filter_terms(queryset,
-                                                       options,
-                                                       value)
+                if options["lookup"] == LOOKUP_FILTER_TERMS:
+                    queryset = self.apply_filter_terms(queryset, options, value)
 
                 # `prefix` filter lookup
-                elif options['lookup'] in (LOOKUP_FILTER_PREFIX,
-                                           LOOKUP_QUERY_STARTSWITH):
-                    queryset = self.apply_filter_prefix(queryset,
-                                                        options,
-                                                        value)
+                elif options["lookup"] in (
+                    LOOKUP_FILTER_PREFIX,
+                    LOOKUP_QUERY_STARTSWITH,
+                ):
+                    queryset = self.apply_filter_prefix(
+                        queryset, options, value
+                    )
 
                 # `range` filter lookup
-                elif options['lookup'] == LOOKUP_FILTER_RANGE:
-                    queryset = self.apply_filter_range(queryset,
-                                                       options,
-                                                       value)
+                elif options["lookup"] == LOOKUP_FILTER_RANGE:
+                    queryset = self.apply_filter_range(queryset, options, value)
 
                 # `exists` filter lookup
-                elif options['lookup'] == LOOKUP_FILTER_EXISTS:
-                    queryset = self.apply_query_exists(queryset,
-                                                       options,
-                                                       value)
+                elif options["lookup"] == LOOKUP_FILTER_EXISTS:
+                    queryset = self.apply_query_exists(queryset, options, value)
 
                 # `wildcard` filter lookup
-                elif options['lookup'] == LOOKUP_FILTER_WILDCARD:
-                    queryset = self.apply_query_wildcard(queryset,
-                                                         options,
-                                                         value)
+                elif options["lookup"] == LOOKUP_FILTER_WILDCARD:
+                    queryset = self.apply_query_wildcard(
+                        queryset, options, value
+                    )
 
                 # `contains` filter lookup
-                elif options['lookup'] == LOOKUP_QUERY_CONTAINS:
-                    queryset = self.apply_query_contains(queryset,
-                                                         options,
-                                                         value)
+                elif options["lookup"] == LOOKUP_QUERY_CONTAINS:
+                    queryset = self.apply_query_contains(
+                        queryset, options, value
+                    )
 
                 # `in` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_IN:
-                    queryset = self.apply_query_in(queryset,
-                                                   options,
-                                                   value)
+                elif options["lookup"] == LOOKUP_QUERY_IN:
+                    queryset = self.apply_query_in(queryset, options, value)
 
                 # `gt` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_GT:
-                    queryset = self.apply_query_gt(queryset,
-                                                   options,
-                                                   value)
+                elif options["lookup"] == LOOKUP_QUERY_GT:
+                    queryset = self.apply_query_gt(queryset, options, value)
 
                 # `gte` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_GTE:
-                    queryset = self.apply_query_gte(queryset,
-                                                    options,
-                                                    value)
+                elif options["lookup"] == LOOKUP_QUERY_GTE:
+                    queryset = self.apply_query_gte(queryset, options, value)
 
                 # `lt` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_LT:
-                    queryset = self.apply_query_lt(queryset,
-                                                   options,
-                                                   value)
+                elif options["lookup"] == LOOKUP_QUERY_LT:
+                    queryset = self.apply_query_lt(queryset, options, value)
 
                 # `lte` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_LTE:
-                    queryset = self.apply_query_lte(queryset,
-                                                    options,
-                                                    value)
+                elif options["lookup"] == LOOKUP_QUERY_LTE:
+                    queryset = self.apply_query_lte(queryset, options, value)
 
                 # `endswith` filter lookup
-                elif options['lookup'] == LOOKUP_QUERY_ENDSWITH:
-                    queryset = self.apply_query_endswith(queryset,
-                                                         options,
-                                                         value)
+                elif options["lookup"] == LOOKUP_QUERY_ENDSWITH:
+                    queryset = self.apply_query_endswith(
+                        queryset, options, value
+                    )
 
                 # `isnull` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_ISNULL:
-                    queryset = self.apply_query_isnull(queryset,
-                                                       options,
-                                                       value)
+                elif options["lookup"] == LOOKUP_QUERY_ISNULL:
+                    queryset = self.apply_query_isnull(queryset, options, value)
 
                 # `exclude` functional query lookup
-                elif options['lookup'] == LOOKUP_QUERY_EXCLUDE:
-                    queryset = self.apply_query_exclude(queryset,
-                                                        options,
-                                                        value)
+                elif options["lookup"] == LOOKUP_QUERY_EXCLUDE:
+                    queryset = self.apply_query_exclude(
+                        queryset, options, value
+                    )
 
                 # `term` filter lookup. This is default if no `default_lookup`
                 # option has been given or explicit lookup provided.
                 else:
-                    queryset = self.apply_filter_term(queryset,
-                                                      options,
-                                                      value)
+                    queryset = self.apply_filter_term(queryset, options, value)
 
         return queryset

@@ -11,17 +11,17 @@ from graphene import (
     NonNull,
     String,
     Union,
-    is_node
+    is_node,
 )
 
 from elasticsearch_dsl import field as elasticsearch_fields
 
 from .utils import import_single_dispatch, get_field_description
 
-__title__ = 'graphene_elastic.converter'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
+__title__ = "graphene_elastic.converter"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 
 singledispatch = import_single_dispatch()
 
@@ -33,8 +33,9 @@ class ElasticsearchConversionError(Exception):
 @singledispatch
 def convert_elasticsearch_field(field, registry=None):
     raise ElasticsearchConversionError(
-        "Don't know how to convert the Elasticsearch field %s (%s)" %
-        (field, field.__class__))
+        "Don't know how to convert the Elasticsearch field %s (%s)"
+        % (field, field.__class__)
+    )
 
 
 @convert_elasticsearch_field.register(elasticsearch_fields.Text)
@@ -42,8 +43,9 @@ def convert_elasticsearch_field(field, registry=None):
 def convert_field_to_string(field, registry=None):
     return String(
         description=get_field_description(field, registry),
-        required=field._required
+        required=field._required,
     )
+
 
 @convert_elasticsearch_field.register(elasticsearch_fields.Byte)
 @convert_elasticsearch_field.register(elasticsearch_fields.Integer)
@@ -52,7 +54,7 @@ def convert_field_to_string(field, registry=None):
 def convert_field_to_int(field, registry=None):
     return Int(
         description=get_field_description(field, registry),
-        required=field._required
+        required=field._required,
     )
 
 
@@ -60,7 +62,7 @@ def convert_field_to_int(field, registry=None):
 def convert_field_to_boolean(field, registry=None):
     return Boolean(
         description=get_field_description(field, registry),
-        required=field._required
+        required=field._required,
     )
 
 
@@ -71,7 +73,7 @@ def convert_field_to_boolean(field, registry=None):
 def convert_field_to_float(field, registry=None):
     return Float(
         description=get_field_description(field, registry),
-        required=field._required
+        required=field._required,
     )
 
 
@@ -79,7 +81,7 @@ def convert_field_to_float(field, registry=None):
 def convert_field_to_datetime(field, registry=None):
     return DateTime(
         description=get_field_description(field, registry),
-        required=field._required
+        required=field._required,
     )
 
 
@@ -87,7 +89,8 @@ def convert_field_to_datetime(field, registry=None):
 @convert_elasticsearch_field.register(elasticsearch_fields.Nested)
 def convert_field_to_jsonstring(field, registry=None):
     from .types import JSONString
+
     return JSONString(
         description=get_field_description(field, registry),
-        required=field._required
+        required=field._required,
     )

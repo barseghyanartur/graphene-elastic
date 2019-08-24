@@ -3,63 +3,63 @@ Constants module. Contains Elasticsearch constants, lookup constants,
 functional constants, suggesters, etc.
 """
 
-__title__ = 'graphene_elastic.constants'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
+__title__ = "graphene_elastic.constants"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = (
-    'ALL',
-    'ALL_FUNCTIONAL_SUGGESTERS',
-    'ALL_GEO_SPATIAL_LOOKUP_FILTERS_AND_QUERIES',
-    'ALL_LOOKUP_FILTERS_AND_QUERIES',
-    'ALL_SUGGESTERS',
-    'BOOST',
-    'DEFAULT_MATCHING_OPTION',
-    'DYNAMIC_CLASS_NAME_PREFIX',
-    'EXTENDED_NUMBER_LOOKUP_FILTERS',
-    'EXTENDED_STRING_LOOKUP_FILTERS',
-    'FALSE_VALUES',
-    'FIELD',
-    'FUNCTIONAL_SUGGESTER_COMPLETION_MATCH',
-    'FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX',
-    'FUNCTIONAL_SUGGESTER_PHRASE_MATCH',
-    'FUNCTIONAL_SUGGESTER_TERM_MATCH',
-    'GEO_DISTANCE_ORDERING_PARAM',
-    'LOOKUP',
-    'LOOKUP_FILTER_EXISTS',
-    'LOOKUP_FILTER_GEO_BOUNDING_BOX',
-    'LOOKUP_FILTER_GEO_DISTANCE',
-    'LOOKUP_FILTER_GEO_POLYGON',
-    'LOOKUP_FILTER_PREFIX',
-    'LOOKUP_FILTER_RANGE',
-    'LOOKUP_FILTER_TERM',
-    'LOOKUP_FILTER_TERMS',
-    'LOOKUP_FILTER_WILDCARD',
-    'LOOKUP_QUERY_CONTAINS',
-    'LOOKUP_QUERY_ENDSWITH',
-    'LOOKUP_QUERY_EXCLUDE',
-    'LOOKUP_QUERY_GT',
-    'LOOKUP_QUERY_GTE',
-    'LOOKUP_QUERY_IN',
-    'LOOKUP_QUERY_ISNULL',
-    'LOOKUP_QUERY_LT',
-    'LOOKUP_QUERY_LTE',
-    'LOOKUP_QUERY_STARTSWITH',
-    'MATCHING_OPTION_MUST',
-    'MATCHING_OPTION_SHOULD',
-    'MATCHING_OPTIONS',
-    'NUMBER_LOOKUP_FILTERS',
-    'SEARCH_QUERY_PARAM',
-    'SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE',
-    'SEPARATOR_LOOKUP_COMPLEX_VALUE',
-    'SEPARATOR_LOOKUP_FILTER',
-    'SEPARATOR_LOOKUP_NAME',
-    'STRING_LOOKUP_FILTERS',
-    'SUGGESTER_COMPLETION',
-    'SUGGESTER_PHRASE',
-    'SUGGESTER_TERM',
-    'TRUE_VALUES',
-    'VALUE',
+    "ALL",
+    "ALL_FUNCTIONAL_SUGGESTERS",
+    "ALL_GEO_SPATIAL_LOOKUP_FILTERS_AND_QUERIES",
+    "ALL_LOOKUP_FILTERS_AND_QUERIES",
+    "ALL_SUGGESTERS",
+    "BOOST",
+    "DEFAULT_MATCHING_OPTION",
+    "DYNAMIC_CLASS_NAME_PREFIX",
+    "EXTENDED_NUMBER_LOOKUP_FILTERS",
+    "EXTENDED_STRING_LOOKUP_FILTERS",
+    "FALSE_VALUES",
+    "FIELD",
+    "FUNCTIONAL_SUGGESTER_COMPLETION_MATCH",
+    "FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX",
+    "FUNCTIONAL_SUGGESTER_PHRASE_MATCH",
+    "FUNCTIONAL_SUGGESTER_TERM_MATCH",
+    "GEO_DISTANCE_ORDERING_PARAM",
+    "LOOKUP",
+    "LOOKUP_FILTER_EXISTS",
+    "LOOKUP_FILTER_GEO_BOUNDING_BOX",
+    "LOOKUP_FILTER_GEO_DISTANCE",
+    "LOOKUP_FILTER_GEO_POLYGON",
+    "LOOKUP_FILTER_PREFIX",
+    "LOOKUP_FILTER_RANGE",
+    "LOOKUP_FILTER_TERM",
+    "LOOKUP_FILTER_TERMS",
+    "LOOKUP_FILTER_WILDCARD",
+    "LOOKUP_QUERY_CONTAINS",
+    "LOOKUP_QUERY_ENDSWITH",
+    "LOOKUP_QUERY_EXCLUDE",
+    "LOOKUP_QUERY_GT",
+    "LOOKUP_QUERY_GTE",
+    "LOOKUP_QUERY_IN",
+    "LOOKUP_QUERY_ISNULL",
+    "LOOKUP_QUERY_LT",
+    "LOOKUP_QUERY_LTE",
+    "LOOKUP_QUERY_STARTSWITH",
+    "MATCHING_OPTION_MUST",
+    "MATCHING_OPTION_SHOULD",
+    "MATCHING_OPTIONS",
+    "NUMBER_LOOKUP_FILTERS",
+    "SEARCH_QUERY_PARAM",
+    "SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE",
+    "SEPARATOR_LOOKUP_COMPLEX_VALUE",
+    "SEPARATOR_LOOKUP_FILTER",
+    "SEPARATOR_LOOKUP_NAME",
+    "STRING_LOOKUP_FILTERS",
+    "SUGGESTER_COMPLETION",
+    "SUGGESTER_PHRASE",
+    "SUGGESTER_TERM",
+    "TRUE_VALUES",
+    "VALUE",
 )
 
 # ****************************************************************************
@@ -79,23 +79,19 @@ __all__ = (
 # to use anything except: true, "true", false, "false".
 
 # True values
-TRUE_VALUES = (
-    'true',
-    '"true"',
-    '1',  # To be deprecated
-)
+TRUE_VALUES = ("true", '"true"', "1")  # To be deprecated
 
 # False values
 FALSE_VALUES = (
-    'false',
+    "false",
     '"false"',
     '"off"',  # To be deprecated
     '"no"',  # To be deprecated
     '"0"',  # To be deprecated
     '""',  # To be deprecated
-    '',  # To be deprecated
-    '0',  # To be deprecated
-    '0.0',  # To be deprecated
+    "",  # To be deprecated
+    "0",  # To be deprecated
+    "0.0",  # To be deprecated
 )
 
 # ****************************************************************************
@@ -103,22 +99,22 @@ FALSE_VALUES = (
 # ****************************************************************************
 
 # Lookup separator
-SEPARATOR_LOOKUP_FILTER = '__'
+SEPARATOR_LOOKUP_FILTER = "__"
 
 # Lookup filter value separator. To be used for `terms` and `range` filters
 # lookups.
-SEPARATOR_LOOKUP_NAME = ':'  # Used to be SEPARATOR_LOOKUP_VALUE
+SEPARATOR_LOOKUP_NAME = ":"  # Used to be SEPARATOR_LOOKUP_VALUE
 
 # Lookup filter value complex separator. To be used with geo-spatial features.
-SEPARATOR_LOOKUP_COMPLEX_VALUE = '__'
+SEPARATOR_LOOKUP_COMPLEX_VALUE = "__"
 
-SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE = ','
+SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE = ","
 
 # Search query param
-SEARCH_QUERY_PARAM = 'q'
+SEARCH_QUERY_PARAM = "q"
 
 # Geo distance ordering param
-GEO_DISTANCE_ORDERING_PARAM = 'ordering'
+GEO_DISTANCE_ORDERING_PARAM = "ordering"
 
 # ****************************************************************************
 # ************************ Native lookup filters/queries *********************
@@ -132,7 +128,7 @@ GEO_DISTANCE_ORDERING_PARAM = 'ordering'
 # Example: http://localhost:8000/api/articles/?tags=children
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-term-query.html
-LOOKUP_FILTER_TERM = 'term'
+LOOKUP_FILTER_TERM = "term"
 
 # The `terms` filter. Should accept multiple values, separated by
 # `SEPARATOR_LOOKUP_COMPLEX_VALUE`.
@@ -140,7 +136,7 @@ LOOKUP_FILTER_TERM = 'term'
 # Example: http://localhost:8000/api/articles/?tags__terms=children__python
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-terms-query.html
-LOOKUP_FILTER_TERMS = 'terms'
+LOOKUP_FILTER_TERMS = "terms"
 
 # The `range` filter. Accepts a pair of values separated by
 # `SEPARATOR_LOOKUP_COMPLEX_VALUE`.
@@ -154,7 +150,7 @@ LOOKUP_FILTER_TERMS = 'terms'
 # Example: http://localhost:8000/api/users/?age__range=16
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-range-query.html
-LOOKUP_FILTER_RANGE = 'range'
+LOOKUP_FILTER_RANGE = "range"
 
 # Returns documents that have at least one non-null value in the original
 # field.
@@ -162,14 +158,14 @@ LOOKUP_FILTER_RANGE = 'range'
 # Example: http://localhost:8000/api/articles/?tags__exists=true
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-exists-query.html
-LOOKUP_FILTER_EXISTS = 'exists'
+LOOKUP_FILTER_EXISTS = "exists"
 
 # The `prefix` filter. Accepts a single value.
 # Example: {"filter": {"prefix": {"tags": "bio"}}}
 # Example: http://localhost:8000/api/articles/?tags__prefix=bio
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-prefix-query.html
-LOOKUP_FILTER_PREFIX = 'prefix'
+LOOKUP_FILTER_PREFIX = "prefix"
 
 # Supported wildcards are `*`, which matches any character sequence (including
 # the empty one), and `?`, which matches any single character. Note that this
@@ -180,7 +176,7 @@ LOOKUP_FILTER_PREFIX = 'prefix'
 # Example: http://localhost:8000/api/articles/?tags__wildcard=child*
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-wildcard-query.html
-LOOKUP_FILTER_WILDCARD = 'wildcard'
+LOOKUP_FILTER_WILDCARD = "wildcard"
 
 # TODO: Implement
 # The regexp query allows you to use regular expression term queries. See
@@ -193,7 +189,7 @@ LOOKUP_FILTER_WILDCARD = 'wildcard'
 # using lookaround regular expressions. If possible, you should try to use a
 # long prefix before your regular expression starts. Wildcard matchers
 # like `.*?+` will mostly lower performance.
-LOOKUP_FILTER_REGEXP = 'regexp'
+LOOKUP_FILTER_REGEXP = "regexp"
 # Example: {"query": {"regexp": {"tags": "ch.*en"}}}
 # Example: http://localhost:8000/api/articles/?tags__regexp=ch.*en
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
@@ -201,13 +197,13 @@ LOOKUP_FILTER_REGEXP = 'regexp'
 
 # TODO: Implement
 # The fuzzy query uses similarity based on Levenshtein edit distance.
-LOOKUP_FILTER_FUZZY = 'fuzzy'
+LOOKUP_FILTER_FUZZY = "fuzzy"
 
 # TODO: Implement
 # Filters documents matching the provided document / mapping type.
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/
 # query-dsl-type-query.html
-LOOKUP_FILTER_TYPE = 'type'
+LOOKUP_FILTER_TYPE = "type"
 
 # ****************************************************************************
 # ******************* Native geo-spatial lookup filters/queries **************
@@ -243,7 +239,7 @@ LOOKUP_FILTER_TYPE = 'type'
 #
 # Example: http://localhost:8000
 # /api/articles/?location__geo_distance=2km__43.53455243__-12.2344243
-LOOKUP_FILTER_GEO_DISTANCE = 'geo_distance'
+LOOKUP_FILTER_GEO_DISTANCE = "geo_distance"
 
 # Geo Polygon Query
 #
@@ -280,7 +276,7 @@ LOOKUP_FILTER_GEO_DISTANCE = 'geo_distance'
 #
 # Example: http://localhost:8000
 # /api/articles/?location__geo_polygon=40,-70__30,-80__20,-90
-LOOKUP_FILTER_GEO_POLYGON = 'geo_polygon'
+LOOKUP_FILTER_GEO_POLYGON = "geo_polygon"
 
 # Geo Bounding Box Query
 # A query allowing to filter hits based on a point location using a bounding
@@ -324,7 +320,7 @@ LOOKUP_FILTER_GEO_POLYGON = 'geo_polygon'
 #
 # Example: http://localhost:8000
 # /api/articles/?location__geo_bounding_box=40.73,-74.1__40.01,-71.12
-LOOKUP_FILTER_GEO_BOUNDING_BOX = 'geo_bounding_box'
+LOOKUP_FILTER_GEO_BOUNDING_BOX = "geo_bounding_box"
 
 # ****************************************************************************
 # ************************ Functional filters/queries ************************
@@ -335,57 +331,57 @@ LOOKUP_FILTER_GEO_BOUNDING_BOX = 'geo_bounding_box'
 
 # A single value
 # http://localhost:8000/api/articles/?state__contains=lish
-LOOKUP_QUERY_CONTAINS = 'contains'
+LOOKUP_QUERY_CONTAINS = "contains"
 
 # Multiple values.
 # Example: http://localhost:8000/api/articles/?tags__in=children__python
-LOOKUP_QUERY_IN = 'in'
+LOOKUP_QUERY_IN = "in"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?id__gt=1
 # Example: http://localhost:8000/api/articles/?id__gt=1__2.0
 # https://www.elastic.co/guide/en/elasticsearch/reference/1.6/
 # query-dsl-range-filter.html
-LOOKUP_QUERY_GT = 'gt'
+LOOKUP_QUERY_GT = "gt"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?id__gte=1
 # Example: http://localhost:8000/api/articles/?id__gte=1__2.0
 # https://www.elastic.co/guide/en/elasticsearch/reference/1.6/
 # query-dsl-range-filter.html
-LOOKUP_QUERY_GTE = 'gte'
+LOOKUP_QUERY_GTE = "gte"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?id__lt=1
 # Example: http://localhost:8000/api/articles/?id__lt=1__2.0
 # https://www.elastic.co/guide/en/elasticsearch/reference/1.6/
 # query-dsl-range-filter.html
-LOOKUP_QUERY_LT = 'lt'
+LOOKUP_QUERY_LT = "lt"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?id__lte=1
 # Example: http://localhost:8000/api/articles/?id__lte=1__2.0
 # https://www.elastic.co/guide/en/elasticsearch/reference/1.6/
 # query-dsl-range-filter.html
-LOOKUP_QUERY_LTE = 'lte'
+LOOKUP_QUERY_LTE = "lte"
 
 # A single value. Alias of `prefix`.
 # Example: http://localhost:8000/api/articles/?tags__startswith=chil
-LOOKUP_QUERY_STARTSWITH = 'startswith'
+LOOKUP_QUERY_STARTSWITH = "startswith"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?tags__endswith=dren
 # Example: http://localhost:8000/api/articles/?state__endswith=lished
-LOOKUP_QUERY_ENDSWITH = 'endswith'
+LOOKUP_QUERY_ENDSWITH = "endswith"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?tags__isnull=true
-LOOKUP_QUERY_ISNULL = 'isnull'
+LOOKUP_QUERY_ISNULL = "isnull"
 
 # Multiple values.
 # Example: http://localhost:8000/api/articles/?tags__exclude=children
 # Example: http://localhost:8000/api/articles/?tags__exclude=children__python
-LOOKUP_QUERY_EXCLUDE = 'exclude'
+LOOKUP_QUERY_EXCLUDE = "exclude"
 
 # ****************************************************************************
 # *************************** Suggestions filters ****************************
@@ -394,15 +390,15 @@ LOOKUP_QUERY_EXCLUDE = 'exclude'
 
 # The `term` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__term=Lore
-SUGGESTER_TERM = 'term'
+SUGGESTER_TERM = "term"
 
 # The `phrase` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__phrase=Lorem
-SUGGESTER_PHRASE = 'phrase'
+SUGGESTER_PHRASE = "phrase"
 
 # The `completion` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__completion=Lore
-SUGGESTER_COMPLETION = 'completion'
+SUGGESTER_COMPLETION = "completion"
 
 # ****************************************************************************
 # ********************** Functional suggestions filters **********************
@@ -411,30 +407,30 @@ SUGGESTER_COMPLETION = 'completion'
 
 # The `term` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__term=Lore
-FUNCTIONAL_SUGGESTER_TERM_MATCH = 'term_match'
+FUNCTIONAL_SUGGESTER_TERM_MATCH = "term_match"
 
 # The `phrase` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__phrase=Lorem
-FUNCTIONAL_SUGGESTER_PHRASE_MATCH = 'phrase_match'
+FUNCTIONAL_SUGGESTER_PHRASE_MATCH = "phrase_match"
 
 # The `completion` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__completion_match=Lore
-FUNCTIONAL_SUGGESTER_COMPLETION_MATCH = 'completion_match'
+FUNCTIONAL_SUGGESTER_COMPLETION_MATCH = "completion_match"
 
 # The `completion` suggester
 # http://127.0.0.1:8000/search/books/?title_suggest__completion_prefix=Lore
-FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX = 'completion_prefix'
+FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX = "completion_prefix"
 
 # ****************************************************************************
 # ************************** Generic key/value names *************************
 # ****************************************************************************
 
-DYNAMIC_CLASS_NAME_PREFIX = 'GrapheneElastic'
-ALL = 'query'
-BOOST = 'boost'
-FIELD = 'field'
-VALUE = 'query'
-LOOKUP = 'lookup'
+DYNAMIC_CLASS_NAME_PREFIX = "GrapheneElastic"
+ALL = "query"
+BOOST = "boost"
+FIELD = "field"
+VALUE = "query"
+LOOKUP = "lookup"
 
 # ****************************************************************************
 # ******************************* Combinations *******************************
@@ -453,7 +449,6 @@ ALL_LOOKUP_FILTERS_AND_QUERIES = (
     # LOOKUP_FILTER_REGEXP,
     # LOOKUP_FILTER_FUZZY,
     # LOOKUP_FILTER_TYPE,
-
     # Functional
     LOOKUP_QUERY_CONTAINS,
     LOOKUP_QUERY_IN,
@@ -467,11 +462,7 @@ ALL_LOOKUP_FILTERS_AND_QUERIES = (
     LOOKUP_QUERY_EXCLUDE,
 )
 
-ALL_SUGGESTERS = (
-    SUGGESTER_TERM,
-    SUGGESTER_PHRASE,
-    SUGGESTER_COMPLETION,
-)
+ALL_SUGGESTERS = (SUGGESTER_TERM, SUGGESTER_PHRASE, SUGGESTER_COMPLETION)
 
 ALL_FUNCTIONAL_SUGGESTERS = (
     FUNCTIONAL_SUGGESTER_TERM_MATCH,
@@ -518,10 +509,7 @@ EXTENDED_NUMBER_LOOKUP_FILTERS = NUMBER_LOOKUP_FILTERS + [
     LOOKUP_QUERY_ISNULL,
 ]
 
-MATCHING_OPTION_MUST = 'must'
-MATCHING_OPTION_SHOULD = 'should'
-MATCHING_OPTIONS = (
-    MATCHING_OPTION_MUST,
-    MATCHING_OPTION_SHOULD,
-)
+MATCHING_OPTION_MUST = "must"
+MATCHING_OPTION_SHOULD = "should"
+MATCHING_OPTIONS = (MATCHING_OPTION_MUST, MATCHING_OPTION_SHOULD)
 DEFAULT_MATCHING_OPTION = MATCHING_OPTION_SHOULD

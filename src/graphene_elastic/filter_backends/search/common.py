@@ -37,17 +37,15 @@ from ...constants import (
     BOOST,
 )
 
-__title__ = 'graphene_elastic.filter_backends.search.common'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
-__all__ = (
-    'SearchFilterBackend',
-)
+__title__ = "graphene_elastic.filter_backends.search.common"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
+__all__ = ("SearchFilterBackend",)
 
 
 class SearchFilterBackend(BaseBackend):
-    prefix = 'search'
+    prefix = "search"
 
     def field_belongs_to(self, field_name):
         return field_name in self.connection_field.search_fields
@@ -78,13 +76,11 @@ class SearchFilterBackend(BaseBackend):
         }
         return graphene.Argument(
             type(
-                '{}{}{}'.format(
-                    DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix,
-                    field_name.title()
+                "{}{}{}".format(
+                    DYNAMIC_CLASS_NAME_PREFIX, self.prefix, field_name.title()
                 ),
                 (graphene.InputObjectType,),
-                params
+                params,
             )
         )
 
@@ -149,15 +145,15 @@ class SearchFilterBackend(BaseBackend):
                 filter_fields.update(
                     {
                         field: {
-                            'field': options or field,
+                            "field": options or field,
                             # 'default_lookup': LOOKUP_FILTER_TERM,
                             # 'lookups': tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)
                         }
                     }
                 )
-            elif 'field' not in options:
+            elif "field" not in options:
                 filter_fields.update({field: options})
-                filter_fields[field]['field'] = field
+                filter_fields[field]["field"] = field
             else:
                 filter_fields.update({field: options})
 
@@ -202,10 +198,7 @@ class SearchFilterBackend(BaseBackend):
         filter_fields = self.prepare_search_fields()
 
         for field_name, values in query_params.items():
-            query_param_list = self.split_lookup_filter(
-                field_name,
-                maxsplit=1
-            )
+            query_param_list = self.split_lookup_filter(field_name, maxsplit=1)
             # field_name = query_param_list[0]
 
             if field_name in filter_fields:
@@ -213,14 +206,13 @@ class SearchFilterBackend(BaseBackend):
                 if len(query_param_list) > 1:
                     lookup_param = query_param_list[1]
 
-                valid_lookups = filter_fields[field_name]['lookups']
+                valid_lookups = filter_fields[field_name]["lookups"]
 
                 # If we have default lookup given use it as a default and
                 # do not require further suffix specification.
                 default_lookup = None
-                if 'default_lookup' in filter_fields[field_name]:
-                    default_lookup = \
-                        filter_fields[field_name]['default_lookup']
+                if "default_lookup" in filter_fields[field_name]:
+                    default_lookup = filter_fields[field_name]["default_lookup"]
 
                 if lookup_param is None or lookup_param in valid_lookups:
 
@@ -232,23 +224,20 @@ class SearchFilterBackend(BaseBackend):
                     if isinstance(values, (list, tuple)):
                         values = [
                             __value.strip()
-                            for __value
-                            in values
-                            if __value.strip() != ''
+                            for __value in values
+                            if __value.strip() != ""
                         ]
                     else:
                         values = [values]
 
                     if values:
                         filter_query_params[field_name] = {
-                            'lookup': lookup_param,
-                            'values': values,
-                            'field': filter_fields[field_name].get(
-                                'field',
-                                field_name
+                            "lookup": lookup_param,
+                            "values": values,
+                            "field": filter_fields[field_name].get(
+                                "field", field_name
                             ),
-                            'type': self.connection_field.document._doc_type \
-                                        .mapping.properties.name
+                            "type": self.connection_field.document._doc_type.mapping.properties.name,
                         }
         return filter_query_params
 
@@ -343,22 +332,20 @@ class SearchFilterBackend(BaseBackend):
 
             if field_name in search_fields:
                 field_options = copy.copy(search_fields[field_name])
-                field = field_options.pop('field', field_name)
+                field = field_options.pop("field", field_name)
 
                 if isinstance(value, dict):
                     # For constructions like:
                     # {'title': {'query': 'Produce', 'boost': 1}}
-                    _query = value.pop('query')
+                    _query = value.pop("query")
                     _field_options = copy.copy(value)
                     value = _query
                     field_options.update(_field_options)
-                field_kwargs = {field: {'query': value}}
+                field_kwargs = {field: {"query": value}}
                 if field_options:
                     field_kwargs[field].update(field_options)
                 # The match query
-                _queries.append(
-                    Q("match", **field_kwargs)
-                )
+                _queries.append(Q("match", **field_kwargs))
 
         return _queries
 
@@ -402,8 +389,10 @@ class SearchFilterBackend(BaseBackend):
         :return: Updated queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        if not hasattr(self, 'search_nested_fields') \
-                or not self.search_nested_fields:
+        if (
+            not hasattr(self, "search_nested_fields")
+            or not self.search_nested_fields
+        ):
             return []
 
         # TODO: Support query boosting
@@ -413,31 +402,27 @@ class SearchFilterBackend(BaseBackend):
         for search_term in query_params:
             for label, options in self.search_nested_fields.items():
                 queries = []
-                path = options.get('path')
+                path = options.get("path")
 
-                for _field in options.get('fields', []):
+                for _field in options.get("fields", []):
 
                     # In case if we deal with structure 2
                     if isinstance(_field, dict):
                         # TODO: take options (such as boost) into consideration
-                        field = "{}.{}".format(path, _field['name'])
+                        field = "{}.{}".format(path, _field["name"])
                     # In case if we deal with structure 1
                     else:
                         field = "{}.{}".format(path, _field)
 
-                    field_kwargs = {
-                        field: search_term
-                    }
+                    field_kwargs = {field: search_term}
 
-                    queries.append(
-                        Q("match", **field_kwargs)
-                    )
+                    queries.append(Q("match", **field_kwargs))
 
                 __queries.append(
                     Q(
                         "nested",
                         path=path,
-                        query=six.moves.reduce(operator.or_, queries)
+                        query=six.moves.reduce(operator.or_, queries),
                     )
                 )
 
@@ -452,5 +437,5 @@ class SearchFilterBackend(BaseBackend):
         _queries = self.construct_search() + self.construct_nested_search()
 
         if _queries:
-            queryset = queryset.query('bool', should=_queries)
+            queryset = queryset.query("bool", should=_queries)
         return queryset

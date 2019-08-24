@@ -8,13 +8,11 @@ from ..constants import (
     SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE,
 )
 
-__title__ = 'graphene_elastic.filter_backends.base'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019 Artur Barseghyan'
-__license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
-__all__ = (
-    'BaseBackend',
-)
+__title__ = "graphene_elastic.filter_backends.base"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2019 Artur Barseghyan"
+__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
+__all__ = ("BaseBackend",)
 
 
 class BaseBackend(object):
@@ -106,12 +104,11 @@ class BaseBackend(object):
         return {
             self.prefix: graphene.Argument(
                 type(
-                    '{}{}BackendFilter'.format(
-                        DYNAMIC_CLASS_NAME_PREFIX,
-                        self.prefix.title()
+                    "{}{}BackendFilter".format(
+                        DYNAMIC_CLASS_NAME_PREFIX, self.prefix.title()
                     ),
                     (graphene.InputObjectType,),
-                    params
+                    params,
                 )
             )
         }
