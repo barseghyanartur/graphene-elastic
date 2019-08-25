@@ -1,0 +1,10 @@
+import os
+
+os.environ.setdefault(
+    "GRAPHENE_ELASTIC_EXAMPLE_BLOG_POST_DOCUMENT_NAME",
+    "test_blog_post"
+)
+os.environ.setdefault(
+    "GRAPHENE_ELASTIC_EXAMPLE_SITE_USER_DOCUMENT_NAME",
+    "test_site_user"
+)

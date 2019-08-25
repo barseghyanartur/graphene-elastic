@@ -55,6 +55,8 @@ class PostFactory(Factory):
         'MongoDB',
         'Machine Learning',
         'Model Photography',
+        'Python',
+        'Django',
     ])
 
     @factory.post_generation

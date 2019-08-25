@@ -12,6 +12,7 @@ from elasticsearch_dsl import (
     Nested,
     Text,
 )
+from .settings import SITE_USER_DOCUMENT_NAME
 
 __all__ = (
     'User',
@@ -34,7 +35,7 @@ class User(Document):
     created_at = Date()
 
     class Index:
-        name = 'site_user'
+        name = SITE_USER_DOCUMENT_NAME
         settings = {
             'number_of_shards': 1,
             'number_of_replicas': 1,

@@ -4,6 +4,10 @@ from django_micro import configure, route, run
 
 from inject import *  # NOQA
 
+try:
+    from local_overrides import *
+except ImportError as err:
+    print(err)
 
 DEBUG = True
 

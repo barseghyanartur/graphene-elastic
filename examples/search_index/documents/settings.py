@@ -1,0 +1,17 @@
+import os
+
+__all__ = (
+    'BLOG_POST_DOCUMENT_NAME',
+    'SITE_USER_DOCUMENT_NAME',
+)
+
+
+BLOG_POST_DOCUMENT_NAME = os.environ.get(
+    "GRAPHENE_ELASTIC_EXAMPLE_BLOG_POST_DOCUMENT_NAME",
+    "blog_post"
+)
+
+SITE_USER_DOCUMENT_NAME = os.environ.get(
+    "GRAPHENE_ELASTIC_EXAMPLE_SITE_USER_DOCUMENT_NAME",
+    "site_user"
+)

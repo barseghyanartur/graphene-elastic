@@ -29,6 +29,7 @@ codebin.py
 /deploy/
 /examples/apps/db.sqlite3
 /var/
+/examples/apps/django_app/local_overrides.py
 /examples/tmp/
 /examples/logs/
 /examples/media/

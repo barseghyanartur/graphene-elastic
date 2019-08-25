@@ -1,4 +1,5 @@
 import datetime
+import os
 from elasticsearch import logger
 from elasticsearch_dsl import connections
 from elasticsearch_dsl import (
@@ -12,6 +13,7 @@ from elasticsearch_dsl import (
     Nested,
     Text,
 )
+from .settings import BLOG_POST_DOCUMENT_NAME
 
 __all__ = (
     'Comment',
@@ -53,7 +55,7 @@ class Post(Document):
     comments = Nested(Comment)
 
     class Index:
-        name = 'blog_post'
+        name = BLOG_POST_DOCUMENT_NAME
         settings = {
             'number_of_shards': 1,
             'number_of_replicas': 1,
