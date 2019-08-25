@@ -79,7 +79,7 @@ Sample document definition
 *search_index/documents/post.py*
 
 See `examples/search_index/documents/post.py
-<https://github.com/barseghyanartur/graphene-elastic/examples/search_index/documents/post.py>`_
+<https://github.com/barseghyanartur/graphene-elastic/blob/master/examples/search_index/documents/post.py>`_
 for full example.
 
 .. code-block:: python
