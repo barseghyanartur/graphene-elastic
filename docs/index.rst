@@ -44,6 +44,11 @@ Main features and highlights
 
 See the `Road-map`_ for what's yet planned to implemented.
 
+Documentation
+=============
+Documentation is available on `Read the Docs
+<http://graphene-elastic.readthedocs.io/>`_.
+
 Installation
 ============
 For installing ``graphene-elastic``, just run this command in your shell:
