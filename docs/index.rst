@@ -76,37 +76,68 @@ and populate them with sample data:
 
 Sample document definition
 --------------------------
-*documents.py*
+*search_index/documents/post.py*
+
+See `examples/search_index/documents/post.py
+<https://github.com/barseghyanartur/graphene-elastic/examples/search_index/documents/post.py>`_
+for full example.
 
 .. code-block:: python
 
-    from elasticsearch_dsl import Document, Text
+    import datetime
+    from elasticsearch_dsl import (
+        Boolean,
+        Date,
+        Document,
+        InnerDoc,
+        Keyword,
+        Nested,
+        Text,
+    )
 
-    class User(Document):
-        first_name = Text()
-        last_name = Text()
-        email = Text()
+    class Comment(InnerDoc):
+
+        author = Text(fields={'raw': Keyword()})
+        content = Text(analyzer='snowball')
         created_at = Date()
 
+        def age(self):
+            return datetime.datetime.now() - self.created_at
+
+
+    class Post(Document):
+
+        title = Text(
+            fields={'raw': Keyword()}
+        )
+        content = Text()
+        created_at = Date()
+        published = Boolean()
+        category = Text(
+            fields={'raw': Keyword()}
+        )
+        comments = Nested(Comment)
+
         class Index:
-            name = 'site_user'
+            name = 'blog_post'
             settings = {
                 'number_of_shards': 1,
                 'number_of_replicas': 1,
                 'blocks': {'read_only_allow_delete': None},
             }
 
+        def add_comment(self, author, content):
+            self.comments.append(
+                Comment(
+                    author=author,
+                    content=content,
+                    created_at=datetime.datetime.now()
+                )
+            )
+
         def save(self, ** kwargs):
             self.created_at = datetime.datetime.now()
             return super().save(** kwargs)
-
-
-    try:
-        # Create the mappings in Elasticsearch
-        User.init()
-    except Exception as err:
-        logger.error(err)
-
 
 Sample apps
 -----------
@@ -165,6 +196,7 @@ to your needs the way you want in a declarative way.
 
     # Object type definition
     class Post(ElasticsearchObjectType):
+
         class Meta(object):
             document = PostDocument
             interfaces = (Node,)

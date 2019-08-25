@@ -38,7 +38,8 @@ class Post(ElasticsearchObjectType):
         document = PostDocument
         interfaces = (Node,)
         filter_backends = [
-
+            FilteringFilterBackend,
+            SearchFilterBackend,
         ]
         filter_fields = {
             'id': '_id',
