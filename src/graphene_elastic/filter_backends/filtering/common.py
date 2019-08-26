@@ -35,6 +35,13 @@ from ...constants import (
     VALUE,
     FIELD,
     LOOKUP,
+    LOWER,
+    UPPER,
+    GT,
+    GTE,
+    LT,
+    LTE,
+    BOOST,
 )
 from ...enums import NoValue, convert_list_to_enum
 
@@ -66,9 +73,24 @@ class FilteringFilterBackend(BaseBackend):
             # FIELD: graphene.String(),  # Field to filter on. Required.
             # TODO: The line below shall relay to the ``base_field_type``
             # and not just a ``graphene.String``
+            # Value to filter on. Required.
             VALUE: graphene.List(
                 graphene.String
-            )  # Value to filter on. Required.
+            ),
+            # Lower range. Optional.
+            LOWER: graphene.Decimal(),
+            # Upper range. Optional.
+            UPPER: graphene.Decimal(),
+            # Boost. Optional.
+            BOOST: graphene.Decimal(),
+            # GT. Optional.
+            GT: graphene.Decimal(),
+            # GTE. Optional.
+            GTE: graphene.Decimal(),
+            # LT. Optional.
+            LT: graphene.Decimal(),
+            # LTE. Optional.
+            LTE: graphene.Decimal(),
         }
         if lookups:
             params.update(
@@ -104,7 +126,7 @@ class FilteringFilterBackend(BaseBackend):
         return {}
 
     @classmethod
-    def get_range_params(cls, value):
+    def get_range_params(cls, value, options):
         """Get params for `range` query.
 
         Syntax:
@@ -119,28 +141,27 @@ class FilteringFilterBackend(BaseBackend):
             http://localhost:8000/api/users/?age__range=16
 
         :param value:
-        :type: str
+        :param options:
+        :type value: str
+        :type options: dict
         :return: Params to be used in `range` query.
         :rtype: dict
         """
-        __values = cls.split_lookup_complex_value(value, maxsplit=3)
-        __len_values = len(__values)
-
-        if __len_values == 0:
+        if LOWER not in options:
             return {}
 
-        params = {"gte": __values[0]}
+        params = {GTE: float(options.get(LOWER, None))}
 
-        if __len_values == 3:
-            params["lte"] = __values[1]
-            params["boost"] = __values[2]
-        elif __len_values == 2:
-            params["lte"] = __values[1]
+        if UPPER in options:
+            params.update({LTE: float(options.get(UPPER, None))})
+
+        if BOOST in options:
+            params.update({BOOST: float(options.get(BOOST, None))})
 
         return params
 
     @classmethod
-    def get_gte_lte_params(cls, value, lookup):
+    def get_gte_lte_params(cls, value, lookup, options):
         """Get params for `gte`, `gt`, `lte` and `lt` query.
 
         Syntax:
@@ -155,21 +176,20 @@ class FilteringFilterBackend(BaseBackend):
 
         :param value:
         :param lookup:
+        :param options:
         :type value: str
         :type lookup: str
+        :type dict: options
         :return: Params to be used in `range` query.
         :rtype: dict
         """
-        __values = cls.split_lookup_complex_value(value, maxsplit=2)
-        __len_values = len(__values)
-
-        if __len_values == 0:
+        if not value:
             return {}
 
-        params = {lookup: __values[0]}
+        params = {lookup: value}
 
-        if __len_values == 2:
-            params["boost"] = __values[1]
+        if BOOST in options:
+            params.update({BOOST: float(options.get(BOOST, None))})
 
         return params
 
@@ -265,11 +285,17 @@ class FilteringFilterBackend(BaseBackend):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        # import ipdb; ipdb.set_trace()
         return cls.apply_filter(
             queryset=queryset,
             options=options,
             args=["range"],
-            kwargs={options["field"]: cls.get_range_params(value)},
+            kwargs={
+                options["field"]: cls.get_range_params(
+                    value,
+                    options.get('options', {})
+                )
+            },
         )
 
     @classmethod
@@ -486,7 +512,13 @@ class FilteringFilterBackend(BaseBackend):
             queryset=queryset,
             options=options,
             args=["range"],
-            kwargs={options["field"]: cls.get_gte_lte_params(value, "gt")},
+            kwargs={
+                options["field"]: cls.get_gte_lte_params(
+                    value,
+                    "gt",
+                    options.get('options', {})
+                )
+            },
         )
 
     @classmethod
@@ -516,7 +548,13 @@ class FilteringFilterBackend(BaseBackend):
             queryset=queryset,
             options=options,
             args=["range"],
-            kwargs={options["field"]: cls.get_gte_lte_params(value, "gte")},
+            kwargs={
+                options["field"]: cls.get_gte_lte_params(
+                    value,
+                    "gte",
+                    options.get('options', {})
+                )
+            },
         )
 
     @classmethod
@@ -546,7 +584,13 @@ class FilteringFilterBackend(BaseBackend):
             queryset=queryset,
             options=options,
             args=["range"],
-            kwargs={options["field"]: cls.get_gte_lte_params(value, "lt")},
+            kwargs={
+                options["field"]: cls.get_gte_lte_params(
+                    value,
+                    "lt",
+                    options.get('options', {})
+                )
+            },
         )
 
     @classmethod
@@ -576,7 +620,13 @@ class FilteringFilterBackend(BaseBackend):
             queryset=queryset,
             options=options,
             args=["range"],
-            kwargs={options["field"]: cls.get_gte_lte_params(value, "lte")},
+            kwargs={
+                options["field"]: cls.get_gte_lte_params(
+                    value,
+                    "lte",
+                    options.get('options', {})
+                )
+            },
         )
 
     @classmethod
@@ -786,7 +836,7 @@ class FilteringFilterBackend(BaseBackend):
             if isinstance(value, dict):
                 # For constructions like:
                 # {filter:{title:{query:"Produce."}, category:{query:["Aaa"]}}}
-                _query = value.pop("query")
+                _query = value.pop("query", "")
                 _field_options = copy.copy(value)
                 value = _query
                 # field_options.update(_field_options)
@@ -801,6 +851,14 @@ class FilteringFilterBackend(BaseBackend):
         """
         field_options = dict(self.args).get(self.prefix, {}).get(field_name, {})
         return field_options.get("lookup", None)
+
+    def get_field_options(self, field_name):
+        """Get field option params.
+
+        :param field_name:
+        :return:
+        """
+        return dict(self.args).get(self.prefix, {}).get(field_name, {})
 
     def get_filter_query_params(self):
         """Get query params to be filtered on.
@@ -823,6 +881,7 @@ class FilteringFilterBackend(BaseBackend):
 
             if field_name in filter_fields:
                 lookup_param = self.get_field_lookup_param(field_name)
+                field_options = self.get_field_options(field_name)
 
                 valid_lookups = filter_fields[field_name]["lookups"]
 
@@ -855,7 +914,8 @@ class FilteringFilterBackend(BaseBackend):
                             "field": filter_fields[field_name].get(
                                 "field", field_name
                             ),
-                            "type": self.connection_field.document._doc_type.mapping.properties.name,
+                            "type": self.doc_type.mapping.properties.name,
+                            "options": field_options,
                         }
         return filter_query_params
 

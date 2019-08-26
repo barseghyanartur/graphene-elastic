@@ -51,6 +51,10 @@ class BaseBackend(object):
     def search_fields(self):
         return self.connection_field.type._meta.node._meta.search_fields
 
+    @property
+    def doc_type(self):
+        return self.connection_field.document._doc_type
+
     @classmethod
     def generic_fields(cls):
         """Generic backend specific fields.

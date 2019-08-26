@@ -11,6 +11,7 @@ from elasticsearch_dsl import (
     Keyword,
     Nested,
     Text,
+    Integer,
 )
 from .settings import BLOG_POST_DOCUMENT_NAME
 
@@ -58,6 +59,7 @@ class Post(Document):
         fields={'raw': Keyword()}
     )
     comments = Nested(Comment)
+    num_views = Integer()
 
     class Index:
         name = BLOG_POST_DOCUMENT_NAME

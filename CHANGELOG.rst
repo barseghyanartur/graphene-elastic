@@ -15,6 +15,13 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.0.4
+-----
+2019-08-27
+
+- Fixed travis config (moved to elasticsearch 6.x on travis, since 7.x was
+  causing problems).
+
 0.0.3
 -----
 2019-08-26

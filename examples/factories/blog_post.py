@@ -58,6 +58,7 @@ class PostFactory(Factory):
         'Python',
         'Django',
     ])
+    num_views = Faker('pyint')
 
     @factory.post_generation
     def comments(obj, create, extracted, **kwargs):

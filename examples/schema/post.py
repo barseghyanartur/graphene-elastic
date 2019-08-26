@@ -56,6 +56,7 @@ class Post(ElasticsearchObjectType):
                 'default_lookup': LOOKUP_FILTER_TERM,
             },
             'category': 'category.raw',
+            'num_views': 'num_views',
         }
         search_fields = {
             'title': {'boost': 4},

@@ -14,6 +14,7 @@ __all__ = (
     "ALL_LOOKUP_FILTERS_AND_QUERIES",
     "ALL_SUGGESTERS",
     "BOOST",
+    "BOOST",
     "DEFAULT_MATCHING_OPTION",
     "DYNAMIC_CLASS_NAME_PREFIX",
     "EXTENDED_NUMBER_LOOKUP_FILTERS",
@@ -25,6 +26,8 @@ __all__ = (
     "FUNCTIONAL_SUGGESTER_PHRASE_MATCH",
     "FUNCTIONAL_SUGGESTER_TERM_MATCH",
     "GEO_DISTANCE_ORDERING_PARAM",
+    "GT",
+    "GTE",
     "LOOKUP",
     "LOOKUP_FILTER_EXISTS",
     "LOOKUP_FILTER_GEO_BOUNDING_BOX",
@@ -45,6 +48,9 @@ __all__ = (
     "LOOKUP_QUERY_LT",
     "LOOKUP_QUERY_LTE",
     "LOOKUP_QUERY_STARTSWITH",
+    "LOWER",
+    "LT",
+    "LTE",
     "MATCHING_OPTION_MUST",
     "MATCHING_OPTION_SHOULD",
     "MATCHING_OPTIONS",
@@ -59,6 +65,7 @@ __all__ = (
     "SUGGESTER_PHRASE",
     "SUGGESTER_TERM",
     "TRUE_VALUES",
+    "UPPER",
     "VALUE",
 )
 
@@ -431,6 +438,14 @@ BOOST = "boost"
 FIELD = "field"
 VALUE = "query"
 LOOKUP = "lookup"
+LOWER = "lower"
+UPPER = "upper"
+BOOST = "boost"
+GT = "gt"
+GTE = "gte"
+LT = "lt"
+LTE = "lte"
+
 
 # ****************************************************************************
 # ******************************* Combinations *******************************
