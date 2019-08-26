@@ -1,1 +1,1 @@
--r examples/requirements.txt
+-r requirements/dev.txt

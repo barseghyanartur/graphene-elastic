@@ -3,7 +3,6 @@ Faker==0.9.2
 pytest-cov==2.5.1
 pytest-ordering==0.5
 pytest==3.3.2
-selenium==2.53.6
 tox==3.1.2
 coverage==4.5.3
 coveralls==1.2.0
