@@ -8,9 +8,9 @@ language: python
 matrix:
   fast_finish: true
   include:
-  - env: TOX_ENV=py36-elastic7
+  - env: TOX_ENV=py36-elastic6
     python: 3.6
-  - env: TOX_ENV=py37-elastic7
+  - env: TOX_ENV=py37-elastic6
     python: 3.7
 
 before_install:
