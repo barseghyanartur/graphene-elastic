@@ -1,6 +1,5 @@
 import datetime
 import os
-from elasticsearch import logger
 from elasticsearch_dsl import connections
 from elasticsearch_dsl import (
     analyzer,
@@ -14,6 +13,12 @@ from elasticsearch_dsl import (
     Text,
 )
 from .settings import BLOG_POST_DOCUMENT_NAME
+
+try:
+    from elasticsearch import logger
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
 
 __all__ = (
     'Comment',
