@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="graphene-elastic",
-    version="0.0.3",
+    version="0.0.4",
     description="Graphene Elasticsearch (DSL) integration",
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
@@ -20,7 +20,11 @@ setup(
     ],
     keywords="api graphql protocol rest relay graphene elasticsearch "
     "elasticsearch-dsl",
-    packages=find_packages(exclude=["tests"]),
+    package_dir={"": "src"},
+    packages=find_packages(
+        where="./src",
+        exclude=["tests"]
+    ),
     install_requires=[
         "graphene>=2.1.3,<3",
         "elasticsearch>=6.0",
@@ -35,4 +39,5 @@ setup(
         # 'mongomock',
         "mock",
     ],
+    include_package_data=True,
 )

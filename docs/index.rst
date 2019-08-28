@@ -93,6 +93,7 @@ for full example.
         Keyword,
         Nested,
         Text,
+        Integer,
     )
 
     class Comment(InnerDoc):
@@ -117,6 +118,7 @@ for full example.
             fields={'raw': Keyword()}
         )
         comments = Nested(Comment)
+        num_views = Integer()
 
         class Index:
             name = 'blog_post'
@@ -218,6 +220,7 @@ to your needs the way you want in a declarative way.
                     'default_lookup': LOOKUP_FILTER_TERM,
                 },
                 'category': 'category.raw',
+                'num_views': 'num_views',
             }
             search_fields = {
                 'title': {'boost': 4},
@@ -273,6 +276,27 @@ But, we could use another lookup by adding it to the query:
         }
       }
     }
+
+Or apply a range query in addition to filtering:
+
+.. code-block:: javascript
+
+    {
+      allPostDocuments(filter:{
+            category:{query:"Python"},
+            numViews:{lookup:RANGE, lower:"1000", upper:"2000"}
+        }) {
+        edges {
+          node {
+            category
+            title
+            comments
+            numViews
+          }
+        }
+      }
+    }
+
 
 **Search**
 

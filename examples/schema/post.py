@@ -152,10 +152,59 @@ class Direction(NoValue):
     DESC = 'desc'
 
 
-class Ordering(graphene.InputObjectType):
+from graphene_elastic.filter_backends.queries import *  # NOQA
 
-    by = graphene.String()
-    direction = graphene.String()
+
+# class Complex(graphene.InputObjectType):
+#
+#     term = Term()
+#     terms = Terms()
+#     range = Range()
+#     exists = Exists()
+#     prefix = Prefix()
+#     starts_with = StartsWith()
+#     wildcard = Wildcard()
+#     geo_distance = GeoDistance()
+#     geo_polygon = GeoPolygon()
+#     geo_bounding_box = GeoBoundingBox()
+#     contains = Contains()
+#     # In = In()  # NOQA
+#     gt = Gt()
+#     gte = Gte()
+#     lt = Lt()
+#     lte = Lte()
+#     endswith = EndsWith()
+#     is_null = IsNull()
+#     exclude = Exclude()
+
+
+complex_params = {
+    'term': Term(),
+    'terms': Terms(),
+    'range': Range(),
+    'exists': Exists(),
+    'prefix': Prefix(),
+    'starts_with': StartsWith(),
+    'wildcard': Wildcard(),
+    'geo_distance': GeoDistance(),
+    'geo_polygon': GeoPolygon(),
+    'geo_bounding_box': GeoBoundingBox(),
+    'contains': Contains(),
+    'in': In(),
+    'gt': Gt(),
+    'gte': Gte(),
+    'lt': Lt(),
+    'lte': Lte(),
+    'ends_with': EndsWith(),
+    'is_null': IsNull(),
+    'exclude': Exclude(),
+}
+
+Complex = type(
+    'Complex',
+    (graphene.InputObjectType,),
+    complex_params
+)
 
 
 class AdvancedQueryMixin:
@@ -186,7 +235,7 @@ class AdvancedQueryMixin:
         Post,
         # default_field=graphene.String(),
         # query=graphene.String(),
-        # ordering=graphene.Argument(Ordering),
+        complex=graphene.Argument(Complex),
         # search=graphene.String()
     )
 

@@ -17,10 +17,11 @@ are used for versioning (schema follows below):
 
 0.0.4
 -----
-2019-08-27
+2019-08-28
 
 - Fixed travis config (moved to elasticsearch 6.x on travis, since 7.x was
   causing problems).
+- Fixes in setup.py.
 
 0.0.3
 -----
