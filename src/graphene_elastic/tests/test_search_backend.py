@@ -2,6 +2,7 @@ import unittest
 import time
 import factories
 from .base import BaseGrapheneElasticTestCase
+from ..constants import VALUE
 
 __all__ = (
     'SearchBackendElasticTestCase',
@@ -45,7 +46,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         time.sleep(2)
 
-    def _test_search_content(self, term, num_posts):
+    def _test_search_content(self, term, num_posts, lookup=VALUE):
         """Test search.
 
         :param term:
@@ -54,7 +55,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         query = """
         query {
-          allPostDocuments(search:{content:{query:"%s"}}) {
+          allPostDocuments(search:{content:{%s:"%s"}}) {
             edges {
               node {
                 category
@@ -64,7 +65,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % term
+        """ % (lookup, term)
         executed = self.client.execute(query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),

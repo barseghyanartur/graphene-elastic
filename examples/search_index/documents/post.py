@@ -12,6 +12,8 @@ from elasticsearch_dsl import (
     Nested,
     Text,
     Integer,
+    Float,
+
 )
 from .settings import BLOG_POST_DOCUMENT_NAME
 

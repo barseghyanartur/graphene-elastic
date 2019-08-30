@@ -167,7 +167,6 @@ class ElasticsearchObjectType(ObjectType):
         _meta.filter_fields = filter_fields
         _meta.search_fields = options.get('search_fields', {})
         _meta.search_nested_fields = options.get('search_nested_fields', {})
-        # import ptpdb; ptpdb.set_trace()
         # _meta.filter_backends = options.get('filter_backends', [])
         _meta.connection = connection
         _meta.connection_field_class = connection_field_class

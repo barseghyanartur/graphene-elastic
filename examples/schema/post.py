@@ -177,34 +177,34 @@ from graphene_elastic.filter_backends.queries import *  # NOQA
 #     is_null = IsNull()
 #     exclude = Exclude()
 
-
-complex_params = {
-    'term': Term(),
-    'terms': Terms(),
-    'range': Range(),
-    'exists': Exists(),
-    'prefix': Prefix(),
-    'starts_with': StartsWith(),
-    'wildcard': Wildcard(),
-    'geo_distance': GeoDistance(),
-    'geo_polygon': GeoPolygon(),
-    'geo_bounding_box': GeoBoundingBox(),
-    'contains': Contains(),
-    'in': In(),
-    'gt': Gt(),
-    'gte': Gte(),
-    'lt': Lt(),
-    'lte': Lte(),
-    'ends_with': EndsWith(),
-    'is_null': IsNull(),
-    'exclude': Exclude(),
-}
-
-Complex = type(
-    'Complex',
-    (graphene.InputObjectType,),
-    complex_params
-)
+#
+# complex_params = {
+#     'term': Term(),
+#     'terms': Terms(),
+#     'range': Range(),
+#     'exists': Exists(),
+#     'prefix': Prefix(),
+#     'starts_with': StartsWith(),
+#     'wildcard': Wildcard(),
+#     'geo_distance': GeoDistance(),
+#     'geo_polygon': GeoPolygon(),
+#     'geo_bounding_box': GeoBoundingBox(),
+#     'contains': Contains(),
+#     'in': In(),
+#     'gt': Gt(),
+#     'gte': Gte(),
+#     'lt': Lt(),
+#     'lte': Lte(),
+#     'ends_with': EndsWith(),
+#     'is_null': IsNull(),
+#     'exclude': Exclude(),
+# }
+#
+# Complex = type(
+#     'Complex',
+#     (graphene.InputObjectType,),
+#     complex_params
+# )
 
 
 class AdvancedQueryMixin:
@@ -235,7 +235,7 @@ class AdvancedQueryMixin:
         Post,
         # default_field=graphene.String(),
         # query=graphene.String(),
-        complex=graphene.Argument(Complex),
+        # complex=graphene.Argument(Complex),
         # search=graphene.String()
     )
 

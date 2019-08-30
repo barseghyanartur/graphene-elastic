@@ -239,12 +239,12 @@ to your needs the way you want in a declarative way.
 **Filter**
 
 Since we didn't specify any lookups on `category`, by default all lookups
-are available. Default lookup would be `LOOKUP_FILTER_TERM`.
+are available. Default lookup would be ``term``.
 
 .. code-block:: javascript
 
     query PostsQuery {
-      allPostDocuments(filter:{category:{query:["Elastic"]}}) {
+      allPostDocuments(filter:{category:{value:"Elastic"}}) {
         edges {
           node {
             id
@@ -258,12 +258,12 @@ are available. Default lookup would be `LOOKUP_FILTER_TERM`.
       }
     }
 
-But, we could use another lookup by adding it to the query:
+But, we could use another lookup (in this case the ``terms``):
 
 .. code-block:: javascript
 
     query PostsQuery {
-      allPostDocuments(filter:{category:{query:["tic"], lookup:ENDSWITH}}) {
+      allPostDocuments(filter:{category:{terms:["Elastic", "Python"]}}) {
         edges {
           node {
             id
@@ -277,14 +277,14 @@ But, we could use another lookup by adding it to the query:
       }
     }
 
-Or apply a range query in addition to filtering:
+Or apply a ``gt`` (``range``) query in addition to filtering:
 
 .. code-block:: javascript
 
     {
       allPostDocuments(filter:{
-            category:{query:"Python"},
-            numViews:{lookup:RANGE, lower:"1000", upper:"2000"}
+            category:{term:"Python"},
+            numViews:{gt:"700"}
         }) {
         edges {
           node {
@@ -304,7 +304,7 @@ Or apply a range query in addition to filtering:
 
     query {
       allPostDocuments(
-        search:{title:{query:"Release", boost:1}, content:{query:"Box"}}}
+        search:{title:{value:"Release", boost:1}, content:{value:"Box"}}}
       ) {
         edges {
           node {

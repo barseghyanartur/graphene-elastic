@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from decimal import Decimal
+
 from collections import Iterable, OrderedDict
 from functools import partial, reduce
 import json
@@ -29,6 +31,12 @@ __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
 __copyright__ = "2019 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("ElasticsearchConnectionField",)
+
+
+def json_default(obj):
+    if isinstance(obj, Decimal):
+        return str(obj)  # String version
+    return obj
 
 
 class ElasticsearchConnectionField(ConnectionField):
@@ -311,8 +319,13 @@ class ElasticsearchConnectionField(ConnectionField):
             backend = backend_cls(self, args=dict(args))
             qs = backend.filter(qs)
 
-        print(json.dumps(qs.to_dict()))
-
+        try:
+            print("Debug")
+            print(json.dumps(qs.to_dict(), default=json_default))
+            print("/Debug")
+        except Exception as err:
+            print(err)
+        # import ipdb; ipdb.set_trace()
         return qs
 
     def default_resolver(self, _root, info, **args):

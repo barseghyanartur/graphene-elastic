@@ -374,16 +374,16 @@ LOOKUP_QUERY_LTE = "lte"
 
 # A single value. Alias of `prefix`.
 # Example: http://localhost:8000/api/articles/?tags__startswith=chil
-LOOKUP_QUERY_STARTSWITH = "startswith"
+LOOKUP_QUERY_STARTSWITH = "starts_with"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?tags__endswith=dren
 # Example: http://localhost:8000/api/articles/?state__endswith=lished
-LOOKUP_QUERY_ENDSWITH = "endswith"
+LOOKUP_QUERY_ENDSWITH = "ends_with"
 
 # A single value
 # Example: http://localhost:8000/api/articles/?tags__isnull=true
-LOOKUP_QUERY_ISNULL = "isnull"
+LOOKUP_QUERY_ISNULL = "is_null"
 
 # Multiple values.
 # Example: http://localhost:8000/api/articles/?tags__exclude=children
@@ -436,11 +436,10 @@ DYNAMIC_CLASS_NAME_PREFIX = "GrapheneElastic"
 ALL = "query"
 BOOST = "boost"
 FIELD = "field"
-VALUE = "query"
+VALUE = "value"
 LOOKUP = "lookup"
 LOWER = "lower"
 UPPER = "upper"
-BOOST = "boost"
 GT = "gt"
 GTE = "gte"
 LT = "lt"

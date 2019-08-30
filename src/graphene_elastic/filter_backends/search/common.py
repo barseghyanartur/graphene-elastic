@@ -336,8 +336,8 @@ class SearchFilterBackend(BaseBackend):
 
                 if isinstance(value, dict):
                     # For constructions like:
-                    # {'title': {'query': 'Produce', 'boost': 1}}
-                    _query = value.pop("query")
+                    # {'title': {'value': 'Produce', 'boost': 1}}
+                    _query = value.pop(VALUE)
                     _field_options = copy.copy(value)
                     value = _query
                     field_options.update(_field_options)
