@@ -15,10 +15,19 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.0.7
+-----
+2019-08-31 (not yet released)
+
+- Added more filter lookups.
+- Improved test coverage for the filtering backend.
+- Documentation improvements.
+
 0.0.6
 -----
-2019-08-31
+2019-08-30
 
+- Added more filter lookups.
 - Fixes in filtering backend.
 - Improved test coverage for the filtering backend.
 - Documentation improvements.

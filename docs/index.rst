@@ -181,7 +181,7 @@ ConnectionField example
 ~~~~~~~~~~~~~~~~~~~~~~~
 ConnectionField is the most flexible and feature rich solution you have. It
 uses filter backends which you can tie to your needs the way you want in a
-declarative way.
+declarative manner.
 
 **Sample schema definition**
 
@@ -397,6 +397,12 @@ Running Elasticsearch
 
 Running tests
 -------------
+Make sure you have the test requirements installed:
+
+.. code-block:: sh
+
+    pip install -r requirements/test.txt
+
 To test with all supported Python versions type:
 
 .. code-block:: sh
@@ -414,10 +420,6 @@ To test just your working environment type:
 .. code-block:: sh
 
     ./runtests.py
-
-.. code-block:: sh
-
-    pip install -r requirements/test.txt
 
 To run a single test module in your working environment type:
 

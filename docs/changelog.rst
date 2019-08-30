@@ -17,7 +17,7 @@ are used for versioning (schema follows below):
 
 0.0.6
 -----
-2019-08-31 (not yet released)
+2019-08-31
 
 - Fixes in filtering backend.
 - Improved test coverage for the filtering backend.

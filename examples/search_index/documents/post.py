@@ -14,6 +14,7 @@ from elasticsearch_dsl import (
     Integer,
     Float,
 
+
 )
 from .settings import BLOG_POST_DOCUMENT_NAME
 
@@ -36,6 +37,10 @@ html_strip = analyzer('html_strip',
     filter=["lowercase", "stop", "snowball"],
     char_filter=["html_strip"]
 )
+
+
+# class Tag(InnerDoc):
+#     name = Text(fields={'raw': Keyword()})
 
 
 class Comment(InnerDoc):
@@ -61,6 +66,12 @@ class Post(Document):
         fields={'raw': Keyword()}
     )
     comments = Nested(Comment)
+    # tags = Nested(Tag)
+    tags = Text(
+        analyzer=html_strip,
+        fields={'raw': Keyword(multi=True)},
+        multi=True
+    )
     num_views = Integer()
 
     class Index:
@@ -79,6 +90,9 @@ class Post(Document):
                 created_at=datetime.datetime.now()
             )
         )
+
+    def add_tag(self, name):
+        self.tags.append(name)
 
     def save(self, ** kwargs):
         self.created_at = datetime.datetime.now()

@@ -41,6 +41,11 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
     def setUp(self):
         super(FilterBackendElasticTestCase, self).setUp()
+
+        # Important thing to know about the factories.
+        # The `PostFactory` factory has `num_views` between 0 and 1_000.
+        # The `ManyViewsPostFactory` factory has `num_views` between
+        # 2_000 and 10_000.
         self.num_elastic_posts = 4
         self.elastic_posts = factories.PostFactory.create_batch(
             self.num_elastic_posts,
@@ -74,7 +79,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             self.elastic_posts + self.django_posts + self.python_posts
         )
 
-        time.sleep(5)
+        time.sleep(3)
 
     def _test_filter_text_lookups(self,
                                   query,
@@ -274,20 +279,23 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         :return:
         """
+        # This should be all posts, since minimum value for posts is 0.
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
             self._test_filter_number_lookups(
-                '"0"',
+                '"0.1"',
                 self.num_all_posts
             )
 
+        # This should be Python posts only, since they may start at 2_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
             self._test_filter_number_lookups(
-                '"2000"',
+                '"1999"',
                 self.num_python_posts
             )
 
+        # This shall be all posts (including 0).
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
             self._test_filter_number_lookups(
@@ -296,6 +304,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 lookup=LOOKUP_QUERY_GTE
             )
 
+        # This shall be Python posts only, since they may start at 2_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
             self._test_filter_number_lookups(
@@ -304,6 +313,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 lookup=LOOKUP_QUERY_GTE
             )
 
+        # This shall be all posts, since maximum is 10_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
             self._test_filter_number_lookups(
@@ -312,30 +322,36 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 lookup=LOOKUP_QUERY_LT
             )
 
+        # This shall exclude Python posts, since they start at 2_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
             self._test_filter_number_lookups(
-                '"4000"',
+                '"2000"',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LT
             )
 
+        # This shall be all posts, since maximum is 10_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
             self._test_filter_number_lookups(
-                '"10001"',
+                '"10000"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_LTE
             )
 
+        # This shall exclude all Python posts, since they start at 2_000
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
             self._test_filter_number_lookups(
-                '"3999"',
+                '"1999"',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LTE
             )
 
+        # To test range successfully, since we do not make specific range
+        # factories in between, we simply count the number of posts
+        # between 100 and 300 and test.
         with self.subTest('Test filter on field `num_views` '
                           'using `range` lookup'):
             _count = 0

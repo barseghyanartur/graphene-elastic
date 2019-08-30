@@ -1,6 +1,6 @@
 import random
 import factory
-from factory import Faker
+from factory import Faker, LazyAttribute
 from factory.base import Factory
 from factory.fuzzy import FuzzyChoice
 
@@ -15,7 +15,16 @@ __all__ = (
 )
 
 
-class Comment(object):
+class Serializable(object):
+
+    def items(self):
+        return self.to_dict().items()
+
+    def to_dict(self):
+        return self.__dict__
+
+
+class Comment(Serializable):
     """Comment model (we need one for factories)."""
 
     def __init__(self, *args, **kwargs):
@@ -23,11 +32,12 @@ class Comment(object):
         self.content = kwargs.get('content')
         self.created_at = kwargs.get('created_at')
 
-    def items(self):
-        return self.to_dict().items()
 
-    def to_dict(self):
-        return self.__dict__
+class Tag(Serializable):
+    """Tag model (we need one for factories)."""
+
+    def __init__(self, *args, **kwargs):
+        self.name = kwargs.get('name')
 
 
 class CommentFactory(Factory):
@@ -39,6 +49,17 @@ class CommentFactory(Factory):
 
     class Meta(object):
         model = Comment
+
+
+TAGS = (
+    'article',
+    'package',
+    'models',
+    'black and white',
+    'programming',
+    'photography',
+    'art',
+)
 
 
 class PostFactory(Factory):
@@ -60,6 +81,7 @@ class PostFactory(Factory):
         'Django',
     ])
     num_views = Faker('pyint', min_value=0, max_value=1000)
+    tags = LazyAttribute(lambda x: random.sample(TAGS, 4))
 
     @factory.post_generation
     def comments(obj, create, extracted, **kwargs):

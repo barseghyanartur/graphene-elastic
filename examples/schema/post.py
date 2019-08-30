@@ -56,6 +56,7 @@ class Post(ElasticsearchObjectType):
                 'default_lookup': LOOKUP_FILTER_TERM,
             },
             'category': 'category.raw',
+            'tags': 'tags.raw',
             'num_views': 'num_views',
             'i_do_not_exist': 'i_do_not_exist',
         }

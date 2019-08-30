@@ -175,13 +175,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__gt={lower}__{boost}
-            /endpoint/?field_name__gt={lower}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?id__gt=1
-            http://localhost:8000/api/articles/?id__gt=1__2.0
+            {
+              allPostDocuments(filter:{numViews:{gt:"100", lt:"200"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param value:
         :param lookup:
@@ -539,14 +548,26 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__in={value1}__{value2}
-            /endpoint/?field_name__in={value1}
+            TODO
 
         Note, that number of values is not limited.
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__in=children__python
+            {
+              allPostDocuments(filter:{tags:{in:["photography", "models"]}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    tags
+                  }
+                }
+              }
+            }
+
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -557,7 +578,14 @@ class FilteringFilterBackend(BaseBackend):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        __values = cls.split_lookup_complex_value(value)
+        # If value is a list or a tuple, we use it as is.
+        if isinstance(value, (list, tuple)):
+            __values = value
+
+        # Otherwise, we consider it to be a string and split it further.
+        else:
+            __values = cls.split_lookup_complex_value(value)
+
         __queries = []
         for __value in __values:
             __queries.append(Q("term", **{options["field"]: __value}))
