@@ -57,6 +57,7 @@ class Post(ElasticsearchObjectType):
             },
             'category': 'category.raw',
             'num_views': 'num_views',
+            'i_do_not_exist': 'i_do_not_exist',
         }
         search_fields = {
             'title': {'boost': 4},

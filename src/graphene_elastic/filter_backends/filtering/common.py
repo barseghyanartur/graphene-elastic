@@ -80,7 +80,6 @@ class FilteringFilterBackend(BaseBackend):
 
         # params = {
         #     # FIELD: graphene.String(),  # Field to filter on. Required.
-        #     # TODO: The line below shall relay to the ``base_field_type``
         #     # and not just a ``graphene.String``
         #     # Value to filter on. Required.
         #     VALUE: graphene.List(
@@ -313,13 +312,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__exists=true
-            /endpoint/?field_name__exists=false
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__exists=true
-            http://localhost:8000/api/articles/?tags__exists=false
+            {
+              allPostDocuments(filter:{category:{exists:true}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -330,7 +338,7 @@ class FilteringFilterBackend(BaseBackend):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        _value_lower = value.lower()
+        _value_lower = value  # TODO: clean up?
         if _value_lower in TRUE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
@@ -408,11 +416,23 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__contains={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?state__contains=lis
+            {
+              allPostDocuments(filter:{category:{contains:"tho"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
+
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -435,11 +455,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__endswith={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__endswith=dren
+            {
+              allPostDocuments(filter:{category:{endsWith:"thon"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -682,15 +713,39 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__isnull={value1}__{value2}
-            /endpoint/?field_name__exclude={valu1}
+            TODO
 
         Note, that number of values is not limited.
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__exclude=children__python
-            http://localhost:8000/api/articles/?tags__exclude=children
+            {
+              allPostDocuments(filter:{category:{exclude:"Python"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
+
+        Or exclude multiple terms at once:
+
+            {
+              allPostDocuments(filter:{category:{exclude:["Ruby", "Java"]}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -701,7 +756,10 @@ class FilteringFilterBackend(BaseBackend):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        __values = cls.split_lookup_complex_value(value)
+        if not isinstance(value, (list, tuple)):
+            __values = cls.split_lookup_complex_value(value)
+        else:
+            __values = value
 
         __queries = []
         for __value in __values:
@@ -711,13 +769,13 @@ class FilteringFilterBackend(BaseBackend):
             queryset = cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[six.moves.reduce(operator.or_, __queries)],
+                args=[six.moves.reduce(operator.and_, __queries)],
             )
 
         return queryset
 
     def prepare_filter_fields(self):
-        """Prepare filter fields. DONE.
+        """Prepare filter fields.
 
         Possible structures:
 
@@ -767,28 +825,6 @@ class FilteringFilterBackend(BaseBackend):
                     'default_lookup': LOOKUP_FILTER_TERM,
                 }
             }
-
-        :param view:
-        :type view: rest_framework.viewsets.ReadOnlyModelViewSet
-        :return: Filtering options.
-        :rtype: dict
-
-            filter_fields = {
-                'id': '_id',
-                'title': {
-                    'field': 'title.raw',
-                    'lookups': [
-                        LOOKUP_FILTER_TERM,
-                        LOOKUP_FILTER_TERMS,
-                        LOOKUP_FILTER_PREFIX,
-                        LOOKUP_FILTER_WILDCARD,
-                        LOOKUP_QUERY_IN,
-                        LOOKUP_QUERY_EXCLUDE,
-                    ],
-                    'default_lookup': LOOKUP_FILTER_TERM,
-                },
-                'category': 'category.raw',
-            }
         """
         filter_args = dict(self.args).get(self.prefix)
         if not filter_args:
@@ -828,7 +864,7 @@ class FilteringFilterBackend(BaseBackend):
         return filter_fields
 
     def prepare_query_params(self):
-        """
+        """Prepare query params.
 
         :return:
         """
@@ -961,7 +997,7 @@ class FilteringFilterBackend(BaseBackend):
         return filter_query_params
 
     def filter(self, queryset):
-        """"""
+        """Filter."""
         filter_query_params = self.get_filter_query_params()
 
         for options in filter_query_params.values():

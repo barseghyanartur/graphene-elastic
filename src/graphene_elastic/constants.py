@@ -86,12 +86,18 @@ __all__ = (
 # to use anything except: true, "true", false, "false".
 
 # True values
-TRUE_VALUES = ("true", '"true"', "1")  # To be deprecated
+TRUE_VALUES = (
+    "true",
+    '"true"',
+    "1",  # To be deprecated
+    True,
+)
 
 # False values
 FALSE_VALUES = (
     "false",
     '"false"',
+    False,
     '"off"',  # To be deprecated
     '"no"',  # To be deprecated
     '"0"',  # To be deprecated
