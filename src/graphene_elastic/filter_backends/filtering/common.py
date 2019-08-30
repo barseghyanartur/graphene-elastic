@@ -140,14 +140,26 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__range={lower}__{upper}__{boost}
-            /endpoint/?field_name__range={lower}__{upper}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/users/?age__range=16__67__2.0
-            http://localhost:8000/api/users/?age__range=16__67
-            http://localhost:8000/api/users/?age__range=16
+            {
+              allPostDocuments(filter:{numViews:{range:{
+                    lower:"100",
+                    upper:"200",
+                    boost:"2.0"
+                  }}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param value:
         :param options:
