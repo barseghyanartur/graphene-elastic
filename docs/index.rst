@@ -38,7 +38,7 @@ Main features and highlights
 - Implemented ``ElasticsearchConnectionField`` and ``ElasticsearchObjectType``
   are the core classes to work with ``graphene``.
 - Pluggable backends for searching, filtering, ordering, etc. Don't like
-  existing ones? Extend or write your own.
+  existing ones? Override, extend or write your own.
 - Implemented search backend.
 - Implemented filter backend.
 
@@ -51,11 +51,17 @@ Documentation is available on `Read the Docs
 
 Installation
 ============
-For installing ``graphene-elastic``, just run this command in your shell:
+Install latest stable version from PyPI:
 
 .. code-block:: bash
 
     pip install graphene-elastic
+
+Or latest development version from GitHub:
+
+.. code-block:: bash
+
+    pip install https://github.com/barseghyanartur/graphene-elastic/archive/master.zip
 
 Examples
 ========
@@ -63,7 +69,7 @@ Install requirements
 --------------------
 .. code-block:: sh
 
-    pip install -r examples/requirements.txt
+    pip install -r requirements.txt
 
 Populate sample data
 --------------------
@@ -173,8 +179,11 @@ Sample Django app
 
 ConnectionField example
 ~~~~~~~~~~~~~~~~~~~~~~~
-ConnectionField is more flexible. It uses filter backends which you can tie
-to your needs the way you want in a declarative way.
+ConnectionField is the most flexible and feature rich solution you have. It
+uses filter backends which you can tie to your needs the way you want in a
+declarative way.
+
+**Sample schema definition**
 
 .. code-block:: python
 
@@ -236,10 +245,16 @@ to your needs the way you want in a declarative way.
     # Schema definition
     schema = graphene.Schema(query=Query)
 
-**Filter**
+Filter
+^^^^^^
+
+Sample queries
+++++++++++++++
 
 Since we didn't specify any lookups on `category`, by default all lookups
-are available. Default lookup would be ``term``.
+are available and the default lookup would be ``term``. Note, that in the
+``{value:"Elastic"}`` part, the ``value`` stands for default lookup, whatever
+it has been set to.
 
 .. code-block:: javascript
 
@@ -258,7 +273,9 @@ are available. Default lookup would be ``term``.
       }
     }
 
-But, we could use another lookup (in this case the ``terms``):
+But, we could use another lookup (in example below - ``terms``). Note, that
+in the ``{terms:["Elastic", "Python"]}`` part, the ``terms`` is the lookup
+name.
 
 .. code-block:: javascript
 
@@ -297,8 +314,32 @@ Or apply a ``gt`` (``range``) query in addition to filtering:
       }
     }
 
+Implemented filter lookups
+++++++++++++++++++++++++++
+The following lookups are available:
 
-**Search**
+- ``contains``
+- ``ends_with`` (or ``endsWith`` for camelCase)
+- ``exclude``
+- ``exists``
+- ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase)
+- ``geo_distance`` (or ``geoDistance`` for camelCase)
+- ``geo_polygon`` (or ``geoPolygon`` for camelCase)
+- ``gt``
+- ``gte``
+- ``in``
+- ``is_null`` (or ``isNull`` for camelCase)
+- ``lt``
+- ``lte``
+- ``prefix``
+- ``range``
+- ``starts_with`` (or ``startsWith`` for camelCase)
+- ``term``
+- ``terms``
+- ``wildcard``
+
+Search
+^^^^^^
 
 .. code-block:: javascript
 
@@ -360,13 +401,13 @@ To test just your working environment type:
 
 .. code-block:: sh
 
-    pip install -r examples/requirements/test.txt
+    pip install -r requirements/test.txt
 
 Debugging
 =========
 For development purposes, you could use the flask app (easy to debug). Standard
 ``pdb`` works (``import pdb; pdb.set_trace()``). If ``ipdb`` does not work
-well for you, use ``ptpdb`` does.
+well for you, use ``ptpdb``.
 
 Writing documentation
 =====================
