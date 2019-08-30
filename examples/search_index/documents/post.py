@@ -39,10 +39,6 @@ html_strip = analyzer('html_strip',
 )
 
 
-# class Tag(InnerDoc):
-#     name = Text(fields={'raw': Keyword()})
-
-
 class Comment(InnerDoc):
     author = Text(fields={'raw': Keyword()})
     content = Text(analyzer='snowball')
@@ -66,7 +62,6 @@ class Post(Document):
         fields={'raw': Keyword()}
     )
     comments = Nested(Comment)
-    # tags = Nested(Tag)
     tags = Text(
         analyzer=html_strip,
         fields={'raw': Keyword(multi=True)},

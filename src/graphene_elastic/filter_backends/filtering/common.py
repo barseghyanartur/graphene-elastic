@@ -217,11 +217,23 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?tags=children
+            query {
+              allPostDocuments(filter:{category:{term:"Python"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    comments
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -475,7 +487,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{category:{contains:"tho"}}) {
                 edges {
                   node {
@@ -514,7 +526,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{category:{endsWith:"thon"}}) {
                 edges {
                   node {
@@ -554,7 +566,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{tags:{in:["photography", "models"]}}) {
                 edges {
                   node {
@@ -567,7 +579,6 @@ class FilteringFilterBackend(BaseBackend):
                 }
               }
             }
-
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -609,7 +620,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{numViews:{gt:"100"}}) {
                 edges {
                   node {
@@ -654,7 +665,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{numViews:{gte:"100"}}) {
                 edges {
                   node {
@@ -699,7 +710,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{numViews:{lt:"200"}}) {
                 edges {
                   node {
@@ -744,7 +755,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{numViews:{lte:"200"}}) {
                 edges {
                   node {
@@ -829,7 +840,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Example:
 
-            {
+            query {
               allPostDocuments(filter:{category:{exclude:"Python"}}) {
                 edges {
                   node {
@@ -844,7 +855,7 @@ class FilteringFilterBackend(BaseBackend):
 
         Or exclude multiple terms at once:
 
-            {
+            query {
               allPostDocuments(filter:{category:{exclude:["Ruby", "Java"]}}) {
                 edges {
                   node {

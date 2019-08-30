@@ -1,11 +1,9 @@
-from enum import Enum
 import graphene
 from graphene import Node
 from graphene_elastic import (
     ElasticsearchObjectType,
     ElasticsearchConnectionField,
 )
-from graphene_elastic.types.json_string import JSONString
 from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
     SearchFilterBackend,
@@ -21,7 +19,6 @@ from graphene_elastic.constants import (
 
 from search_index.documents import Post as PostDocument
 
-
 __all__ = (
     'Post',
     'SimpleQueryMixin',
@@ -32,7 +29,6 @@ __all__ = (
 
 
 class Post(ElasticsearchObjectType):
-    # title = JSONString(name='title')
 
     class Meta(object):
         document = PostDocument
@@ -81,7 +77,7 @@ class SimpleQueryMixin:
     Example query:
 
         {
-          simple_posts_list {
+          simplePostsList {
             title
             content
             category
@@ -142,73 +138,6 @@ class FilteredQueryMixin:
         return PostDocument.search()[offset_start:offset_end]
 
 
-class NoValue(Enum):
-
-    def __repr__(self):
-        return '<%s.%s>' % (self.__class__.__name__, self.name)
-
-
-@graphene.Enum.from_enum
-class Direction(NoValue):
-    ASC = 'asc'
-    DESC = 'desc'
-
-
-from graphene_elastic.filter_backends.queries import *  # NOQA
-
-
-# class Complex(graphene.InputObjectType):
-#
-#     term = Term()
-#     terms = Terms()
-#     range = Range()
-#     exists = Exists()
-#     prefix = Prefix()
-#     starts_with = StartsWith()
-#     wildcard = Wildcard()
-#     geo_distance = GeoDistance()
-#     geo_polygon = GeoPolygon()
-#     geo_bounding_box = GeoBoundingBox()
-#     contains = Contains()
-#     # In = In()  # NOQA
-#     gt = Gt()
-#     gte = Gte()
-#     lt = Lt()
-#     lte = Lte()
-#     endswith = EndsWith()
-#     is_null = IsNull()
-#     exclude = Exclude()
-
-#
-# complex_params = {
-#     'term': Term(),
-#     'terms': Terms(),
-#     'range': Range(),
-#     'exists': Exists(),
-#     'prefix': Prefix(),
-#     'starts_with': StartsWith(),
-#     'wildcard': Wildcard(),
-#     'geo_distance': GeoDistance(),
-#     'geo_polygon': GeoPolygon(),
-#     'geo_bounding_box': GeoBoundingBox(),
-#     'contains': Contains(),
-#     'in': In(),
-#     'gt': Gt(),
-#     'gte': Gte(),
-#     'lt': Lt(),
-#     'lte': Lte(),
-#     'ends_with': EndsWith(),
-#     'is_null': IsNull(),
-#     'exclude': Exclude(),
-# }
-#
-# Complex = type(
-#     'Complex',
-#     (graphene.InputObjectType,),
-#     complex_params
-# )
-
-
 class AdvancedQueryMixin:
     """Advanced query mixin.
 
@@ -223,23 +152,16 @@ class AdvancedQueryMixin:
     Example query:
 
         {
-          advanced_posts_list(page:3, page_size:2) {
+          allPostDocuments(page:3, page_size:2) {
             title
             content
             category
             created_at
-            comments
+            tags
           }
         }
     """
-    # advanced_posts_list = ElasticsearchFilterConnectionField(Post)
-    all_post_documents = ElasticsearchConnectionField(
-        Post,
-        # default_field=graphene.String(),
-        # query=graphene.String(),
-        # complex=graphene.Argument(Complex),
-        # search=graphene.String()
-    )
+    all_post_documents = ElasticsearchConnectionField(Post)
 
 
 class Query(
@@ -251,7 +173,4 @@ class Query(
     """Query."""
 
 
-schema = graphene.Schema(
-    query=Query,
-    # types=[Post]
-)
+schema = graphene.Schema(query=Query)

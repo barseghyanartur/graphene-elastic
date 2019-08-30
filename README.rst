@@ -124,6 +124,11 @@ for full example.
             fields={'raw': Keyword()}
         )
         comments = Nested(Comment)
+        tags = Text(
+            analyzer=html_strip,
+            fields={'raw': Keyword(multi=True)},
+            multi=True
+        )
         num_views = Integer()
 
         class Index:
@@ -142,6 +147,9 @@ for full example.
                     created_at=datetime.datetime.now()
                 )
             )
+
+        def add_tag(self, name):
+            self.tags.append(name)
 
         def save(self, ** kwargs):
             self.created_at = datetime.datetime.now()
@@ -229,6 +237,7 @@ declarative manner.
                     'default_lookup': LOOKUP_FILTER_TERM,
                 },
                 'category': 'category.raw',
+                'tags': 'tags.raw',
                 'num_views': 'num_views',
             }
             search_fields = {
@@ -280,7 +289,9 @@ name.
 .. code-block:: javascript
 
     query PostsQuery {
-      allPostDocuments(filter:{category:{terms:["Elastic", "Python"]}}) {
+      allPostDocuments(filter:{
+            category:{terms:["Elastic", "Python"]}
+        }) {
         edges {
           node {
             id
@@ -349,7 +360,10 @@ Search
 
     query {
       allPostDocuments(
-        search:{title:{value:"Release", boost:1}, content:{value:"Box"}}}
+        search:{
+            title:{value:"Release", boost:1},
+            content:{value:"Box"}
+        }}
       ) {
         edges {
           node {
