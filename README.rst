@@ -338,6 +338,10 @@ The following lookups are available:
 - ``terms``
 - ``wildcard``
 
+See `dedicated documentation on filter lookups
+<https://graphene-elastic.readthedocs.io/en/latest/filter_lookups.html>`__ for
+more information.
+
 Search
 ^^^^^^
 
@@ -381,6 +385,18 @@ Testing
 =======
 Project is covered with tests.
 
+By defaults tests are executed against the Elasticsearch 7.x.
+
+Running Elasticsearch
+---------------------
+**Run Elasticsearch 7.x with Docker**
+
+.. code-block:: bash
+
+    docker-compose up elasticsearch
+
+Running tests
+-------------
 To test with all supported Python versions type:
 
 .. code-block:: sh
@@ -402,6 +418,19 @@ To test just your working environment type:
 .. code-block:: sh
 
     pip install -r requirements/test.txt
+
+To run a single test module in your working environment type:
+
+.. code-block:: sh
+
+    ./runtests.py src/graphene_elastic/tests/test_filter_backend.py
+
+To run a single test class in a given test module in your working environment
+type:
+
+.. code-block:: sh
+
+    ./runtests.py src/graphene_elastic/tests/test_filter_backend.py::FilterBackendElasticTestCase
 
 Debugging
 =========

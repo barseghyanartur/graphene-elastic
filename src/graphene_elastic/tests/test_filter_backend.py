@@ -16,6 +16,7 @@ from ..constants import (
     LOOKUP_FILTER_GEO_POLYGON,
     LOOKUP_FILTER_GEO_BOUNDING_BOX,
     LOOKUP_QUERY_CONTAINS,
+    LOOKUP_FILTER_PREFIX,
     LOOKUP_QUERY_IN,
     LOOKUP_QUERY_GT,
     LOOKUP_QUERY_GTE,
@@ -26,6 +27,8 @@ from ..constants import (
     LOOKUP_QUERY_ISNULL,
     LOOKUP_QUERY_EXCLUDE,
     VALUE,
+    LOWER,
+    UPPER,
 )
 from .base import BaseGrapheneElasticTestCase
 
@@ -66,6 +69,9 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             self.num_elastic_posts +
             self.num_django_posts +
             self.num_python_posts
+        )
+        self.all_posts = (
+            self.elastic_posts + self.django_posts + self.python_posts
         )
 
         time.sleep(5)
@@ -117,7 +123,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         _query = """
         query {
-          allPostDocuments(filter:{numViews:{%s:"%s"}}) {
+          allPostDocuments(filter:{numViews:{%s:%s}}) {
             edges {
               node {
                 category
@@ -136,8 +142,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             num_posts
         )
 
-    def test_filter_term_lookup(self):
-        """"Test filter `term` lookups (on field `category`).
+    def test_filter_term_terms_lookup(self):
+        """"Test filter `term` and `terms` lookups (on field `category`).
 
         :return:
         """
@@ -171,8 +177,17 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 LOOKUP_FILTER_TERM
             )
 
-    def test_filter_contains_lookup(self):
-        """"Test filter `contains` lookup (on field `category`).
+        with self.subTest('Test filter on field `category` '
+                          '["Elastic", "Django"] using `terms` lookup'):
+            self._test_filter_text_lookups(
+                '["Elastic", "Django"]',
+                self.num_elastic_posts + self.num_django_posts,
+                LOOKUP_FILTER_TERMS
+            )
+
+    def test_filter_prefix_starts_ends_with_contains_wildcard_lookups(self):
+        """"Test filters `prefix`, `starts_with` and `ends_with` lookups (on
+        field `category`).
 
         :return:
         """
@@ -184,11 +199,30 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 LOOKUP_QUERY_CONTAINS
             )
 
-    def test_filter_ends_with_lookup(self):
-        """"Test filter `ends_with` lookup (on field `category`).
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `wildcard` lookup'):
+            self._test_filter_text_lookups(
+                '"*ytho*"',
+                self.num_python_posts,
+                LOOKUP_FILTER_WILDCARD
+            )
 
-        :return:
-        """
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `prefix` lookup'):
+            self._test_filter_text_lookups(
+                '"Pyth"',
+                self.num_python_posts,
+                to_camel_case(LOOKUP_FILTER_PREFIX)
+            )
+
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `starts_with` lookup'):
+            self._test_filter_text_lookups(
+                '"Pyth"',
+                self.num_python_posts,
+                to_camel_case(LOOKUP_QUERY_STARTSWITH)
+            )
+
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `ends_with` lookup'):
             self._test_filter_text_lookups(
@@ -234,34 +268,30 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         #         field='i_do_not_exist'
         #     )
 
-    def test_filter_gt_lookup(self):
-        """"Test filter `gt` lookup (on field `num_views`).
+    def test_filter_gt_gte_lt_lte_range_lookups(self):
+        """"Test filter `gt`, `gte`, `lt`, `lte`, `range` lookups (on
+        field `num_views`).
 
         :return:
         """
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
             self._test_filter_number_lookups(
-                '0',
+                '"0"',
                 self.num_all_posts
             )
 
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
             self._test_filter_number_lookups(
-                '2000',
+                '"2000"',
                 self.num_python_posts
             )
 
-    def test_filter_gte_lookup(self):
-        """"Test filter `gte` lookup (on field `num_views`).
-
-        :return:
-        """
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
             self._test_filter_number_lookups(
-                '0',
+                '"0"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_GTE
             )
@@ -269,20 +299,15 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
             self._test_filter_number_lookups(
-                '2000',
+                '"2000"',
                 self.num_python_posts,
                 lookup=LOOKUP_QUERY_GTE
             )
 
-    def test_filter_lt_lookup(self):
-        """"Test filter `lt` lookup (on field `num_views`).
-
-        :return:
-        """
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
             self._test_filter_number_lookups(
-                '10001',
+                '"10001"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_LT
             )
@@ -290,20 +315,15 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
             self._test_filter_number_lookups(
-                '4000',
+                '"4000"',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LT
             )
 
-    def test_filter_lte_lookup(self):
-        """"Test filter `lte` lookup (on field `num_views`).
-
-        :return:
-        """
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
             self._test_filter_number_lookups(
-                '10001',
+                '"10001"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_LTE
             )
@@ -311,9 +331,21 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
             self._test_filter_number_lookups(
-                '3999',
+                '"3999"',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LTE
+            )
+
+        with self.subTest('Test filter on field `num_views` '
+                          'using `range` lookup'):
+            _count = 0
+            for _p in self.all_posts:
+                if 100 <= _p.num_views <= 300:
+                    _count += 1
+            self._test_filter_number_lookups(
+                '{%s: "%s", %s: "%s"}' % (LOWER, '100', UPPER, '300'),
+                _count,
+                lookup=LOOKUP_FILTER_RANGE
             )
 
 

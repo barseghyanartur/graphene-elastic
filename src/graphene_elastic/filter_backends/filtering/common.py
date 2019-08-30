@@ -156,16 +156,16 @@ class FilteringFilterBackend(BaseBackend):
         :return: Params to be used in `range` query.
         :rtype: dict
         """
-        if LOWER not in options:
+        if LOWER not in value:
             return {}
 
-        params = {GTE: float(options.get(LOWER, None))}
+        params = {GTE: float(value.get(LOWER, None))}
 
-        if UPPER in options:
-            params.update({LTE: float(options.get(UPPER, None))})
+        if UPPER in value:
+            params.update({LTE: float(value.get(UPPER, None))})
 
-        if BOOST in options:
-            params.update({BOOST: float(options.get(BOOST, None))})
+        if BOOST in value:
+            params.update({BOOST: float(value.get(BOOST, None))})
 
         return params
 
@@ -236,15 +236,27 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__terms={value1}__{value2}
-            /endpoint/?field_name__terms={value1}
+            TODO
 
         Note, that number of values is not limited.
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__terms=children__python
-            http://localhost:8000/api/articles/?tags__terms=children
+        query {
+          allPostDocuments(filter:{category:{
+                terms:["Python", "Django"]
+              }}) {
+            edges {
+              node {
+                category
+                title
+                content
+                numViews
+                comments
+              }
+            }
+          }
+        }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -276,14 +288,26 @@ class FilteringFilterBackend(BaseBackend):
 
          Syntax:
 
-            /endpoint/?field_name__range={lower}__{upper}__{boost}
-            /endpoint/?field_name__range={lower}__{upper}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/users/?age__range=16__67__2.0
-            http://localhost:8000/api/users/?age__range=16__67
-            http://localhost:8000/api/users/?age__range=16
+            {
+              allPostDocuments(filter:{numViews:{range:{
+                    lower:"100",
+                    upper:"200"
+                  }}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
+
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -359,11 +383,23 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__prefix={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__prefix=bio
+            query {
+              allPostDocuments(filter:{category:{prefix:"Pyth"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    comments
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -387,13 +423,23 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__wildcard={value}*
-            /endpoint/?field_name__wildcard=*{value}
-            /endpoint/?field_name__wildcard=*{value}*
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__wildcard=child*
+            query {
+              allPostDocuments(filter:{category:{wildcard:"*ytho*"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    comments
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -531,13 +577,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__gt={value}__{boost}
-            /endpoint/?field_name__gt={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?id__gt=1__2.0
-            http://localhost:8000/api/articles/?id__gt=1
+            {
+              allPostDocuments(filter:{numViews:{gt:"100"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -567,13 +622,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__gte={value}__{boost}
-            /endpoint/?field_name__gte={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?id__gte=1__2.0
-            http://localhost:8000/api/articles/?id__gte=1
+            {
+              allPostDocuments(filter:{numViews:{gte:"100"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -603,13 +667,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__lt={value}__{boost}
-            /endpoint/?field_name__lt={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?id__lt=1__2.0
-            http://localhost:8000/api/articles/?id__lt=1
+            {
+              allPostDocuments(filter:{numViews:{lt:"200"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -639,13 +712,22 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__lte={value}__{boost}
-            /endpoint/?field_name__lte={value}
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?id__lte=1__2.0
-            http://localhost:8000/api/articles/?id__lte=1
+            {
+              allPostDocuments(filter:{numViews:{lte:"200"}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
