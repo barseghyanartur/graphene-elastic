@@ -59,9 +59,9 @@ Filter lookup ends_with
 
 Filter lookup exclude
 ---------------------
-.. code-block:: javascript
+For a single term:
 
-For single term:
+.. code-block:: javascript
 
     {
       allPostDocuments(filter:{category:{exclude:"Python"}}) {
@@ -76,7 +76,7 @@ For single term:
       }
     }
 
-Or multiple terms:
+For multiple terms:
 
 .. code-block:: javascript
 
