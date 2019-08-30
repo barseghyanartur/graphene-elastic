@@ -68,7 +68,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             self.num_python_posts
         )
 
-        time.sleep(2)
+        time.sleep(5)
 
     def _test_filter_text_lookups(self,
                                   query,
@@ -254,7 +254,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             )
 
     def test_filter_gte_lookup(self):
-        """"Test filter `gt` lookup (on field `num_views`).
+        """"Test filter `gte` lookup (on field `num_views`).
 
         :return:
         """
@@ -272,6 +272,48 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 '2000',
                 self.num_python_posts,
                 lookup=LOOKUP_QUERY_GTE
+            )
+
+    def test_filter_lt_lookup(self):
+        """"Test filter `lt` lookup (on field `num_views`).
+
+        :return:
+        """
+        with self.subTest('Test filter on field `num_views` '
+                          'using `lt` lookup'):
+            self._test_filter_number_lookups(
+                '10001',
+                self.num_all_posts,
+                lookup=LOOKUP_QUERY_LT
+            )
+
+        with self.subTest('Test filter on field `num_views` '
+                          'using `lt` lookup'):
+            self._test_filter_number_lookups(
+                '4000',
+                self.num_all_posts - self.num_python_posts,
+                lookup=LOOKUP_QUERY_LT
+            )
+
+    def test_filter_lte_lookup(self):
+        """"Test filter `lte` lookup (on field `num_views`).
+
+        :return:
+        """
+        with self.subTest('Test filter on field `num_views` '
+                          'using `lte` lookup'):
+            self._test_filter_number_lookups(
+                '10001',
+                self.num_all_posts,
+                lookup=LOOKUP_QUERY_LTE
+            )
+
+        with self.subTest('Test filter on field `num_views` '
+                          'using `lte` lookup'):
+            self._test_filter_number_lookups(
+                '3999',
+                self.num_all_posts - self.num_python_posts,
+                lookup=LOOKUP_QUERY_LTE
             )
 
 
