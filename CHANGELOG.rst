@@ -17,9 +17,11 @@ are used for versioning (schema follows below):
 
 0.0.7
 -----
-2019-08-31 (not yet released)
+2019-09-01
 
+- Working ordering backend.
 - Added more filter lookups.
+- Minor fixes in existing filter lookups.
 - Improved test coverage for the filtering backend.
 - Documentation improvements.
 

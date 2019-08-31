@@ -7,6 +7,8 @@ from graphene_elastic import (
 from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
     SearchFilterBackend,
+    OrderingFilterBackend,
+    DefaultOrderingFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -36,6 +38,8 @@ class Post(ElasticsearchObjectType):
         filter_backends = [
             FilteringFilterBackend,
             SearchFilterBackend,
+            OrderingFilterBackend,
+            DefaultOrderingFilterBackend,
         ]
         filter_fields = {
             'id': '_id',
@@ -61,6 +65,26 @@ class Post(ElasticsearchObjectType):
             'content': {'boost': 2},
             'category': None,
         }
+        ordering_fields = {
+            'id': None,
+            'title': 'title.raw',
+            'created_at': 'created_at',
+            'num_views': 'num_views',
+            # 'continent': {
+            #     'field': 'continent.name.raw',
+            #     'path': 'continent',
+            # }
+            # 'country': {
+            #     'field': 'continent.country.name.raw',
+            #     'path': 'continent.country',
+            # }
+            # 'city': {
+            #     'field': 'continent.country.city.name.raw',
+            #     'path': 'continent.country.city',
+            # }
+        }
+
+        ordering_defaults = ('id', 'title',)
 
 
 class SimpleQueryMixin:

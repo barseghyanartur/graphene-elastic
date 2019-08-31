@@ -222,7 +222,10 @@ declarative manner.
             filter_backends = [
                 FilteringFilterBackend,
                 SearchFilterBackend,
+                OrderingFilterBackend,
             ]
+
+            # For `FilteringFilterBackend` backend
             filter_fields = {
                 'title': {
                     'field': 'title.raw',
@@ -240,12 +243,21 @@ declarative manner.
                 'tags': 'tags.raw',
                 'num_views': 'num_views',
             }
+
+            # For `SearchFilterBackend` backend
             search_fields = {
                 'title': {'boost': 4},
                 'content': {'boost': 2},
                 'category': None,
             }
 
+            # For `OrderingFilterBackend` backend
+            ordering_fields = {
+                'id': None,
+                'title': 'title.raw',
+                'created_at': 'created_at',
+                'num_views': 'num_views',
+            }
 
     # Query definition
     class Query(graphene.ObjectType):
@@ -370,6 +382,29 @@ Search
             category
             title
             comments
+          }
+        }
+      }
+    }
+
+Ordering
+^^^^^^^^
+Possible choices are ``ASC`` and ``DESC``.
+
+.. code-block:: javascript
+
+    {
+      allPostDocuments(filter:{
+            tags:{in:["photography", "models"]},
+            ordering:{title:ASC}
+        }) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+            tags
           }
         }
       }

@@ -98,11 +98,7 @@ FALSE_VALUES = (
     "false",
     '"false"',
     False,
-    '"off"',  # To be deprecated
-    '"no"',  # To be deprecated
     '"0"',  # To be deprecated
-    '""',  # To be deprecated
-    "",  # To be deprecated
     "0",  # To be deprecated
     "0.0",  # To be deprecated
 )

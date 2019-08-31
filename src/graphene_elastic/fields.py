@@ -18,7 +18,11 @@ from graphene.types.dynamic import Dynamic
 from graphene.types.structures import Structure
 from graphql_relay.connection.arrayconnection import connection_from_list_slice
 
-from .filter_backends import SearchFilterBackend, FilteringFilterBackend
+from .filter_backends import (
+    SearchFilterBackend,
+    FilteringFilterBackend,
+    OrderingFilterBackend,
+)
 from .advanced_types import FileFieldType, PointFieldType, MultiPolygonFieldType
 from .converter import convert_elasticsearch_field, ElasticsearchConversionError
 from .registry import get_global_registry
@@ -58,7 +62,6 @@ class ElasticsearchConnectionField(ConnectionField):
 
         # This is where we shall enrich!
         # kwargs.setdefault("my_param", graphene.String())
-        # import ptpdb; ptpdb.set_trace()
 
         super(ElasticsearchConnectionField, self).__init__(
             type, *args, **kwargs
@@ -132,8 +135,25 @@ class ElasticsearchConnectionField(ConnectionField):
         return {k: k for k, v in self.search_fields.items()}
 
     @property
+    def ordering_fields(self):
+        return getattr(self.node_type._meta, "ordering_fields", {})
+
+    @property
+    def ordering_args_mapping(self):
+        # TODO: Move this to backend
+        return {k: k for k, v in self.ordering_fields.items()}
+
+    @property
+    def ordering_defaults(self):
+        return getattr(self.node_type._meta, "ordering_defaults", [])
+
+    @property
     def default_filter_backends(self):
-        return [SearchFilterBackend, FilteringFilterBackend]
+        return [
+            SearchFilterBackend,
+            FilteringFilterBackend,
+            OrderingFilterBackend,
+        ]
 
     @property
     def filter_backends(self):
@@ -194,9 +214,6 @@ class ElasticsearchConnectionField(ConnectionField):
         params = {}
 
         for backend_cls in self.filter_backends:
-            # *********************************************
-            # ******************* New way *****************
-            # *********************************************
             backend = backend_cls(self)
             params.update(
                 backend.get_backend_fields(
@@ -325,7 +342,6 @@ class ElasticsearchConnectionField(ConnectionField):
             print("/Debug")
         except Exception as err:
             print(err)
-        # import ipdb; ipdb.set_trace()
         return qs
 
     def default_resolver(self, _root, info, **args):
@@ -375,7 +391,6 @@ class ElasticsearchConnectionField(ConnectionField):
 
     # @classmethod
     # def resolve_connection(cls, connection, default_search, args, results):
-    #     # import ptpdb; ptpdb.set_trace()
     #     if results is None:
     #         results = default_search
     #     if isinstance(results, Search):
@@ -424,13 +439,11 @@ class ElasticsearchConnectionField(ConnectionField):
         )
         connection.iterable = resolved
         connection.length = _len
-        # import ptpdb; ptpdb.set_trace()
         return connection
 
     # # @classmethod
     # def connection_resolver(self, resolver, connection, default_search, max_limit,
     #                         enforce_first_or_last, root, info, **args):
-    #     # import ptpdb; ptpdb.set_trace()
     #     first = args.get('first')
     #     last = args.get('last')
     #
@@ -461,7 +474,6 @@ class ElasticsearchConnectionField(ConnectionField):
     #     return on_resolve(results)
     #
     # def get_resolver(self, parent_resolver):
-    #     # import ptpdb; ptpdb.set_trace()
     #     return partial(
     #         self.connection_resolver,
     #         parent_resolver,

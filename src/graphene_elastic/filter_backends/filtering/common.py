@@ -44,7 +44,7 @@ from ...constants import (
     BOOST,
 )
 from ...enums import NoValue, convert_list_to_enum
-from ..queries import LOOKUP_FILTER_MAPPING
+from .queries import LOOKUP_FILTER_MAPPING
 
 __title__ = "graphene_elastic.filter_backends.filtering.common"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
@@ -54,6 +54,8 @@ __all__ = ("FilteringFilterBackend",)
 
 
 class FilteringFilterBackend(BaseBackend):
+    """Filtering filter backend."""
+
     prefix = "filter"
 
     def field_belongs_to(self, field_name):
@@ -825,7 +827,7 @@ class FilteringFilterBackend(BaseBackend):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        _value_lower = value.lower()
+        _value_lower = value  # TODO: clean up?
         if _value_lower in TRUE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
@@ -1118,7 +1120,7 @@ class FilteringFilterBackend(BaseBackend):
                     elif lookup_param in valid_lookups:
                         lookup = lookup_param
 
-                    if lookup_options:
+                    if lookup_options is not None:
                         filter_query_params[field_name].append({
                             "lookup": lookup,
                             "values": lookup_options,

@@ -49,7 +49,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.num_elastic_posts = 4
         self.elastic_posts = factories.PostFactory.create_batch(
             self.num_elastic_posts,
-            category='Elastic'
+            category='Elastic',
+            tags=None
         )
         for _post in self.elastic_posts:
             _post.save()
@@ -249,7 +250,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 LOOKUP_QUERY_EXCLUDE
             )
 
-    def test_filter_exists_lookup(self):
+    def test_filter_exists_is_null_lookups(self):
         """"Test filter `exists` lookup (on fields `category`
         and `i_do_not_exist`).
 
@@ -261,6 +262,14 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 'true',
                 self.num_all_posts,
                 LOOKUP_FILTER_EXISTS
+            )
+
+        with self.subTest('Test filter on field `category`'
+                          'using `is_null` lookup'):
+            self._test_filter_text_lookups(
+                'false',
+                self.num_all_posts,
+                to_camel_case(LOOKUP_QUERY_ISNULL)
             )
 
         # TODO: See if we can test this case

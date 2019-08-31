@@ -166,6 +166,8 @@ class ElasticsearchObjectType(ObjectType):
         _meta.fields = document_fields
         _meta.filter_fields = filter_fields
         _meta.search_fields = options.get('search_fields', {})
+        _meta.ordering_fields = options.get('ordering_fields', {})
+        _meta.ordering_defaults = options.get('ordering_defaults', [])
         _meta.search_nested_fields = options.get('search_nested_fields', {})
         # _meta.filter_backends = options.get('filter_backends', [])
         _meta.connection = connection
@@ -185,7 +187,6 @@ class ElasticsearchObjectType(ObjectType):
                 registry
             )
             if converted_fields:
-                # import ptpdb; ptpdb.set_trace()
                 document_fields = yank_fields_from_attrs(
                     converted_fields,
                     _as=graphene.Field
@@ -202,7 +203,10 @@ class ElasticsearchObjectType(ObjectType):
             cls._meta.only_fields, cls._meta.exclude_fields
         )
 
-        document_fields = yank_fields_from_attrs(converted_fields, _as=graphene.Field)
+        document_fields = yank_fields_from_attrs(
+            converted_fields,
+            _as=graphene.Field
+        )
 
         # The initial scan should take precedence
         for field in document_fields:
@@ -210,7 +214,7 @@ class ElasticsearchObjectType(ObjectType):
                 cls._meta.fields.update({field: document_fields[field]})
         # Self-referenced fields can't change between scans!
 
-    # noqa
+    # NOQA
     @classmethod
     def is_type_of(cls, root, info):
         if isinstance(root, cls):

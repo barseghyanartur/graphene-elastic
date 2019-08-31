@@ -1,5 +1,6 @@
 from .filtering import *
 from .search import *
+from .ordering import *
 
 __title__ = 'graphene_elastic.filter_backends'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
