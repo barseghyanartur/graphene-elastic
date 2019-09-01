@@ -1,5 +1,5 @@
-Example project
-===============
+Concepts
+========
 
 Sample document definition
 --------------------------
