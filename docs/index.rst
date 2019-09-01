@@ -41,6 +41,7 @@ Main features and highlights
   existing ones? Override, extend or write your own.
 - Implemented search backend.
 - Implemented filter backend.
+- Implemented ordering backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -139,22 +140,6 @@ for full example.
                 'blocks': {'read_only_allow_delete': None},
             }
 
-        def add_comment(self, author, content):
-            self.comments.append(
-                Comment(
-                    author=author,
-                    content=content,
-                    created_at=datetime.datetime.now()
-                )
-            )
-
-        def add_tag(self, name):
-            self.tags.append(name)
-
-        def save(self, ** kwargs):
-            self.created_at = datetime.datetime.now()
-            return super().save(** kwargs)
-
 Sample apps
 -----------
 Sample Flask app
@@ -203,6 +188,8 @@ declarative manner.
     from graphene_elastic.filter_backends import (
         FilteringFilterBackend,
         SearchFilterBackend,
+        OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
     )
     from graphene_elastic.constants import (
         LOOKUP_FILTER_PREFIX,
@@ -223,6 +210,7 @@ declarative manner.
                 FilteringFilterBackend,
                 SearchFilterBackend,
                 OrderingFilterBackend,
+                DefaultOrderingFilterBackend,
             ]
 
             # For `FilteringFilterBackend` backend
@@ -258,6 +246,12 @@ declarative manner.
                 'created_at': 'created_at',
                 'num_views': 'num_views',
             }
+
+            # For `DefaultOrderingFilterBackend` backend
+            ordering_defaults = (
+                '-num_views',
+                'title.raw',
+            )
 
     # Query definition
     class Query(graphene.ObjectType):
@@ -539,6 +533,7 @@ Contents:
    :maxdepth: 20
 
    index
+   concepts
    filter_lookups
    running_elasticsearch
    faq
