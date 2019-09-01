@@ -45,7 +45,10 @@ __all__ = ("SearchFilterBackend",)
 
 
 class SearchFilterBackend(BaseBackend):
+    """Search filter backend."""
+
     prefix = "search"
+    has_fields = True
 
     def field_belongs_to(self, field_name):
         return field_name in self.connection_field.search_fields

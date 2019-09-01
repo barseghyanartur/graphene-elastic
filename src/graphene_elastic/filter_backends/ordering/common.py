@@ -64,17 +64,31 @@ class OrderingMixin(object):
         :rtype: list
         """
         _ordering_params = []
-        for ordering_param, ordering_direction in ordering_params.items():
-            field = ordering_fields[ordering_param]
-            entry = {
-                field['field']: {
-                    'order': ordering_direction,
+        if isinstance(ordering_params, dict):
+            for ordering_param, ordering_direction in ordering_params.items():
+                field = ordering_fields[ordering_param]
+                entry = {
+                    field['field']: {
+                        'order': ordering_direction,
+                    }
                 }
-            }
-            if 'path' in field:
-                entry[field['field']].update(
-                    nested_sort_entry(field['path']))
-            _ordering_params.append(entry)
+                if 'path' in field:
+                    entry[field['field']].update(
+                        nested_sort_entry(field['path']))
+                _ordering_params.append(entry)
+        elif isinstance(ordering_params, (tuple, list)):
+            for ordering_param in ordering_params:
+                ordering_direction = Direction.ASC.value
+                field = {'field': ordering_param}
+                if ordering_param.startswith('-'):
+                    field['field'] = ordering_param[1:]
+                    ordering_direction = Direction.DESC.value
+                entry = {
+                    field['field']: {
+                        'order': ordering_direction,
+                    }
+                }
+                _ordering_params.append(entry)
         return _ordering_params
 
 
@@ -167,6 +181,7 @@ class OrderingFilterBackend(BaseBackend, OrderingMixin):
     """
 
     prefix = 'ordering'
+    has_fields = True
 
     def field_belongs_to(self, field_name):
         return field_name in self.connection_field.ordering_fields
@@ -289,6 +304,7 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
     """
 
     prefix = 'ordering'
+    has_fields = False
 
     def get_ordering_query_params(self):
         """Get ordering query params.
@@ -297,7 +313,7 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
         :rtype: list
         """
         query_params = dict(self.args).get(self.prefix)
-        ordering_query_params = dict(query_params)
+        ordering_query_params = dict(query_params) if query_params else {}
         ordering_params_present = False
         # Remove invalid ordering query params
         for query_param, ordering_direction in ordering_query_params.items():

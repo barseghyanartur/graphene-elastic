@@ -55,7 +55,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
         time.sleep(3)
 
     def _test_ordering(self, field, direction):
-        """Test filter text lookups (on field `category`).
+        """Test ordering.
 
         :param field:
         :param direction:
@@ -85,12 +85,47 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         sorted_values = sorted(fields_values_sorted)
         if direction == Direction.DESC:
-            sorted_values = reversed(sorted_values)
+            sorted_values = list(reversed(sorted_values))
+
+        self.assertEqual(sorted_values, fields_values_sorted)
+
+    def _test_default_ordering(self, field, direction):
+        """Test default ordering.
+
+        :param field:
+        :param direction:
+        :return:
+        """
+        _query = """
+        {
+          allPostDocuments {
+            edges {
+              node {
+                category
+                title
+                content
+                numViews
+                tags
+              }
+            }
+          }
+        }
+        """
+        print(_query)
+        executed = self.client.execute(_query)
+        fields_values_sorted = []
+        for edge in executed['data']['allPostDocuments']['edges']:
+            field_value = edge.get('node', {}).get(field, None)
+            fields_values_sorted.append(field_value)
+
+        sorted_values = sorted(fields_values_sorted)
+        if direction == Direction.DESC:
+            sorted_values = list(reversed(sorted_values))
 
         self.assertEqual(sorted_values, fields_values_sorted)
 
     def test_ordering(self):
-        """"Test ordering on fields `title`.
+        """"Test ordering (on fields `title` and `num_views`).
 
         :return:
         """
@@ -103,7 +138,27 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test ordering on field `title` descending'):
             self._test_ordering(
                 'title',
+                Direction.DESC
+            )
+
+        with self.subTest('Test ordering on field `num_views` ascending'):
+            self._test_ordering(
+                'numViews',
                 Direction.ASC
+            )
+
+        with self.subTest('Test ordering on field `num_views` descending'):
+            self._test_ordering(
+                'numViews',
+                Direction.DESC
+            )
+
+    def test_default_ordering(self):
+        """Test default ordering (on field `num_views)."""
+        with self.subTest('Test default ordering on field `num_views`'):
+            self._test_default_ordering(
+                'numViews',
+                Direction.DESC
             )
 
 

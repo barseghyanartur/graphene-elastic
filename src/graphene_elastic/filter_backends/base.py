@@ -18,6 +18,7 @@ __all__ = ("BaseBackend",)
 class BaseBackend(object):
 
     prefix = None
+    has_fields = False
 
     def __init__(self, connection_field, args=None):
         self.connection_field = connection_field

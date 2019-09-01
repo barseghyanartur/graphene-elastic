@@ -57,6 +57,7 @@ class FilteringFilterBackend(BaseBackend):
     """Filtering filter backend."""
 
     prefix = "filter"
+    has_fields = True
 
     def field_belongs_to(self, field_name):
         return field_name in self.connection_field.filter_fields

@@ -9,6 +9,7 @@ Contents:
    :maxdepth: 20
 
    index
+   concepts
    filter_lookups
    running_elasticsearch
    faq

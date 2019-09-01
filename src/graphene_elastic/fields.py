@@ -22,6 +22,7 @@ from .filter_backends import (
     SearchFilterBackend,
     FilteringFilterBackend,
     OrderingFilterBackend,
+    DefaultOrderingFilterBackend,
 )
 from .advanced_types import FileFieldType, PointFieldType, MultiPolygonFieldType
 from .converter import convert_elasticsearch_field, ElasticsearchConversionError
@@ -153,6 +154,7 @@ class ElasticsearchConnectionField(ConnectionField):
             SearchFilterBackend,
             FilteringFilterBackend,
             OrderingFilterBackend,
+            DefaultOrderingFilterBackend,
         ]
 
     @property
@@ -215,13 +217,14 @@ class ElasticsearchConnectionField(ConnectionField):
 
         for backend_cls in self.filter_backends:
             backend = backend_cls(self)
-            params.update(
-                backend.get_backend_fields(
-                    items=items,
-                    is_filterable_func=is_filterable,
-                    get_type_func=get_type,
+            if backend.has_fields:
+                params.update(
+                    backend.get_backend_fields(
+                        items=items,
+                        is_filterable_func=is_filterable,
+                        get_type_func=get_type,
+                    )
                 )
-            )
 
         return params
 

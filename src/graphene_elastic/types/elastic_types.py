@@ -169,7 +169,7 @@ class ElasticsearchObjectType(ObjectType):
         _meta.ordering_fields = options.get('ordering_fields', {})
         _meta.ordering_defaults = options.get('ordering_defaults', [])
         _meta.search_nested_fields = options.get('search_nested_fields', {})
-        # _meta.filter_backends = options.get('filter_backends', [])
+        _meta.filter_backends = options.get('filter_backends', [])
         _meta.connection = connection
         _meta.connection_field_class = connection_field_class
         # Save them for later

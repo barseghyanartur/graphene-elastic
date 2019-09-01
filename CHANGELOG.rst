@@ -15,11 +15,18 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.0.8
+-----
+2019-09-02
+
+- Tested default ordering backend.
+- Documentation improvements.
+
 0.0.7
 -----
 2019-09-01
 
-- Working ordering backend.
+- Ordering backend.
 - Added more filter lookups.
 - Minor fixes in existing filter lookups.
 - Improved test coverage for the filtering backend.

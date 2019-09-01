@@ -66,7 +66,7 @@ class Post(ElasticsearchObjectType):
             'category': None,
         }
         ordering_fields = {
-            'id': None,
+            # 'id': None,
             'title': 'title.raw',
             'created_at': 'created_at',
             'num_views': 'num_views',
@@ -84,7 +84,10 @@ class Post(ElasticsearchObjectType):
             # }
         }
 
-        ordering_defaults = ('id', 'title',)
+        ordering_defaults = (
+            '-num_views',
+            'title.raw',
+        )
 
 
 class SimpleQueryMixin:
