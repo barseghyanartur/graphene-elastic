@@ -561,6 +561,7 @@ Contents:
 
    index
    concepts
+   quick_start
    filter_lookups
    pagination
    settings
