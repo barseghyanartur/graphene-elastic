@@ -4,7 +4,7 @@ Clone the repository
 --------------------
 .. code-block:: sh
 
-    git clone git@github.com:barseghyanartur/graphene-elastic.git && graphene-elastic
+    git clone git@github.com:barseghyanartur/graphene-elastic.git && cd graphene-elastic
 
 Start Elasticsearch
 -------------------
