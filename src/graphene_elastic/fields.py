@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from decimal import Decimal
+# from decimal import Decimal
 
 from collections import Iterable, OrderedDict
 from functools import partial, reduce
-import json
+# import json
 
 import graphene
 from graphene import NonNull
@@ -16,16 +16,24 @@ from graphene.relay import ConnectionField, PageInfo
 from graphene.types.argument import to_arguments
 from graphene.types.dynamic import Dynamic
 from graphene.types.structures import Structure
-from graphql_relay.connection.arrayconnection import connection_from_list_slice
 
+from .advanced_types import (
+    FileFieldType,
+    PointFieldType,
+    MultiPolygonFieldType,
+)
+from .arrayconnection import connection_from_list_slice
+from .converter import (
+    convert_elasticsearch_field,
+    ElasticsearchConversionError,
+)
 from .filter_backends import (
     SearchFilterBackend,
     FilteringFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
 )
-from .advanced_types import FileFieldType, PointFieldType, MultiPolygonFieldType
-from .converter import convert_elasticsearch_field, ElasticsearchConversionError
+from .logging import logger
 from .registry import get_global_registry
 from .settings import graphene_settings
 from .types import ElasticsearchObjectType
@@ -38,10 +46,10 @@ __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("ElasticsearchConnectionField",)
 
 
-def json_default(obj):
-    if isinstance(obj, Decimal):
-        return str(obj)  # String version
-    return obj
+# def json_default(obj):
+#     if isinstance(obj, Decimal):
+#         return str(obj)  # String version
+#     return obj
 
 
 class ElasticsearchConnectionField(ConnectionField):
@@ -340,11 +348,9 @@ class ElasticsearchConnectionField(ConnectionField):
             qs = backend.filter(qs)
 
         try:
-            print("Debug")
-            print(json.dumps(qs.to_dict(), default=json_default))
-            print("/Debug")
+            logger.debug(qs.to_dict())
         except Exception as err:
-            print(err)
+            logger.debug(err)
         return qs
 
     def default_resolver(self, _root, info, **args):
@@ -354,7 +360,17 @@ class ElasticsearchConnectionField(ConnectionField):
             "last": args.pop("last", None),
             "before": args.pop("before", None),
             "after": args.pop("after", None),
+            "max_limit": args.pop(
+                "max_limit",
+                graphene_settings.RELAY_CONNECTION_MAX_LIMIT
+            ),
+            "enforce_first_or_last": args.pop(
+                "enforce_first_or_last",
+                graphene_settings.RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST
+            ),
         }
+
+
 
         _id = args.pop("id", None)
 
@@ -364,18 +380,19 @@ class ElasticsearchConnectionField(ConnectionField):
         # TODO: The next line never happens. We might want to make sure
         # functionality that must be there is present
         elif callable(getattr(self.document, "search", None)):
-            iterables = self.get_queryset(self.document, info, **args).execute()
-            list_length = 10  # Default page size
-            # list_length = iterables.count()
+            # iterables = self.get_queryset(self.document, info, **args).execute()
+            iterables = self.get_queryset(self.document, info, **args)
+            # list_length = 10  # Default page size
+            list_length = iterables.count()
             # list_length = iterables.hits.total['value']
         else:
             iterables = []
             list_length = 0
-
         connection = connection_from_list_slice(
             list_slice=iterables,
             args=connection_args,
             list_length=list_length,
+            list_slice_length=list_length,
             connection_type=self.type,
             edge_type=self.type.Edge,
             pageinfo_type=graphene.PageInfo,
@@ -421,15 +438,17 @@ class ElasticsearchConnectionField(ConnectionField):
 
     @classmethod
     def resolve_connection(cls, connection_type, args, resolved):
-
         if isinstance(resolved, connection_type):
             return resolved
 
         assert isinstance(resolved, Iterable), (
-            "Resolved value from the connection field have to be iterable or instance of {}. "
+            "Resolved value from the connection field have to be iterable or "
+            "instance of {}. "
             'Received "{}"'
         ).format(connection_type, resolved)
+
         _len = resolved.hits.total["value"]
+
         connection = connection_from_list_slice(
             resolved.hits,
             args,
@@ -487,7 +506,38 @@ class ElasticsearchConnectionField(ConnectionField):
     #     )
 
     @classmethod
-    def connection_resolver(cls, resolver, connection_type, root, info, **args):
+    def connection_resolver(cls,
+                            resolver,
+                            connection_type,
+                            root,
+                            info,
+                            **args):
+        first = args.get("first")
+        last = args.get("last")
+        enforce_first_or_last = args.get("enforce_first_or_last")
+        max_limit = args.get("max_limit")
+
+        if enforce_first_or_last:
+            assert first or last, (
+                "You must provide a `first` or `last` value to properly "
+                "paginate the `{}` connection."
+            ).format(info.field_name)
+
+        if max_limit:
+            if first:
+                assert first <= max_limit, (
+                    "Requesting {} records on the `{}` connection exceeds "
+                    "the `first` limit of {} records."
+                ).format(first, info.field_name, max_limit)
+                args["first"] = min(first, max_limit)
+
+            if last:
+                assert last <= max_limit, (
+                    "Requesting {} records on the `{}` connection exceeds "
+                    "the `last` limit of {} records."
+                ).format(last, info.field_name, max_limit)
+                args["last"] = min(last, max_limit)
+
         iterable = resolver(root, info, **args)
         if isinstance(connection_type, graphene.NonNull):
             connection_type = connection_type.of_type
@@ -506,4 +556,10 @@ class ElasticsearchConnectionField(ConnectionField):
             super_resolver,
             isinstance(super_resolver, partial),
         )
-        return partial(self.connection_resolver, resolver, self.type)
+        return partial(
+            self.connection_resolver,
+            resolver,
+            self.type,
+            max_limit=self.max_limit,
+            enforce_first_or_last=self.enforce_first_or_last
+        )

@@ -535,8 +535,11 @@ Contents:
    index
    concepts
    filter_lookups
+   pagination
+   settings
    running_elasticsearch
    faq
+   debugging
    changelog
    graphene_elastic
 

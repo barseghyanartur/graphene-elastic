@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import importlib
 import json
 import os
+import logging
 
 import six
 
@@ -22,6 +23,7 @@ DEFAULTS = {
     "RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST": False,
     # Max items returned in ConnectionFields / FilterConnectionFields
     "RELAY_CONNECTION_MAX_LIMIT": 100,
+    "LOGGING_LEVEL": logging.ERROR,
 }
 
 # List of settings that may be in string import notation.
@@ -88,7 +90,7 @@ def get_setting(key, default=None):
         json_value = json.loads(value)
         return json_value
     except Exception as err:
-        pass
+        print(err)
     return value
 
 
@@ -111,7 +113,8 @@ class GrapheneSettings(object):
     @property
     def user_settings(self):
         if not hasattr(self, "_user_settings"):
-            self._user_settings = get_setting("GRAPHENE", {})
+            self._user_settings = get_setting("GRAPHENE_ELASTIC", {})
+
         return self._user_settings
 
     def __getattr__(self, attr):
