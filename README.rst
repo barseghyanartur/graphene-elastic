@@ -42,6 +42,7 @@ Main features and highlights
 - Implemented search backend.
 - Implemented filter backend.
 - Implemented ordering backend.
+- Implemented pagination.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -387,7 +388,7 @@ Possible choices are ``ASC`` and ``DESC``.
 
 .. code-block:: javascript
 
-    {
+    query {
       allPostDocuments(filter:{
             tags:{in:["photography", "models"]},
             ordering:{title:ASC}
@@ -404,13 +405,39 @@ Possible choices are ``ASC`` and ``DESC``.
       }
     }
 
+Pagination
+^^^^^^^^^^
+The ``first``, ``last``, ``before`` and ``after`` arguments are supported.
+By default number of results is limited to 100.
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(first:12) {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          cursor
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
+
 Road-map
 ========
 Road-map and development plans.
 
 Lots of features are planned to be released in the upcoming Beta releases:
 
-- Ordering backend
 - Geo-spatial backend
 - Aggregations (faceted search) backend
 - Post-filter backend

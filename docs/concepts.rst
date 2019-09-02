@@ -105,8 +105,10 @@ declarative manner.
 
             # For `FilteringFilterBackend` backend
             filter_fields = {
+                # The name of the corresponding query argument is `title`
                 'title': {
-                    'field': 'title.raw',
+                    'field': 'title.raw',  # Field name in the Elastic doc
+                    # Available lookups
                     'lookups': [
                         LOOKUP_FILTER_TERM,
                         LOOKUP_FILTER_TERMS,
@@ -115,11 +117,20 @@ declarative manner.
                         LOOKUP_QUERY_IN,
                         LOOKUP_QUERY_EXCLUDE,
                     ],
+                    # Default lookup
                     'default_lookup': LOOKUP_FILTER_TERM,
                 },
-                'category': 'category.raw',
-                'tags': 'tags.raw',
-                'num_views': 'num_views',
+
+                # The name of the corresponding query argument is `category`.
+                # Since no lookups or default_lookup is provided, defaults are
+                # used (all lookups available, term is the default lookup).
+                'category': 'category.raw',  # Field name in the Elastic doc
+
+                # The name of the corresponding query argument is `tags`
+                'tags': 'tags.raw',  # Field name in the Elastic doc
+
+                # The name of the corresponding query argument is `num_views`
+                'num_views': 'num_views',  # Field name in the Elastic doc
             }
 
             # For `SearchFilterBackend` backend
@@ -131,15 +142,15 @@ declarative manner.
 
             # For `OrderingFilterBackend` backend
             ordering_fields = {
-                'title': 'title.raw',
-                'created_at': 'created_at',
-                'num_views': 'num_views',
+                'title': 'title.raw',  # Field name in the Elastic doc
+                'created_at': 'created_at',  # Field name in the Elastic doc
+                'num_views': 'num_views',  # Field name in the Elastic doc
             }
 
             # For `DefaultOrderingFilterBackend` backend
             ordering_defaults = (
-                '-num_views',
-                'title.raw',
+                '-num_views',  # Field name in the Elastic doc
+                'title.raw',  # Field name in the Elastic doc
             )
 
     # Query definition
