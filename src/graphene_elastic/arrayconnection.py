@@ -2,7 +2,12 @@ from graphql_relay.connection.arrayconnection import (
     get_offset_with_default,
     offset_to_cursor,
 )
-from graphql_relay.connection.connectiontypes import Connection, PageInfo, Edge
+from graphql_relay.connection.connectiontypes import (
+    Connection,
+    PageInfo,
+    Edge,
+)
+
 from .logging import logger
 
 __title__ = 'graphene_elastic.arrayconnection'

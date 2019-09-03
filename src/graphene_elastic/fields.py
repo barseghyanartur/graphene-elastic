@@ -37,7 +37,7 @@ from .logging import logger
 from .registry import get_global_registry
 from .settings import graphene_settings
 from .types import ElasticsearchObjectType
-from .utils import get_node_from_global_id  #  , get_model_reference_fields
+from .utils import get_node_from_global_id  # get_model_reference_fields
 
 __title__ = "graphene_elastic.fields"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
@@ -284,65 +284,6 @@ class ElasticsearchConnectionField(ConnectionField):
                 args.update(queryset_or_filters)
         qs = document.search()
 
-        # Sample schema definition would look as follows:
-        #
-        #     class Post(ElasticsearchObjectType):
-        #         class Meta(object):
-        #             document = PostDocument
-        #             interfaces = (Node,)
-        #             filter_backends = [
-        #
-        #             ]
-        #             filter_fields = {
-        #                 'title': {
-        #                     'field': 'title.raw',
-        #                     'lookups': [
-        #                         LOOKUP_FILTER_TERM,
-        #                         LOOKUP_FILTER_TERMS,
-        #                         LOOKUP_FILTER_PREFIX,
-        #                         LOOKUP_FILTER_WILDCARD,
-        #                         LOOKUP_QUERY_IN,
-        #                         LOOKUP_QUERY_EXCLUDE,
-        #                     ],
-        #                     'default_lookup': LOOKUP_FILTER_TERM,
-        #                 },
-        #                 'category': 'category.raw',
-        #             }
-        #             search_fields = {
-        #                 'title': {'boost': 4},
-        #                 'content': {'boost': 2},
-        #                 'category': None,
-        #             }
-        #
-        # What I think needs to be done here is the following: Since by nature
-        # filtering and searching, as well as fetching facets and other useful
-        # functionality (see django-elasticsearch-dsl-drf) is very different
-        # and complex by nature and it might not be possible to determine
-        # all the input params by their respective names (ot otherwise, we
-        # would have to go conventionally prefixing all variables by their
-        # origin like:
-        #
-        #   posts(filter: {title: "my-title"}, search: {title: "her-title"})
-        #
-        # Or:
-        #
-        #   posts(filter: {title: "my-title", lookup: "term"})
-        #   posts(filter: {title: "my", lookup: "prefix"})
-        #   posts(filter: {title: "tit", lookup: "wildcard"})
-        #
-        # ... if multiple lookups have been allowed on the `title` field.
-        #
-        # for arg_name, arg in dict(args).items():
-        #     # qs = qs.filter('wildcard', **{arg_name: '*{}*'.format(arg)})
-        #     # qs = qs.filter('term', **{arg_name: arg})
-        #     # filter_arg_name = self.filter_args_mapping.get(arg_name, None)
-        #     # if filter_arg_name:
-        #     #     qs = qs.filter('term', **{filter_arg_name: arg})
-        #     #
-        #     # search_arg_name = self.search_args_mapping.get(arg_name, None)
-        #     # if search_arg_name:
-        #     #     qs = qs.filter('wildcard', **{search_arg_name: '*{}*'.format(arg)})
-
         for backend_cls in self.filter_backends:
             backend = backend_cls(self, args=dict(args))
             qs = backend.filter(qs)
@@ -370,8 +311,6 @@ class ElasticsearchConnectionField(ConnectionField):
             ),
         }
 
-
-
         _id = args.pop("id", None)
 
         if _id is not None:
@@ -380,11 +319,8 @@ class ElasticsearchConnectionField(ConnectionField):
         # TODO: The next line never happens. We might want to make sure
         # functionality that must be there is present
         elif callable(getattr(self.document, "search", None)):
-            # iterables = self.get_queryset(self.document, info, **args).execute()
             iterables = self.get_queryset(self.document, info, **args)
-            # list_length = 10  # Default page size
             list_length = iterables.count()
-            # list_length = iterables.hits.total['value']
         else:
             iterables = []
             list_length = 0
@@ -403,38 +339,10 @@ class ElasticsearchConnectionField(ConnectionField):
 
     def chained_resolver(self, resolver, is_partial, root, info, **args):
         if not bool(args) or not is_partial:
-            # XXX: Filter nested args
             resolved = resolver(root, info, **args)
             if resolved is not None:
                 return resolved
         return self.default_resolver(root, info, **args)
-
-    # @classmethod
-    # def resolve_connection(cls, connection, default_search, args, results):
-    #     if results is None:
-    #         results = default_search
-    #     if isinstance(results, Search):
-    #         if results is not default_search:
-    #             results = cls.merge_searches(default_search, results)
-    #         query = args.get('query')
-    #         if query:
-    #             default_field = args.get('default_field')
-    #             results = results.query('query_string', default_field=default_field, query=query)
-    #         results = results.execute()
-    #     _len = results.hits.total['value']
-    #     connection = connection_from_list_slice(
-    #         results.hits,
-    #         args,
-    #         slice_start=0,
-    #         list_length=_len,
-    #         list_slice_length=_len,
-    #         connection_type=connection,
-    #         edge_type=connection.Edge,
-    #         pageinfo_type=PageInfo,
-    #     )
-    #     connection.iterable = results.hits
-    #     connection.length = _len
-    #     return connection
 
     @classmethod
     def resolve_connection(cls, connection_type, args, resolved):
@@ -462,48 +370,6 @@ class ElasticsearchConnectionField(ConnectionField):
         connection.iterable = resolved
         connection.length = _len
         return connection
-
-    # # @classmethod
-    # def connection_resolver(self, resolver, connection, default_search, max_limit,
-    #                         enforce_first_or_last, root, info, **args):
-    #     first = args.get('first')
-    #     last = args.get('last')
-    #
-    #     if enforce_first_or_last:
-    #         assert first or last, (
-    #             'You must provide a `first` or `last` value to properly paginate the `{}` connection.'
-    #         ).format(info.field_name)
-    #
-    #     if max_limit:
-    #         if first:
-    #             assert first <= max_limit, (
-    #                 'Requesting {} records on the `{}` connection exceeds the `first` limit of {} records.'
-    #             ).format(first, info.field_name, max_limit)
-    #             args['first'] = min(first, max_limit)
-    #
-    #         if last:
-    #             assert last <= max_limit, (
-    #                 'Requesting {} records on the `{}` connection exceeds the `last` limit of {} records.'
-    #             ).format(first, info.field_name, max_limit)
-    #             args['last'] = min(last, max_limit)
-    #
-    #     results = resolver(root, info, **args) or self.get_queryset(self.document, info, **args)
-    #     on_resolve = partial(self.resolve_connection, connection, default_search, args)
-    #
-    #     if Promise.is_thenable(results):
-    #         return Promise.resolve(results).then(on_resolve)
-    #
-    #     return on_resolve(results)
-    #
-    # def get_resolver(self, parent_resolver):
-    #     return partial(
-    #         self.connection_resolver,
-    #         parent_resolver,
-    #         self.type,
-    #         self.get_search(),
-    #         self.max_limit,
-    #         self.enforce_first_or_last
-    #     )
 
     @classmethod
     def connection_resolver(cls,

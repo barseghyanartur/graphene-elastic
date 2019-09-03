@@ -1,20 +1,23 @@
-import uuid
+# import uuid
 from graphene import (
-    ID,
+    # ID,
     Boolean,
     DateTime,
-    Dynamic,
-    Field,
+    # Dynamic,
+    # Field,
     Float,
     Int,
-    List,
-    NonNull,
+    # List,
+    # NonNull,
     String,
-    Union,
-    is_node,
+    # Union,
+    # is_node,
 )
 
-from elasticsearch_dsl import field as elasticsearch_fields
+from elasticsearch_dsl import (
+    # InnerDoc,
+    field as elasticsearch_fields,
+)
 
 from .utils import import_single_dispatch, get_field_description
 
@@ -83,6 +86,29 @@ def convert_field_to_datetime(field, registry=None):
         description=get_field_description(field, registry),
         required=field._required,
     )
+
+
+# @convert_elasticsearch_field.register(elasticsearch_fields.Nested)
+# def convert_nested_field_to_list(field, registry=None):
+#     base_type = convert_field_to_jsonstring(field._doc_class)
+#
+#     if not isinstance(base_type, (List, NonNull)):
+#         base_type = type(base_type)
+#     return List(
+#         base_type,
+#         description=get_field_description(field, registry),
+#         required=field._required
+#     )
+
+
+# @convert_elasticsearch_field.register(InnerDoc)
+# def convert_field_to_inner_doc(field, registry=None):
+#     from .types import JSONString
+#
+#     return JSONString(
+#         description=get_field_description(field, registry),
+#         required=field._required,
+#     )
 
 
 @convert_elasticsearch_field.register(elasticsearch_fields.Object)

@@ -9,29 +9,6 @@ from elasticsearch_dsl.query import Q
 from ..base import BaseBackend
 from ...constants import (
     DYNAMIC_CLASS_NAME_PREFIX,
-    STRING_LOOKUP_FILTERS,
-    EXTENDED_STRING_LOOKUP_FILTERS,
-    NUMBER_LOOKUP_FILTERS,
-    EXTENDED_NUMBER_LOOKUP_FILTERS,
-    LOOKUP_FILTER_TERM,
-    LOOKUP_FILTER_TERMS,
-    LOOKUP_FILTER_PREFIX,
-    LOOKUP_QUERY_STARTSWITH,
-    LOOKUP_FILTER_RANGE,
-    LOOKUP_FILTER_EXISTS,
-    LOOKUP_FILTER_WILDCARD,
-    LOOKUP_QUERY_CONTAINS,
-    LOOKUP_QUERY_IN,
-    LOOKUP_QUERY_GT,
-    LOOKUP_QUERY_GTE,
-    LOOKUP_QUERY_LT,
-    LOOKUP_QUERY_LTE,
-    LOOKUP_QUERY_ENDSWITH,
-    LOOKUP_QUERY_ISNULL,
-    LOOKUP_QUERY_EXCLUDE,
-    ALL_LOOKUP_FILTERS_AND_QUERIES,
-    TRUE_VALUES,
-    FALSE_VALUES,
     ALL,
     VALUE,
     BOOST,
@@ -72,15 +49,17 @@ class SearchFilterBackend(BaseBackend):
 
         :return:
         """
-        # return base_field_type
         params = {
             VALUE: base_field_type,  # Value to search on. Required.
             BOOST: graphene.Int(),  # Boost the given field with. Optional.
         }
         return graphene.Argument(
             type(
-                "{}{}{}".format(
-                    DYNAMIC_CLASS_NAME_PREFIX, self.prefix, field_name.title()
+                "{}{}{}{}".format(
+                    DYNAMIC_CLASS_NAME_PREFIX,
+                    self.prefix,
+                    self.connection_field.type.__name__,
+                    field_name.title()
                 ),
                 (graphene.InputObjectType,),
                 params,
@@ -122,8 +101,6 @@ class SearchFilterBackend(BaseBackend):
                 }
             }
 
-        :param view:
-        :type view: rest_framework.viewsets.ReadOnlyModelViewSet
         :return: Filtering options.
         :rtype: dict
         """
@@ -160,7 +137,10 @@ class SearchFilterBackend(BaseBackend):
             else:
                 filter_fields.update({field: options})
 
-            # if field in filter_fields and 'lookups' not in filter_fields[field]:
+            # if (
+            #     field in filter_fields
+            #     and 'lookups' not in filter_fields[field]
+            # ):
             #     filter_fields[field].update(
             #         {
             #             'lookups': tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)
@@ -188,10 +168,6 @@ class SearchFilterBackend(BaseBackend):
     def get_filter_query_params(self):
         """Get query params to be filtered on.
 
-        :param request: Django REST framework request.
-        :param view: View.
-        :type request: rest_framework.request.Request
-        :type view: rest_framework.viewsets.ReadOnlyModelViewSet
         :return: Request query params to filter on.
         :rtype: dict
         """
@@ -215,7 +191,8 @@ class SearchFilterBackend(BaseBackend):
                 # do not require further suffix specification.
                 default_lookup = None
                 if "default_lookup" in filter_fields[field_name]:
-                    default_lookup = filter_fields[field_name]["default_lookup"]
+                    default_lookup = \
+                        filter_fields[field_name]["default_lookup"]
 
                 if lookup_param is None or lookup_param in valid_lookups:
 
@@ -240,7 +217,7 @@ class SearchFilterBackend(BaseBackend):
                             "field": filter_fields[field_name].get(
                                 "field", field_name
                             ),
-                            "type": self.connection_field.document._doc_type.mapping.properties.name,
+                            "type": self.doc_type.mapping.properties.name,
                         }
         return filter_query_params
 
@@ -308,12 +285,6 @@ class SearchFilterBackend(BaseBackend):
             }
 
 
-        :param request: Django REST framework request.
-        :param queryset: Base queryset.
-        :param view: View.
-        :type request: rest_framework.request.Request
-        :type queryset: elasticsearch_dsl.search.Search
-        :type view: rest_framework.viewsets.ReadOnlyModelViewSet
         :return: Updated queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
@@ -383,12 +354,6 @@ class SearchFilterBackend(BaseBackend):
         >>>     },
         >>> }
 
-        :param request: Django REST framework request.
-        :param queryset: Base queryset.
-        :param view: View.
-        :type request: rest_framework.request.Request
-        :type queryset: elasticsearch_dsl.search.Search
-        :type view: rest_framework.viewsets.ReadOnlyModelViewSet
         :return: Updated queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
@@ -432,11 +397,11 @@ class SearchFilterBackend(BaseBackend):
         return __queries
 
     def filter(self, queryset):
+        """Filter.
 
-        # return queryset
-
-        # TODO
-        # _queries = self.construct_search() + []
+        :param queryset:
+        :return:
+        """
         _queries = self.construct_search() + self.construct_nested_search()
 
         if _queries:

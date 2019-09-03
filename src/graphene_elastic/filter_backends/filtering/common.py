@@ -1,4 +1,3 @@
-import copy
 import operator
 import graphene
 from elasticsearch_dsl.query import Q
@@ -6,12 +5,8 @@ import six
 
 from ..base import BaseBackend
 from ...constants import (
-    ALL,
     ALL_LOOKUP_FILTERS_AND_QUERIES,
-    BOOST,
     DYNAMIC_CLASS_NAME_PREFIX,
-    EXTENDED_NUMBER_LOOKUP_FILTERS,
-    EXTENDED_STRING_LOOKUP_FILTERS,
     FALSE_VALUES,
     LOOKUP_FILTER_EXISTS,
     LOOKUP_FILTER_PREFIX,
@@ -29,21 +24,14 @@ from ...constants import (
     LOOKUP_QUERY_LT,
     LOOKUP_QUERY_LTE,
     LOOKUP_QUERY_STARTSWITH,
-    NUMBER_LOOKUP_FILTERS,
-    STRING_LOOKUP_FILTERS,
     TRUE_VALUES,
     VALUE,
-    FIELD,
-    LOOKUP,
     LOWER,
     UPPER,
-    GT,
     GTE,
-    LT,
     LTE,
     BOOST,
 )
-from ...enums import NoValue, convert_list_to_enum
 from .queries import LOOKUP_FILTER_MAPPING
 
 __title__ = "graphene_elastic.filter_backends.filtering.common"
@@ -67,7 +55,6 @@ class FilteringFilterBackend(BaseBackend):
 
         :return:
         """
-        lookups = []
         field_options = self.get_field_options(field_name)
         if isinstance(field_options, dict) and "lookups" in field_options:
             lookups = field_options.get("lookups", [])
@@ -81,50 +68,13 @@ class FilteringFilterBackend(BaseBackend):
                 continue
             params.update({lookup: query_cls()})
 
-        # params = {
-        #     # FIELD: graphene.String(),  # Field to filter on. Required.
-        #     # and not just a ``graphene.String``
-        #     # Value to filter on. Required.
-        #     VALUE: graphene.List(
-        #         graphene.String
-        #     ),
-        #     # Lower range. Optional.
-        #     LOWER: graphene.Decimal(),
-        #     # Upper range. Optional.
-        #     UPPER: graphene.Decimal(),
-        #     # Boost. Optional.
-        #     BOOST: graphene.Decimal(),
-        #     # GT. Optional.
-        #     GT: graphene.Decimal(),
-        #     # GTE. Optional.
-        #     GTE: graphene.Decimal(),
-        #     # LT. Optional.
-        #     LT: graphene.Decimal(),
-        #     # LTE. Optional.
-        #     LTE: graphene.Decimal(),
-        # }
-
-        # if lookups:
-        #     params.update(
-        #         {
-        #             LOOKUP: graphene.Field(
-        #                 graphene.Enum.from_enum(
-        #                     convert_list_to_enum(
-        #                         lookups,
-        #                         enum_name="{}{}{}Enum".format(
-        #                             DYNAMIC_CLASS_NAME_PREFIX,
-        #                             self.prefix,
-        #                             field_name.title(),
-        #                         ),
-        #                     )
-        #                 )
-        #             )
-        #         }
-        #     )
         return graphene.Argument(
             type(
-                "{}{}{}".format(
-                    DYNAMIC_CLASS_NAME_PREFIX, self.prefix, field_name.title()
+                "{}{}{}{}".format(
+                    DYNAMIC_CLASS_NAME_PREFIX,
+                    self.prefix,
+                    self.connection_field.type.__name__,
+                    field_name.title()
                 ),
                 (graphene.InputObjectType,),
                 params,
@@ -132,7 +82,7 @@ class FilteringFilterBackend(BaseBackend):
         )
 
     def get_field_options(self, field_name):
-        """"""
+        """Get field options."""
         if field_name in self.connection_field.filter_fields:
             return self.connection_field.filter_fields[field_name]
         return {}
@@ -212,7 +162,7 @@ class FilteringFilterBackend(BaseBackend):
         :param options:
         :type value: str
         :type lookup: str
-        :type dict: options
+        :type options: dict
         :return: Params to be used in `range` query.
         :rtype: dict
         """
@@ -811,13 +761,23 @@ class FilteringFilterBackend(BaseBackend):
 
         Syntax:
 
-            /endpoint/?field_name__isnull=true
-            /endpoint/?field_name__isnull=false
+            TODO
 
         Example:
 
-            http://localhost:8000/api/articles/?tags__isnull=true
-            http://localhost:8000/api/articles/?tags__isnull=false
+            query {
+              allPostDocuments(filter:{category:{isNull:true}}) {
+                edges {
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    comments
+                  }
+                }
+              }
+            }
 
         :param queryset: Original queryset.
         :param options: Filter options.
@@ -993,7 +953,10 @@ class FilteringFilterBackend(BaseBackend):
             else:
                 filter_fields.update({field: options})
 
-            if field in filter_fields and "lookups" not in filter_fields[field]:
+            if (
+                field in filter_fields
+                and "lookups" not in filter_fields[field]
+            ):
                 filter_fields[field].update(
                     {"lookups": tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)}
                 )
@@ -1023,7 +986,9 @@ class FilteringFilterBackend(BaseBackend):
         :param field_name:
         :return:
         """
-        field_options = dict(self.args).get(self.prefix, {}).get(field_name, {})
+        field_options = dict(self.args) \
+            .get(self.prefix, {}) \
+            .get(field_name, {})
         return field_options.get("lookup", None)
 
     def get_field_options(self, field_name):
@@ -1111,7 +1076,8 @@ class FilteringFilterBackend(BaseBackend):
                 # do not require further suffix specification.
                 default_lookup = None
                 if "default_lookup" in filter_fields[field_name]:
-                    default_lookup = filter_fields[field_name]["default_lookup"]
+                    default_lookup = \
+                        filter_fields[field_name]["default_lookup"]
 
                 for lookup_param, lookup_options in lookup_params.items():
                     lookup = None

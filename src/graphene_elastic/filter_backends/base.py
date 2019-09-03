@@ -91,26 +91,22 @@ class BaseBackend(object):
         :param get_type_func:
         :return:
         """
-        # all_post_documents = ElasticsearchConnectionField(
-        #     Post,
-        #     ordering=graphene.Argument(Ordering),
-        # )
-        # class BackendFilter(graphene.InputObjectType):
         params = self.get_backend_default_fields_params()
         for _k, _v in items:
             if is_filterable_func(_k):
                 # Getting other backend specific fields (schema dependant)
                 if self.field_belongs_to(_k):
                     params.update(
-                        # {self.add_arg_prefix(_k): get_type_func(_v)}
-                        # {_k: get_type_func(_v)}
                         {_k: self.get_field_type(_k, _v, get_type_func(_v))}
                     )
+
         return {
             self.prefix: graphene.Argument(
                 type(
-                    "{}{}BackendFilter".format(
-                        DYNAMIC_CLASS_NAME_PREFIX, self.prefix.title()
+                    "{}{}{}BackendFilter".format(
+                        DYNAMIC_CLASS_NAME_PREFIX,
+                        self.prefix.title(),
+                        self.connection_field.type.__name__
                     ),
                     (graphene.InputObjectType,),
                     params,

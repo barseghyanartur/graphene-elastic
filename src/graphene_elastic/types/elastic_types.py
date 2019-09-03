@@ -1,5 +1,4 @@
 import graphene
-# import mongoengine
 import elasticsearch_dsl
 
 from collections import OrderedDict
@@ -50,17 +49,29 @@ def construct_fields(document, registry, only_fields, exclude_fields):
             # in there. Or when we exclude this field in exclude_fields
             continue
 
-        # TODO: Finish this once ListField is supported
-        # if isinstance(field, mongoengine.ListField):
-        #     if not field.field:
-        #         continue
-        #     # Take care of list of self-reference.
-        #     document_type_obj = field.field.__dict__.get('document_type_obj', None)
-        #     if document_type_obj == document._class_name \
-        #             or isinstance(document_type_obj, document) \
-        #             or document_type_obj == document:
-        #         self_referenced[name] = field
-        #         continue
+        # TODO: Finish this once ``List`` is supported (in Elasticsearch
+        # it's `multi=True`).
+        if field._multi:
+            if not (hasattr(field, '_doc_class') or hasattr(field, 'fields')):
+                continue
+
+            if hasattr(field, 'fields'):
+                for sub_field_name, sub_field in field.fields._d_.items():
+
+                    # Take care of list of self-reference.
+                    document_type_obj = sub_field.__class__
+
+                    if document_type_obj == document \
+                            or isinstance(document_type_obj, document):
+                        self_referenced[name] = field
+                        continue
+            else:   # if hasattr(field, '_doc_class')
+                document_type_obj = field._doc_class
+
+                if document_type_obj == document \
+                        or isinstance(document_type_obj, document):
+                    self_referenced[name] = field
+                    continue
 
         converted = convert_elasticsearch_field(field, registry)
         if not converted:
@@ -113,8 +124,8 @@ class ElasticsearchObjectType(ObjectType):
                                     **options):
 
         assert is_valid_elasticsearch_document(document), (
-            'The attribute document in {}.Meta must be a valid Elasticsearch-dsl Document. '
-            'Received "{}" instead.'
+            'The attribute document in {}.Meta must be a valid '
+            'Elasticsearch-dsl Document. Received "{}" instead.'
         ).format(cls.__name__, type(document))
         if not registry:
             registry = get_global_registry()
@@ -126,9 +137,14 @@ class ElasticsearchObjectType(ObjectType):
         converted_fields, self_referenced = construct_fields(
             document, registry, only_fields, exclude_fields
         )
-        document_fields = yank_fields_from_attrs(converted_fields, _as=graphene.Field)
+        document_fields = yank_fields_from_attrs(
+            converted_fields,
+            _as=graphene.Field
+        )
         if use_connection is None and interfaces:
-            use_connection = any((issubclass(interface, Node) for interface in interfaces))
+            use_connection = any(
+                (issubclass(interface, Node) for interface in interfaces)
+            )
 
         if use_connection and not connection:
             # We create the connection automatically
@@ -140,14 +156,17 @@ class ElasticsearchObjectType(ObjectType):
 
         if connection is not None:
             assert issubclass(connection, Connection), (
-                'The attribute connection in {}.Meta must be of type Connection. '
-                'Received "{}" instead.'
+                'The attribute connection in {}.Meta must be of type '
+                'Connection. Received "{}" instead.'
             ).format(cls.__name__, type(connection))
 
         if connection_field_class is not None:
-            assert issubclass(connection_field_class, graphene.ConnectionField), (
-                'The attribute connection_field_class in {}.Meta must be of type graphene.ConnectionField. '
-                'Received "{}" instead.'
+            assert issubclass(
+                connection_field_class,
+                graphene.ConnectionField
+            ), (
+                'The attribute connection_field_class in {}.Meta must be of '
+                'type graphene.ConnectionField. Received "{}" instead.'
             ).format(cls.__name__, type(connection_field_class))
         else:
             from ..fields import ElasticsearchConnectionField
@@ -196,7 +215,8 @@ class ElasticsearchObjectType(ObjectType):
 
     @classmethod
     def rescan_fields(cls):
-        """Attempts to rescan fields and will insert any not converted initially"""
+        """Attempts to rescan fields and will insert any not converted
+        initially."""
 
         converted_fields, self_referenced = construct_fields(
             cls._meta.document, cls._meta.registry,
@@ -214,17 +234,10 @@ class ElasticsearchObjectType(ObjectType):
                 cls._meta.fields.update({field: document_fields[field]})
         # Self-referenced fields can't change between scans!
 
-    # NOQA
     @classmethod
     def is_type_of(cls, root, info):
         if isinstance(root, cls):
             return True
-        # XXX: Take care FileField
-
-        # TODO: Find out what to do here and whether this is applicable
-        # to the Elasticsearch
-        # if isinstance(root, mongoengine.GridFSProxy):
-        #     return True
 
         if not is_valid_elasticsearch_document(type(root)):
             raise Exception((
@@ -242,7 +255,3 @@ class ElasticsearchObjectType(ObjectType):
 
     def resolve_id(self, info):
         return self.meta.id
-
-    # @classmethod
-    # def get_connection(cls):
-    #     return connection_for_type(cls)

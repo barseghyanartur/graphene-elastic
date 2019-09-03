@@ -19,3 +19,4 @@ class UserFactory(Factory):
     last_name = Faker('last_name')
     created_at = Faker('date')
     email = Faker('email')
+    is_active = Faker('pybool')

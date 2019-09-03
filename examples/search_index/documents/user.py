@@ -34,10 +34,11 @@ html_strip = analyzer('html_strip',
 
 
 class User(Document):
-    first_name = Text()
-    last_name = Text()
-    email = Text()
+    first_name = Text(fields={'raw': Keyword()})
+    last_name = Text(fields={'raw': Keyword()})
+    email = Text(fields={'raw': Keyword()})
     created_at = Date()
+    is_active = Boolean()
 
     class Index:
         name = SITE_USER_DOCUMENT_NAME

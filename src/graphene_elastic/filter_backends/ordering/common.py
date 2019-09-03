@@ -1,20 +1,16 @@
 """
 Ordering backend.
 """
-import copy
-import operator
-from elasticsearch_dsl.query import Q
 import graphene
 from six import string_types
 
 from ..base import BaseBackend
 from ..queries import Direction
-from elasticsearch_dsl.query import Q
 from ...compat import nested_sort_entry
 
-__title__ = 'django_elasticsearch_dsl_drf.filter_backends.ordering.common'
+__title__ = 'graphene_elastic.filter_backends.ordering.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2017-2019 Artur Barseghyan'
+__copyright__ = '2019 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = (
     'DefaultOrderingFilterBackend',

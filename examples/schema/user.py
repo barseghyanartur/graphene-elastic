@@ -1,6 +1,23 @@
 import graphene
-
-from graphene_elastic import ElasticsearchObjectType
+from graphene import Node
+from graphene_elastic import (
+    ElasticsearchObjectType,
+    ElasticsearchConnectionField,
+)
+from graphene_elastic.filter_backends import (
+    FilteringFilterBackend,
+    SearchFilterBackend,
+    OrderingFilterBackend,
+    DefaultOrderingFilterBackend,
+)
+from graphene_elastic.constants import (
+    LOOKUP_FILTER_PREFIX,
+    LOOKUP_FILTER_TERM,
+    LOOKUP_FILTER_TERMS,
+    LOOKUP_FILTER_WILDCARD,
+    LOOKUP_QUERY_EXCLUDE,
+    LOOKUP_QUERY_IN,
+)
 
 from search_index.documents import User as UserDocument
 
@@ -13,18 +30,71 @@ __all__ = (
 
 
 class User(ElasticsearchObjectType):
+
     class Meta:
+
         document = UserDocument
+        interfaces = (Node,)
+        filter_backends = [
+            FilteringFilterBackend,
+            SearchFilterBackend,
+            OrderingFilterBackend,
+            DefaultOrderingFilterBackend,
+        ]
+        filter_fields = {
+            'first_name': {
+                'field': 'first_name.raw',
+                'lookups': [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_FILTER_PREFIX,
+                    LOOKUP_FILTER_WILDCARD,
+                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_EXCLUDE,
+                ],
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'last_name': {
+                'field': 'last_name.raw',
+                'lookups': [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_FILTER_PREFIX,
+                    LOOKUP_FILTER_WILDCARD,
+                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_EXCLUDE,
+                ],
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'email': 'email.raw',
+            'created_at': 'created_at',
+            'is_active': 'is_active',
+        }
+        search_fields = {
+            'first_name': None,
+            'last_name': None,
+            'email': None,
+            'category': None,
+        }
+        ordering_fields = {
+            'first_name': 'first_name.raw',
+            'last_name': 'last_name.raw',
+            'email': 'email.raw',
+            'created_at': 'created_at',
+            'is_active': 'is_active',
+        }
+
+        ordering_defaults = (
+            'created_at',
+        )
 
 
 class Query(graphene.ObjectType):
-    users = graphene.List(User)
+    """User query."""
 
-    def resolve_users(self, info):
-        return UserDocument.search().scan()
+    users = ElasticsearchConnectionField(User)
 
 
 schema = graphene.Schema(
-    query=Query,
-    auto_camelcase=False
+    query=Query
 )
