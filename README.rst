@@ -22,6 +22,7 @@ integration for `Graphene <http://graphene-python.org/>`__.
 
 .. image:: https://coveralls.io/repos/github/barseghyanartur/graphene-elastic/badge.svg?branch=master
     :target: https://coveralls.io/github/barseghyanartur/graphene-elastic?branch=master
+    :alt: Coverage
 
 .. note::
 
@@ -362,21 +363,40 @@ more information.
 
 Search
 ^^^^^^
+Search in all fields:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(
+        search:{query:"Release Box"}
+      ) {
+        edges {
+          node {
+            category
+            title
+            content
+          }
+        }
+      }
+    }
+
+Search in specific fields:
 
 .. code-block:: javascript
 
     query {
       allPostDocuments(
         search:{
-            title:{value:"Release", boost:1},
+            title:{value:"Release", boost:2},
             content:{value:"Box"}
-        }}
+        }
       ) {
         edges {
           node {
             category
             title
-            comments
+            content
           }
         }
       }

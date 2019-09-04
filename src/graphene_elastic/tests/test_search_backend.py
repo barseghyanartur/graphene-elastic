@@ -2,7 +2,7 @@ import unittest
 import time
 import factories
 from .base import BaseGrapheneElasticTestCase
-from ..constants import VALUE
+from ..constants import ALL, VALUE
 
 __all__ = (
     'SearchBackendElasticTestCase',
@@ -13,26 +13,28 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
     def setUp(self):
         super(SearchBackendElasticTestCase, self).setUp()
-        self.num_elastic_posts = 9
-        self.elastic_posts = factories.PostFactory.create_batch(
-            self.num_elastic_posts
+        self.alice = "Alice"
+        self.num_alice_posts = 9
+        self.alice_posts = factories.PostFactory.create_batch(
+            self.num_alice_posts
         )
-        for _post in self.elastic_posts:
-            _post.content = "{} Elastic {}".format(
+        for _post in self.alice_posts:
+            _post.content = "{} {} {}".format(
                 self.faker.paragraph(),
+                self.alice,
                 self.faker.paragraph()
             )
             _post.save()
 
-        # TODO: Solve issue with failing tests if `num_django_posts` is
-        # set to 20 (default number of Elastic results).
-        self.num_django_posts = 5
-        self.django_posts = factories.PostFactory.create_batch(
-            self.num_django_posts
+        self.beast = "Jabberwocky"
+        self.num_beast_posts = 5
+        self.beast_posts = factories.PostFactory.create_batch(
+            self.num_beast_posts
         )
-        for _post in self.django_posts:
-            _post.content = "{} Django {}".format(
+        for _post in self.beast_posts:
+            _post.content = "{} {} {}".format(
                 self.faker.paragraph(),
+                self.beast,
                 self.faker.paragraph()
             )
             _post.save()
@@ -46,16 +48,17 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         time.sleep(2)
 
-    def _test_search_content(self, term, num_posts, lookup=VALUE):
+    def _test_search_content(self, search, num_posts):
         """Test search.
 
-        :param term:
+        content:{%s:"%s"}
+
         :param num_posts:
         :return:
         """
         query = """
         query {
-          allPostDocuments(search:{content:{%s:"%s"}}) {
+          allPostDocuments(search:%s) {
             edges {
               node {
                 category
@@ -65,7 +68,8 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % (lookup, term)
+        """ % search
+        print(query)
         executed = self.client.execute(query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),
@@ -77,11 +81,30 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         :return:
         """
+        # Covering specific field lookups: `search:{title:{value:"Another"}}`
         with self.subTest('Test search the content on term "Django"'):
-            self._test_search_content('Django', self.num_django_posts)
+            self._test_search_content(
+                '{content:{%s:"%s"}}' % (VALUE, self.alice),
+                self.num_alice_posts
+            )
+        with self.subTest('Test search the content on term "Elastic"'):
+            self._test_search_content(
+                '{content:{%s:"%s"}}' % (VALUE, self.beast),
+                self.num_beast_posts
+            )
+
+        # Covering all field lookups: `search:{query:"Another"}`
+        with self.subTest('Test search the content on term "Django"'):
+            self._test_search_content(
+                '{%s:"%s"}' % (ALL, self.alice),
+                self.num_alice_posts
+            )
 
         with self.subTest('Test search the content on term "Elastic"'):
-            self._test_search_content('Elastic', self.num_elastic_posts)
+            self._test_search_content(
+                '{%s:"%s"}' % (ALL, self.beast),
+                self.num_beast_posts
+            )
 
 
 if __name__ == '__main__':

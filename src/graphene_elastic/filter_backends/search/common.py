@@ -101,6 +101,29 @@ class SearchFilterBackend(BaseBackend):
                 }
             }
 
+        Sample query would be:
+
+            {
+              allPostDocuments(search:{query:"Another"}) {
+                pageInfo {
+                  startCursor
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
+                edges {
+                  cursor
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                  }
+                }
+              }
+            }
+
+
         :return: Filtering options.
         :rtype: dict
         """
@@ -112,10 +135,7 @@ class SearchFilterBackend(BaseBackend):
 
         # {'query': '', 'title': {'query': '', 'boost': 1}}
 
-        for arg, value in filter_args.items():
-            field = self.connection_field.search_args_mapping.get(arg, None)
-            if field is None:
-                continue
+        for field, _ in self.connection_field.search_args_mapping.items():
             filter_fields.update({field: {}})
             options = self.connection_field.search_fields.get(field)
             # For constructions like 'category': 'category.raw' we shall
@@ -164,6 +184,12 @@ class SearchFilterBackend(BaseBackend):
                 continue
             query_params[field] = value
         return query_params
+
+    def get_all_query_params(self):
+        filter_args = dict(self.args).get(self.prefix)
+        if not filter_args:
+            return {}
+        return filter_args
 
     def get_filter_query_params(self):
         """Get query params to be filtered on.
@@ -242,71 +268,83 @@ class SearchFilterBackend(BaseBackend):
         >>>     'summary': None,
         >>> }
 
-        In REST it was:
-
-            /search/books/?search=education
-            /search/books/?search=title:education&search=summary:technology
-
         In GraphQL shall be:
 
-            query PostsQuery {
-              allPostDocuments(
-                    searchTitle: "education",
-                    searchSummary: "technology"
-                ) {
+            query {
+              allPostDocuments(search:{
+                    query:"Another",
+                    title:{value:"Another"}
+                    summary:{value:"Another"}
+                }) {
+                pageInfo {
+                  startCursor
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
                 edges {
+                  cursor
                   node {
-                    id
-                    title
                     category
+                    title
                     content
-                    createdAt
-                    comments
+                    numViews
                   }
                 }
               }
             }
+
 
         Or simply:
 
-            query PostsQuery {
-              allPostDocuments(search: "education technology") {
+            query {
+              allPostDocuments(search:{query:"education technology"}) {
+                pageInfo {
+                  startCursor
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
                 edges {
+                  cursor
                   node {
-                    id
-                    title
                     category
+                    title
                     content
-                    createdAt
-                    comments
+                    numViews
                   }
                 }
               }
             }
-
 
         :return: Updated queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-
-        query_params = self.prepare_query_params()
-
-        search_query_params = {}
+        all_query_params = self.get_all_query_params()
         search_fields = self.prepare_search_fields()
         _queries = []
-        for search_field, value in query_params.items():
-            search_parts = self.split_lookup_name(search_field, maxsplit=1)
-            _len_values = len(search_parts)
-            if len(search_parts) > 1:
-                field_name = search_parts[0]
-                lookup_param = search_parts[1]
-            else:
-                field_name = search_parts[0]
-                lookup_param = None
+        for search_field, value in all_query_params.items():
+            if search_field == ALL:
+                for field_name_param, field_name \
+                        in self.connection_field.search_args_mapping.items():
+                    field_options = copy.copy(search_fields[field_name])
+                    field = field_options.pop("field", field_name)
 
-            if field_name in search_fields:
-                field_options = copy.copy(search_fields[field_name])
-                field = field_options.pop("field", field_name)
+                    if isinstance(value, dict):
+                        # For constructions like:
+                        # {'title': {'value': 'Produce', 'boost': 1}}
+                        _query = value.pop(VALUE)
+                        _field_options = copy.copy(value)
+                        value = _query
+                        field_options.update(_field_options)
+                    field_kwargs = {field: {"query": value}}
+                    if field_options:
+                        field_kwargs[field].update(field_options)
+                    # The match query
+                    _queries.append(Q("match", **field_kwargs))
+            elif search_field in search_fields:
+                field_options = copy.copy(search_fields[search_field])
+                field = field_options.pop("field", search_field)
 
                 if isinstance(value, dict):
                     # For constructions like:

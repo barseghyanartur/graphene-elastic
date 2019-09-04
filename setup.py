@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="graphene-elastic",
-    version="0.0.10",
+    version="0.0.11",
     description="Graphene Elasticsearch (DSL) integration",
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
@@ -13,7 +13,6 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries",
-        # 'Programming Language :: Python :: 3.5',
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],

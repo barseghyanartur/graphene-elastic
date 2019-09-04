@@ -1,3 +1,3 @@
-Search backends
-===============
+Search backend
+==============
 TODO

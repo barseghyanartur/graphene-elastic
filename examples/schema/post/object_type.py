@@ -54,7 +54,7 @@ class Post(ElasticsearchObjectType):
             'i_do_not_exist': 'i_do_not_exist',
         }
         search_fields = {
-            'title': {'boost': 4},
+            'title': {'field': 'title', 'boost': 4},
             'content': {'boost': 2},
             'category': None,
         }
