@@ -24,3 +24,7 @@ before_script:
   - wget -q --waitretry=3 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
 
 script: travis_retry tox -e $TOX_ENV
+
+after_success:
+  - pip install coveralls
+  - coveralls
