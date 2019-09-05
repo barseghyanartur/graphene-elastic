@@ -7,9 +7,6 @@ The following lookups are available:
 - ``ends_with`` (or ``endsWith`` for camelCase)
 - ``exclude``
 - ``exists``
-- ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase)
-- ``geo_distance`` (or ``geoDistance`` for camelCase)
-- ``geo_polygon`` (or ``geoPolygon`` for camelCase)
 - ``gt``
 - ``gte``
 - ``in``
