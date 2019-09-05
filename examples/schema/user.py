@@ -92,7 +92,10 @@ class User(ElasticsearchObjectType):
 class Query(graphene.ObjectType):
     """User query."""
 
-    users = ElasticsearchConnectionField(User)
+    users = ElasticsearchConnectionField(
+        User,
+        enforce_first_or_last=True
+    )
 
 
 schema = graphene.Schema(

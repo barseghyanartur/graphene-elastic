@@ -191,6 +191,14 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 LOOKUP_FILTER_TERMS
             )
 
+        with self.subTest('Test filter on field `category` '
+                          '["Elastic", "Django"] using `in` lookup'):
+            self._test_filter_text_lookups(
+                '["Elastic", "Django"]',
+                self.num_elastic_posts + self.num_django_posts,
+                LOOKUP_QUERY_IN
+            )
+
     def test_filter_prefix_starts_ends_with_contains_wildcard_lookups(self):
         """"Test filters `prefix`, `starts_with` and `ends_with` lookups (on
         field `category`).

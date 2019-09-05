@@ -1,5 +1,7 @@
+import datetime
 import time
 import unittest
+import dateutil
 import factories
 from .base import BaseGrapheneElasticTestCase
 
@@ -38,6 +40,25 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
         self.all_posts = (
             self.elastic_posts + self.django_posts
         )
+
+        self.num_future_users = 5
+        self.future_users = factories.UserFactory.create_batch(
+            self.num_future_users,
+            created_at=self.faker.future_datetime()
+        )
+        for _post in self.future_users:
+            _post.save()
+
+        self.num_past_users = 59
+        self.past_users = factories.UserFactory.create_batch(
+            self.num_past_users,
+            created_at=self.faker.past_datetime()
+        )
+        for _post in self.past_users:
+            _post.save()
+
+        self.num_all_users = self.num_past_users + self.num_future_users
+        self.all_users = self.past_users + self.future_users
 
         time.sleep(3)
 
@@ -100,6 +121,97 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             expected_num_results
         )
 
+    def _test_pagination_required_first_or_last(self):
+        """Test pagination.
+
+        :param expected_num_results:
+        :param first:
+        :param last:
+        :param after:
+        :param before:
+        :param ordering:
+        :return:
+        """
+        _query = """
+        {
+          users(ordering:{createdAt:ASC}) {
+            pageInfo {
+              startCursor
+              endCursor
+              hasNextPage
+              hasPreviousPage
+            }
+            edges {
+              cursor
+              node {
+                email
+                firstName
+                lastName
+                isActive
+                createdAt
+              }
+            }
+          }
+        }
+        """
+        print(_query)
+        executed = self.client.execute(_query)
+        self.assertIn('errors', executed)
+        self.assertIn('message', executed['errors'][0])
+        self.assertIn('`first`', executed['errors'][0]['message'])
+        self.assertIn('`last`', executed['errors'][0]['message'])
+
+    def _test_pagination_required_correct_ordering_and_limits(
+            self,
+            expected_num_results,
+            last=None
+    ):
+        """Test pagination.
+
+        :param expected_num_results:
+        :param last:
+        :return:
+        """
+        _query = """
+        {
+          users(ordering:{createdAt:DESC}, last:%s) {
+            pageInfo {
+              startCursor
+              endCursor
+              hasNextPage
+              hasPreviousPage
+            }
+            edges {
+              cursor
+              node {
+                email
+                firstName
+                lastName
+                isActive
+                createdAt
+              }
+            }
+          }
+        }
+        """ % last
+        print(_query)
+
+        executed = self.client.execute(_query)
+        # fields_values_sorted = []
+        self.assertEqual(
+            len(executed['data']['users']['edges']),
+            expected_num_results
+        )
+        _today = datetime.date.today()
+        today = datetime.datetime(
+            year=_today.year,
+            month=_today.month,
+            day=_today.day
+        )
+        for edge in executed['data']['users']['edges']:
+            created_at = dateutil.parser.parse(edge['node']['createdAt'])
+            self.assertGreater(created_at, today)
+
     def test_pagination(self):
         """"Test pagination.
 
@@ -110,10 +222,18 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
                 self.num_all_posts
             )
 
-        with self.subTest('Test no params given, all items shall be present'):
+        with self.subTest('Test first 12'):
             self._test_pagination(
                 first=12,
                 expected_num_results=12
+            )
+        with self.subTest('Test no first or last params given when required'):
+            self._test_pagination_required_first_or_last()
+
+        with self.subTest('Test correct ordering and limits'):
+            self._test_pagination_required_correct_ordering_and_limits(
+                expected_num_results=self.num_future_users,
+                last=self.num_future_users
             )
 
 

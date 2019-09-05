@@ -30,11 +30,15 @@ class SearchFilterBackend(BaseBackend):
     def field_belongs_to(self, field_name):
         return field_name in self.connection_field.search_fields
 
-    def get_field_options(self, field_name):
-        """"""
-        if field_name in self.connection_field.search_fields:
-            return self.connection_field.search_fields[field_name]
-        return {}
+    # def get_field_options(self, field_name):
+    #     """Get field options.
+    #
+    #     :param field_name:
+    #     :return:
+    #     """
+    #     if field_name in self.connection_field.search_fields:
+    #         return self.connection_field.search_fields[field_name]
+    #     return {}
 
     def get_backend_default_fields_params(self):
         """Get backend default filter params.
@@ -66,13 +70,13 @@ class SearchFilterBackend(BaseBackend):
             )
         )
 
-    @classmethod
-    def generic_fields(cls):
-        """Generic backend specific fields.
-
-        :return:
-        """
-        return {cls.prefix: graphene.String()}
+    # @classmethod
+    # def generic_fields(cls):
+    #     """Generic backend specific fields.
+    #
+    #     :return:
+    #     """
+    #     return {cls.prefix: graphene.String()}
 
     def prepare_search_fields(self):
         """Prepare search fields.
@@ -168,22 +172,22 @@ class SearchFilterBackend(BaseBackend):
             #     )
         return filter_fields
 
-    def prepare_query_params(self):
-        """
-
-        :return:
-        """
-        filter_args = dict(self.args).get(self.prefix)
-        if not filter_args:
-            return {}
-
-        query_params = {}
-        for arg, value in filter_args.items():
-            field = self.connection_field.search_args_mapping.get(arg, None)
-            if field is None:
-                continue
-            query_params[field] = value
-        return query_params
+    # def prepare_query_params(self):
+    #     """Prepare query params.
+    #
+    #     :return:
+    #     """
+    #     filter_args = dict(self.args).get(self.prefix)
+    #     if not filter_args:
+    #         return {}
+    #
+    #     query_params = {}
+    #     for arg, value in filter_args.items():
+    #         field = self.connection_field.search_args_mapping.get(arg, None)
+    #         if field is None:
+    #             continue
+    #         query_params[field] = value
+    #     return query_params
 
     def get_all_query_params(self):
         filter_args = dict(self.args).get(self.prefix)
@@ -191,61 +195,61 @@ class SearchFilterBackend(BaseBackend):
             return {}
         return filter_args
 
-    def get_filter_query_params(self):
-        """Get query params to be filtered on.
-
-        :return: Request query params to filter on.
-        :rtype: dict
-        """
-        query_params = self.prepare_query_params()
-
-        filter_query_params = {}
-        filter_fields = self.prepare_search_fields()
-
-        for field_name, values in query_params.items():
-            query_param_list = self.split_lookup_filter(field_name, maxsplit=1)
-            # field_name = query_param_list[0]
-
-            if field_name in filter_fields:
-                lookup_param = None
-                if len(query_param_list) > 1:
-                    lookup_param = query_param_list[1]
-
-                valid_lookups = filter_fields[field_name]["lookups"]
-
-                # If we have default lookup given use it as a default and
-                # do not require further suffix specification.
-                default_lookup = None
-                if "default_lookup" in filter_fields[field_name]:
-                    default_lookup = \
-                        filter_fields[field_name]["default_lookup"]
-
-                if lookup_param is None or lookup_param in valid_lookups:
-
-                    # If we have default lookup given use it as a default
-                    # and do not require further suffix specification.
-                    if lookup_param is None and default_lookup is not None:
-                        lookup_param = str(default_lookup)
-
-                    if isinstance(values, (list, tuple)):
-                        values = [
-                            __value.strip()
-                            for __value in values
-                            if __value.strip() != ""
-                        ]
-                    else:
-                        values = [values]
-
-                    if values:
-                        filter_query_params[field_name] = {
-                            "lookup": lookup_param,
-                            "values": values,
-                            "field": filter_fields[field_name].get(
-                                "field", field_name
-                            ),
-                            "type": self.doc_type.mapping.properties.name,
-                        }
-        return filter_query_params
+    # def get_filter_query_params(self):
+    #     """Get query params to be filtered on.
+    #
+    #     :return: Request query params to filter on.
+    #     :rtype: dict
+    #     """
+    #     query_params = self.prepare_query_params()
+    #
+    #     filter_query_params = {}
+    #     filter_fields = self.prepare_search_fields()
+    #
+    #     for field_name, values in query_params.items():
+    #         query_param_list = self.split_lookup_filter(field_name, maxsplit=1)
+    #         # field_name = query_param_list[0]
+    #
+    #         if field_name in filter_fields:
+    #             lookup_param = None
+    #             if len(query_param_list) > 1:
+    #                 lookup_param = query_param_list[1]
+    #
+    #             valid_lookups = filter_fields[field_name]["lookups"]
+    #
+    #             # If we have default lookup given use it as a default and
+    #             # do not require further suffix specification.
+    #             default_lookup = None
+    #             if "default_lookup" in filter_fields[field_name]:
+    #                 default_lookup = \
+    #                     filter_fields[field_name]["default_lookup"]
+    #
+    #             if lookup_param is None or lookup_param in valid_lookups:
+    #
+    #                 # If we have default lookup given use it as a default
+    #                 # and do not require further suffix specification.
+    #                 if lookup_param is None and default_lookup is not None:
+    #                     lookup_param = str(default_lookup)
+    #
+    #                 if isinstance(values, (list, tuple)):
+    #                     values = [
+    #                         __value.strip()
+    #                         for __value in values
+    #                         if __value.strip() != ""
+    #                     ]
+    #                 else:
+    #                     values = [values]
+    #
+    #                 if values:
+    #                     filter_query_params[field_name] = {
+    #                         "lookup": lookup_param,
+    #                         "values": values,
+    #                         "field": filter_fields[field_name].get(
+    #                             "field", field_name
+    #                         ),
+    #                         "type": self.doc_type.mapping.properties.name,
+    #                     }
+    #     return filter_query_params
 
     def construct_search(self):
         """Construct search.
@@ -361,78 +365,78 @@ class SearchFilterBackend(BaseBackend):
 
         return _queries
 
-    def construct_nested_search(self):
-        """Construct nested search.
-
-        We have to deal with two types of structures:
-
-        Type 1:
-
-        >>> search_nested_fields = {
-        >>>     'country': {
-        >>>         'path': 'country',
-        >>>         'fields': ['name'],
-        >>>     },
-        >>>     'city': {
-        >>>         'path': 'country.city',
-        >>>         'fields': ['name'],
-        >>>     },
-        >>> }
-
-        Type 2:
-
-        >>> search_nested_fields = {
-        >>>     'country': {
-        >>>         'path': 'country',
-        >>>         'fields': [{'name': {'boost': 2}}]
-        >>>     },
-        >>>     'city': {
-        >>>         'path': 'country.city',
-        >>>         'fields': [{'name': {'boost': 2}}]
-        >>>     },
-        >>> }
-
-        :return: Updated queryset.
-        :rtype: elasticsearch_dsl.search.Search
-        """
-        if (
-            not hasattr(self, "search_nested_fields")
-            or not self.search_nested_fields
-        ):
-            return []
-
-        # TODO: Support query boosting
-
-        query_params = self.prepare_search_fields()
-        __queries = []
-        for search_term in query_params:
-            for label, options in self.search_nested_fields.items():
-                queries = []
-                path = options.get("path")
-
-                for _field in options.get("fields", []):
-
-                    # In case if we deal with structure 2
-                    if isinstance(_field, dict):
-                        # TODO: take options (such as boost) into consideration
-                        field = "{}.{}".format(path, _field["name"])
-                    # In case if we deal with structure 1
-                    else:
-                        field = "{}.{}".format(path, _field)
-
-                    field_kwargs = {field: search_term}
-
-                    queries.append(Q("match", **field_kwargs))
-
-                __queries.append(
-                    Q(
-                        "nested",
-                        path=path,
-                        query=six.moves.reduce(operator.or_, queries),
-                    )
-                )
-
-        return __queries
+    # def construct_nested_search(self):
+    #     """Construct nested search.
+    #
+    #     We have to deal with two types of structures:
+    #
+    #     Type 1:
+    #
+    #     >>> search_nested_fields = {
+    #     >>>     'country': {
+    #     >>>         'path': 'country',
+    #     >>>         'fields': ['name'],
+    #     >>>     },
+    #     >>>     'city': {
+    #     >>>         'path': 'country.city',
+    #     >>>         'fields': ['name'],
+    #     >>>     },
+    #     >>> }
+    #
+    #     Type 2:
+    #
+    #     >>> search_nested_fields = {
+    #     >>>     'country': {
+    #     >>>         'path': 'country',
+    #     >>>         'fields': [{'name': {'boost': 2}}]
+    #     >>>     },
+    #     >>>     'city': {
+    #     >>>         'path': 'country.city',
+    #     >>>         'fields': [{'name': {'boost': 2}}]
+    #     >>>     },
+    #     >>> }
+    #
+    #     :return: Updated queryset.
+    #     :rtype: elasticsearch_dsl.search.Search
+    #     """
+    #     if (
+    #         not hasattr(self, "search_nested_fields")
+    #         or not self.search_nested_fields
+    #     ):
+    #         return []
+    #
+    #     # TODO: Support query boosting
+    #
+    #     query_params = self.prepare_search_fields()
+    #     __queries = []
+    #     for search_term in query_params:
+    #         for label, options in self.search_nested_fields.items():
+    #             queries = []
+    #             path = options.get("path")
+    #
+    #             for _field in options.get("fields", []):
+    #
+    #                 # In case if we deal with structure 2
+    #                 if isinstance(_field, dict):
+    #                     # TODO: take options (such as boost) into consideration
+    #                     field = "{}.{}".format(path, _field["name"])
+    #                 # In case if we deal with structure 1
+    #                 else:
+    #                     field = "{}.{}".format(path, _field)
+    #
+    #                 field_kwargs = {field: search_term}
+    #
+    #                 queries.append(Q("match", **field_kwargs))
+    #
+    #             __queries.append(
+    #                 Q(
+    #                     "nested",
+    #                     path=path,
+    #                     query=six.moves.reduce(operator.or_, queries),
+    #                 )
+    #             )
+    #
+    #     return __queries
 
     def filter(self, queryset):
         """Filter.
@@ -440,7 +444,15 @@ class SearchFilterBackend(BaseBackend):
         :param queryset:
         :return:
         """
-        _queries = self.construct_search() + self.construct_nested_search()
+        _queries = []
+
+        _search = self.construct_search()
+        if _search:
+            _queries.extend(_search)
+
+        # _nested_search = self.construct_nested_search()
+        # if _nested_search:
+        #     _queries.extend(_nested_search)
 
         if _queries:
             queryset = queryset.query("bool", should=_queries)
