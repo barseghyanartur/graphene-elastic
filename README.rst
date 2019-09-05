@@ -243,7 +243,6 @@ declarative manner.
 
             # For `OrderingFilterBackend` backend
             ordering_fields = {
-                'id': None,
                 'title': 'title.raw',
                 'created_at': 'created_at',
                 'num_views': 'num_views',
@@ -341,9 +340,6 @@ The following lookups are available:
 - ``ends_with`` (or ``endsWith`` for camelCase)
 - ``exclude``
 - ``exists``
-- ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase)
-- ``geo_distance`` (or ``geoDistance`` for camelCase)
-- ``geo_polygon`` (or ``geoPolygon`` for camelCase)
 - ``gt``
 - ``gte``
 - ``in``
@@ -459,6 +455,9 @@ Road-map and development plans.
 Lots of features are planned to be released in the upcoming Beta releases:
 
 - Geo-spatial backend
+- Filter lookup ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase)
+- Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase)
+- Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase)
 - Aggregations (faceted search) backend
 - Post-filter backend
 - Nested backend
