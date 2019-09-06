@@ -1,5 +1,7 @@
+Filtering
+=========
 Filter lookups
-==============
+--------------
 
 The following lookups are available:
 
@@ -20,8 +22,8 @@ The following lookups are available:
 - ``terms``
 - ``wildcard``
 
-Filter lookup contains
-----------------------
+Filter lookup ``contains``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -37,8 +39,8 @@ Filter lookup contains
       }
     }
 
-Filter lookup ends_with
------------------------
+Filter lookup ``ends_with``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. note::
 
     ``endsWith`` for camelCase.
@@ -58,9 +60,9 @@ Filter lookup ends_with
       }
     }
 
-Filter lookup exclude
----------------------
-For a single term:
+Filter lookup ``exclude``
+~~~~~~~~~~~~~~~~~~~~~~~~~
+**For a single term:**
 
 .. code-block:: javascript
 
@@ -77,7 +79,7 @@ For a single term:
       }
     }
 
-For multiple terms:
+**For multiple terms:**
 
 .. code-block:: javascript
 
@@ -95,8 +97,8 @@ For multiple terms:
     }
 
 
-Filter lookup exists
---------------------
+Filter lookup ``exists``
+~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -112,8 +114,8 @@ Filter lookup exists
       }
     }
 
-Filter lookup gt
-----------------
+Filter lookup ``gt``
+~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -129,8 +131,8 @@ Filter lookup gt
       }
     }
 
-Filter lookup gte
------------------
+Filter lookup ``gte``
+~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -146,8 +148,8 @@ Filter lookup gte
       }
     }
 
-Filter lookup in
-----------------
+Filter lookup ``in``
+~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -164,8 +166,8 @@ Filter lookup in
       }
     }
 
-Filter lookup lt
-----------------
+Filter lookup ``lt``
+~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -181,8 +183,8 @@ Filter lookup lt
       }
     }
 
-Filter lookup lte
------------------
+Filter lookup ``lte``
+~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -198,8 +200,8 @@ Filter lookup lte
       }
     }
 
-Filter lookup prefix
---------------------
+Filter lookup ``prefix``
+~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -216,8 +218,8 @@ Filter lookup prefix
       }
     }
 
-Filter lookup range
--------------------
+Filter lookup ``range``
+~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -236,16 +238,16 @@ Filter lookup range
       }
     }
 
-Filter lookup starts_with
--------------------------
+Filter lookup ``starts_with``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. note::
 
     ``startsWith`` for camelCase.
 
-Alias for `Filter lookup prefix`_.
+*Alias for filter lookup ``prefix``.*
 
-Filter lookup term
-------------------
+Filter lookup ``term``
+~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -262,8 +264,8 @@ Filter lookup term
       }
     }
 
-Filter lookup terms
--------------------
+Filter lookup ``terms``
+~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {
@@ -280,8 +282,8 @@ Filter lookup terms
       }
     }
 
-Filter lookup wildcard
-----------------------
+Filter lookup ``wildcard``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block:: javascript
 
     query {

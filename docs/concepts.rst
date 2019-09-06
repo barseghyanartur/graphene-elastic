@@ -1,5 +1,6 @@
 Concepts
 ========
+In order to explain in details, we need an imaginary app.
 
 Sample document definition
 --------------------------
@@ -62,7 +63,7 @@ for full example.
 
 Sample schema definition
 ------------------------
-ConnectionField is the most flexible and feature rich solution you have. It
+``ConnectionField`` is the most flexible and feature rich solution you have. It
 uses filter backends which you can tie to your needs the way you want in a
 declarative manner.
 
@@ -121,16 +122,29 @@ declarative manner.
                     'default_lookup': LOOKUP_FILTER_TERM,
                 },
 
-                # The name of the corresponding query argument is `category`.
-                # Since no lookups or default_lookup is provided, defaults are
-                # used (all lookups available, term is the default lookup).
-                'category': 'category.raw',  # Field name in the Elastic doc
+                # The dictionary key (in this case `category`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `category.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
+                'category': 'category.raw',
 
-                # The name of the corresponding query argument is `tags`
-                'tags': 'tags.raw',  # Field name in the Elastic doc
+                # The dictionary key (in this case `tags`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `tags.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
+                'tags': 'tags.raw',
 
-                # The name of the corresponding query argument is `num_views`
-                'num_views': 'num_views',  # Field name in the Elastic doc
+                # The dictionary key (in this case `num_views`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `num_views`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
+                'num_views': 'num_views',
             }
 
             # For `SearchFilterBackend` backend
@@ -142,15 +156,35 @@ declarative manner.
 
             # For `OrderingFilterBackend` backend
             ordering_fields = {
-                'title': 'title.raw',  # Field name in the Elastic doc
-                'created_at': 'created_at',  # Field name in the Elastic doc
-                'num_views': 'num_views',  # Field name in the Elastic doc
+                # The dictionary key (in this case `tags`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `tags.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
+                'title': 'title.raw',
+
+                # The dictionary key (in this case `created_at`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `created_at`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
+                'created_at': 'created_at',
+
+                # The dictionary key (in this case `num_views`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `num_views`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
+                'num_views': 'num_views',
             }
 
             # For `DefaultOrderingFilterBackend` backend
             ordering_defaults = (
-                '-num_views',  # Field name in the Elastic doc
-                'title.raw',  # Field name in the Elastic doc
+                '-num_views',  # Field name in the Elasticsearch document
+                'title.raw',  # Field name in the Elasticsearch document
             )
 
     # Query definition

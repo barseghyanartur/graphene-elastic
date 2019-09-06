@@ -1,39 +1,42 @@
-Search
-======
-Search in all fields:
+Ordering
+========
+Possible choices are ``ASC`` and ``DESC``.
 
 .. code-block:: javascript
 
     query {
       allPostDocuments(
-        search:{query:"Release Box"}
-      ) {
+            filter:{category:{term:"Photography"}},
+            ordering:{title:ASC}
+        ) {
         edges {
           node {
             category
             title
             content
+            numViews
+            tags
           }
         }
       }
     }
 
-Search in specific fields:
+Multiple values are allowed:
 
 .. code-block:: javascript
 
     query {
       allPostDocuments(
-        search:{
-            title:{value:"Release", boost:2},
-            content:{value:"Box"}
-        }
-      ) {
+            filter:{category:{term:"Photography"}},
+            ordering:{numViews:DESC, createdAt:ASC}
+        ) {
         edges {
           node {
             category
             title
             content
+            numViews
+            tags
           }
         }
       }

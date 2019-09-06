@@ -296,9 +296,9 @@ name.
 .. code-block:: javascript
 
     query PostsQuery {
-      allPostDocuments(filter:{
-            category:{terms:["Elastic", "Python"]}
-        }) {
+      allPostDocuments(
+            filter:{category:{terms:["Elastic", "Python"]}}
+        ) {
         edges {
           node {
             id
@@ -405,10 +405,10 @@ Possible choices are ``ASC`` and ``DESC``.
 .. code-block:: javascript
 
     query {
-      allPostDocuments(filter:{
-            tags:{in:["photography", "models"]},
+      allPostDocuments(
+            filter:{category:{term:"Photography"}},
             ordering:{title:ASC}
-        }) {
+        ) {
         edges {
           node {
             category
