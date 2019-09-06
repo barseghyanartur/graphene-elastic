@@ -13,6 +13,7 @@ sys.path.insert(0, project_dir("../../examples"))
 
 from factories.blog_post import PostFactory
 from factories.site_user import UserFactory
+from factories.farm_animal import AnimalFactory
 
 
 def generate(num_items=100):
@@ -31,6 +32,11 @@ def generate(num_items=100):
 
     for user in users:
         user.save()
+
+    animals = AnimalFactory.create_batch(num_items)
+
+    for animal in animals:
+        animal.save()
 
 
 if __name__ == '__main__':

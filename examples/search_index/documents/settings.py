@@ -3,6 +3,7 @@ import os
 __all__ = (
     'BLOG_POST_DOCUMENT_NAME',
     'SITE_USER_DOCUMENT_NAME',
+    'FARM_ANIMAL_DOCUMENT_NAME',
 )
 
 
@@ -14,4 +15,10 @@ BLOG_POST_DOCUMENT_NAME = os.environ.get(
 SITE_USER_DOCUMENT_NAME = os.environ.get(
     "GRAPHENE_ELASTIC_EXAMPLE_SITE_USER_DOCUMENT_NAME",
     "site_user"
+)
+
+
+FARM_ANIMAL_DOCUMENT_NAME = os.environ.get(
+    "GRAPHENE_ELASTIC_EXAMPLE_FARM_ANIMAL_DOCUMENT_NAME",
+    "farm_animal"
 )
