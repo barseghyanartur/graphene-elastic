@@ -15,11 +15,12 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
-0.0.13 (not yet released)
+0.0.13
 ------
+2019-09-07
 
 - Documentation improvements and fixes.
-- Code clean up.
+- Clean up.
 
 0.0.12
 ------

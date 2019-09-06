@@ -403,7 +403,7 @@ The following lookups are available:
 - ``wildcard``
 
 See `dedicated documentation on filter lookups
-<https://graphene-elastic.readthedocs.io/en/latest/filter_lookups.html>`__ for
+<https://graphene-elastic.readthedocs.io/en/latest/filters.html>`__ for
 more information.
 
 Search
