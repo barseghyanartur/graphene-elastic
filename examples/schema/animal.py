@@ -44,7 +44,7 @@ class Animal(ElasticsearchObjectType):
         ]
         filter_fields = {
             'id': {
-                'field': 'id.raw',
+                'field': 'id',
                 'default_lookup': LOOKUP_FILTER_TERM,
             },
             'action': {
@@ -65,14 +65,14 @@ class Animal(ElasticsearchObjectType):
             'entity': None,
         }
         ordering_fields = {
-            'id': 'id.raw',
+            'id': 'id',
             'publish_date': 'publish_date',
             'action': 'action.raw',
             'entity': 'entity.raw',
         }
 
         ordering_defaults = (
-            'id.raw',
+            'id',
             'publish_date'
         )
 

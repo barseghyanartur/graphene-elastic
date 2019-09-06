@@ -54,7 +54,7 @@ class Animal(Document):
     action = Text(analyzer=html_strip, fields={'raw': Keyword()})
     entity = Text(analyzer=html_strip, fields={'raw': Keyword()})
     # This is not internal ID of the Elasticsearch
-    id = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
+    id = Keyword()
     app = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
     message_id = Text()
     publish_date = Date()
@@ -103,7 +103,7 @@ class ReadOnlyAnimal(ReadOnlyDocument):
     action = Text(analyzer=html_strip, fields={'raw': Keyword()})
     entity = Text(analyzer=html_strip, fields={'raw': Keyword()})
     # This is not internal ID of the Elasticsearch
-    id = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
+    id = Keyword()
     app = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
     message_id = Text()
     publish_date = Date()
