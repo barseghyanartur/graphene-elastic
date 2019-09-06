@@ -55,6 +55,10 @@ class ReadOnlyAnimal(ElasticsearchObjectType):
                 'field': 'entity.raw',
                 'default_lookup': LOOKUP_FILTER_TERM,
             },
+            'app': {
+                'field': 'app.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
         }
         search_fields = {
             'action': None,

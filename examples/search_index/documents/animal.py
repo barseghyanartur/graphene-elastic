@@ -36,6 +36,12 @@ html_strip = analyzer('html_strip',
     char_filter=["html_strip"]
 )
 
+html_strip_preserve_case = analyzer('html_strip',
+    tokenizer="standard",
+    filter=["stop", "snowball"],
+    char_filter=["html_strip"]
+)
+
 
 class Animal(Document):
 
@@ -48,8 +54,8 @@ class Animal(Document):
     action = Text(analyzer=html_strip, fields={'raw': Keyword()})
     entity = Text(analyzer=html_strip, fields={'raw': Keyword()})
     # This is not internal ID of the Elasticsearch
-    id = Text(analyzer=html_strip, fields={'raw': Keyword()})
-    app = Text()
+    id = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
+    app = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
     message_id = Text()
     publish_date = Date()
     data = Object(
@@ -97,8 +103,8 @@ class ReadOnlyAnimal(ReadOnlyDocument):
     action = Text(analyzer=html_strip, fields={'raw': Keyword()})
     entity = Text(analyzer=html_strip, fields={'raw': Keyword()})
     # This is not internal ID of the Elasticsearch
-    id = Text(analyzer=html_strip, fields={'raw': Keyword()})
-    app = Text()
+    id = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
+    app = Text(analyzer=html_strip_preserve_case, fields={'raw': Keyword()})
     message_id = Text()
     publish_date = Date()
     data = Object(
