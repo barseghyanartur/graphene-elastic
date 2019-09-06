@@ -19,6 +19,7 @@ are used for versioning (schema follows below):
 ------
 
 - Documentation improvements and fixes.
+- Code clean up.
 
 0.0.12
 ------

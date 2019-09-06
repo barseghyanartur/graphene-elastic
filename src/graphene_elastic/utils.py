@@ -7,7 +7,7 @@ import elasticsearch_dsl
 from elasticsearch_dsl import field as elasticsearch_fields
 
 from graphene import Node
-from graphene.utils.trim_docstring import trim_docstring
+# from graphene.utils.trim_docstring import trim_docstring
 
 __title__ = "graphene_elastic.converter"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"

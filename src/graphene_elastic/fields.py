@@ -7,10 +7,10 @@ from functools import partial, reduce
 # import json
 
 import graphene
-from graphene import NonNull
-from graphql_relay import connection_from_list
+# from graphene import NonNull
+# from graphql_relay import connection_from_list
 import elasticsearch_dsl
-from elasticsearch_dsl import Search, Q
+# from elasticsearch_dsl import Search, Q
 from promise import Promise
 from graphene.relay import ConnectionField, PageInfo
 from graphene.types.argument import to_arguments
@@ -68,9 +68,6 @@ class ElasticsearchConnectionField(ConnectionField):
                 get_queryset
             ), "Attribute `get_queryset` on {} must be callable.".format(self)
         self._get_queryset = get_queryset
-
-        # This is where we shall enrich!
-        # kwargs.setdefault("my_param", graphene.String())
 
         super(ElasticsearchConnectionField, self).__init__(
             type, *args, **kwargs
@@ -185,11 +182,6 @@ class ElasticsearchConnectionField(ConnectionField):
             Returns:
                 bool
             """
-
-            # if not hasattr(self.document, k):
-            #     return False
-            # if isinstance(getattr(self.document, k), property):
-            #     return False
             if k not in self.doc_type.mapping.properties.properties._d_:
                 return False
             try:
@@ -244,8 +236,7 @@ class ElasticsearchConnectionField(ConnectionField):
     def reference_args(self):
         def get_reference_field(r, kv):
             field = kv[1]
-            # TODO: Find out whether this is applicable to Elasticsearch (most
-            # likely - NOT, since we have no references in Elastic).
+            # TODO: Find out whether this is applicable to Elasticsearch
             if callable(getattr(field, "get_type", None)):
                 _type = field.get_type()
                 if _type:

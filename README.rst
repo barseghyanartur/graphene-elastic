@@ -217,8 +217,15 @@ declarative manner.
 
             # For `FilteringFilterBackend` backend
             filter_fields = {
+                # The dictionary key (in this case `title`) is the name of
+                # the corresponding GraphQL query argument. Since lookups are
+                # provided, number of lookups is limited, while term is the
+                # default lookup (as specified). The dictionary value
+                # (in this case `title.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'title': {
                     'field': 'title.raw',
+                    # Available lookups
                     'lookups': [
                         LOOKUP_FILTER_TERM,
                         LOOKUP_FILTER_TERMS,
@@ -227,10 +234,32 @@ declarative manner.
                         LOOKUP_QUERY_IN,
                         LOOKUP_QUERY_EXCLUDE,
                     ],
+                    # Default lookup
                     'default_lookup': LOOKUP_FILTER_TERM,
                 },
+
+                # The dictionary key (in this case `category`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `category.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'category': 'category.raw',
+
+                # The dictionary key (in this case `tags`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `tags.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'tags': 'tags.raw',
+
+                # The dictionary key (in this case `num_views`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `num_views`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'num_views': 'num_views',
             }
 
@@ -243,15 +272,35 @@ declarative manner.
 
             # For `OrderingFilterBackend` backend
             ordering_fields = {
+                # The dictionary key (in this case `tags`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `tags.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'title': 'title.raw',
+
+                # The dictionary key (in this case `created_at`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `created_at`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'created_at': 'created_at',
+
+                # The dictionary key (in this case `num_views`) is the name of
+                # the corresponding GraphQL query argument. Since no lookups
+                # or default_lookup is provided, defaults are used (all lookups
+                # available, term is the default lookup). The dictionary value
+                # (in this case `num_views`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'num_views': 'num_views',
             }
 
             # For `DefaultOrderingFilterBackend` backend
             ordering_defaults = (
-                '-num_views',
-                'title.raw',
+                '-num_views',  # Field name in the Elasticsearch document
+                'title.raw',  # Field name in the Elasticsearch document
             )
 
     # Query definition
@@ -354,7 +403,7 @@ The following lookups are available:
 - ``wildcard``
 
 See `dedicated documentation on filter lookups
-<https://graphene-elastic.readthedocs.io/en/latest/filter_lookups.html>`__ for
+<https://graphene-elastic.readthedocs.io/en/latest/filters.html>`__ for
 more information.
 
 Search

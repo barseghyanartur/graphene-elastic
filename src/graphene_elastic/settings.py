@@ -65,7 +65,7 @@ def import_from_string(val, setting_name):
 
 
 def set_setting(key, value):
-    """
+    """Set setting.
 
     :param key:
     :param value:
@@ -79,7 +79,7 @@ def set_setting(key, value):
 
 
 def get_setting(key, default=None):
-    """
+    """Get setting.
 
     :param key:
     :param default:

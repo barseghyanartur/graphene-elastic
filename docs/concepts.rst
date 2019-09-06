@@ -106,7 +106,12 @@ declarative manner.
 
             # For `FilteringFilterBackend` backend
             filter_fields = {
-                # The name of the corresponding query argument is `title`
+                # The dictionary key (in this case `title`) is the name of
+                # the corresponding GraphQL query argument. Since lookups are
+                # provided, number of lookups is limited, while term is the
+                # default lookup (as specified). The dictionary value
+                # (in this case `title.raw`) is the field name in the
+                # Elasticsearch document (`PostDocument`).
                 'title': {
                     'field': 'title.raw',  # Field name in the Elastic doc
                     # Available lookups
