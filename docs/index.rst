@@ -581,7 +581,7 @@ Contents:
    index
    concepts
    quick_start
-   search
+   searching
    filtering
    ordering
    pagination
