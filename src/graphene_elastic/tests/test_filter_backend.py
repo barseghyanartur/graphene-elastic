@@ -82,11 +82,11 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         time.sleep(3)
 
-    def _test_filter_text_lookups(self,
-                                  query,
-                                  num_posts,
-                                  lookup=VALUE,
-                                  field='category'):
+    def __test_filter_text_lookups(self,
+                                   query,
+                                   num_posts,
+                                   lookup=VALUE,
+                                   field='category'):
         """Test filter text lookups (on field `category`).
 
         :param query:
@@ -116,10 +116,10 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             num_posts
         )
 
-    def _test_filter_number_lookups(self,
-                                    value,
-                                    num_posts,
-                                    lookup=LOOKUP_QUERY_GT):
+    def __test_filter_number_lookups(self,
+                                     value,
+                                     num_posts,
+                                     lookup=LOOKUP_QUERY_GT):
         """Test filter number lookups (on field `num_views`).
 
         :param value:
@@ -148,21 +148,21 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             num_posts
         )
 
-    def test_filter_term_terms_lookup(self):
+    def _test_filter_term_terms_lookup(self):
         """"Test filter `term` and `terms` lookups (on field `category`).
 
         :return:
         """
         with self.subTest('Test filter on field `category` "Django" '
                           'using default lookup (`term`)'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Django"',
                 self.num_django_posts
             )
 
         with self.subTest('Test filter on field `category` "Django" '
                           'using `term` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Django"',
                 self.num_django_posts,
                 lookup=LOOKUP_FILTER_TERM
@@ -170,14 +170,14 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using default lookup (`term`)'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Elastic"',
                 self.num_elastic_posts
             )
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `term` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Elastic"',
                 self.num_elastic_posts,
                 LOOKUP_FILTER_TERM
@@ -185,7 +185,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` '
                           '["Elastic", "Django"] using `terms` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '["Elastic", "Django"]',
                 self.num_elastic_posts + self.num_django_posts,
                 LOOKUP_FILTER_TERMS
@@ -193,13 +193,13 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` '
                           '["Elastic", "Django"] using `in` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '["Elastic", "Django"]',
                 self.num_elastic_posts + self.num_django_posts,
                 LOOKUP_QUERY_IN
             )
 
-    def test_filter_prefix_starts_ends_with_contains_wildcard_lookups(self):
+    def _test_filter_prefix_starts_ends_with_contains_wildcard_lookups(self):
         """"Test filters `prefix`, `starts_with` and `ends_with` lookups (on
         field `category`).
 
@@ -207,7 +207,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `contains` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"ytho"',
                 self.num_python_posts,
                 LOOKUP_QUERY_CONTAINS
@@ -215,7 +215,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `wildcard` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"*ytho*"',
                 self.num_python_posts,
                 LOOKUP_FILTER_WILDCARD
@@ -223,7 +223,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `prefix` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Pyth"',
                 self.num_python_posts,
                 to_camel_case(LOOKUP_FILTER_PREFIX)
@@ -231,7 +231,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `starts_with` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Pyth"',
                 self.num_python_posts,
                 to_camel_case(LOOKUP_QUERY_STARTSWITH)
@@ -239,26 +239,26 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `ends_with` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"ython"',
                 self.num_python_posts,
                 to_camel_case(LOOKUP_QUERY_ENDSWITH)
             )
 
-    def test_filter_exclude_lookup(self):
+    def _test_filter_exclude_lookup(self):
         """"Test filter `exclude` lookup (on field `category`).
 
         :return:
         """
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `exclude` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 '"Python"',
                 self.num_all_posts - self.num_python_posts,
                 LOOKUP_QUERY_EXCLUDE
             )
 
-    def test_filter_exists_is_null_lookups(self):
+    def _test_filter_exists_is_null_lookups(self):
         """"Test filter `exists` lookup (on fields `category`
         and `i_do_not_exist`).
 
@@ -266,7 +266,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         with self.subTest('Test filter on field `category`'
                           'using `exists` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 'true',
                 self.num_all_posts,
                 LOOKUP_FILTER_EXISTS
@@ -274,7 +274,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         with self.subTest('Test filter on field `category`'
                           'using `is_null` lookup'):
-            self._test_filter_text_lookups(
+            self.__test_filter_text_lookups(
                 'false',
                 self.num_all_posts,
                 to_camel_case(LOOKUP_QUERY_ISNULL)
@@ -290,7 +290,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         #         field='i_do_not_exist'
         #     )
 
-    def test_filter_gt_gte_lt_lte_range_lookups(self):
+    def _test_filter_gt_gte_lt_lte_range_lookups(self):
         """"Test filter `gt`, `gte`, `lt`, `lte`, `range` lookups (on
         field `num_views`).
 
@@ -299,7 +299,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This should be all posts, since minimum value for posts is 0.
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"0.1"',
                 self.num_all_posts
             )
@@ -307,7 +307,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This should be Python posts only, since they may start at 2_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"1999"',
                 self.num_python_posts
             )
@@ -315,7 +315,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This shall be all posts (including 0).
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"0"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_GTE
@@ -324,7 +324,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This shall be Python posts only, since they may start at 2_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"2000"',
                 self.num_python_posts,
                 lookup=LOOKUP_QUERY_GTE
@@ -333,7 +333,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This shall be all posts, since maximum is 10_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"10001"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_LT
@@ -342,7 +342,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This shall exclude Python posts, since they start at 2_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"2000"',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LT
@@ -351,7 +351,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This shall be all posts, since maximum is 10_000.
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"10000"',
                 self.num_all_posts,
                 lookup=LOOKUP_QUERY_LTE
@@ -360,7 +360,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # This shall exclude all Python posts, since they start at 2_000
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '"1999"',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LTE
@@ -375,11 +375,24 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             for _p in self.all_posts:
                 if 100 <= _p.num_views <= 300:
                     _count += 1
-            self._test_filter_number_lookups(
+            self.__test_filter_number_lookups(
                 '{%s: "%s", %s: "%s"}' % (LOWER, '100', UPPER, '300'),
                 _count,
                 lookup=LOOKUP_FILTER_RANGE
             )
+
+    def test_all(self):
+        """Test all.
+
+        Since we don't write in specific tests, it's more efficient to run
+        them all from a single method in order to save on speed ups between
+        tests.
+        """
+        self._test_filter_term_terms_lookup()
+        self._test_filter_prefix_starts_ends_with_contains_wildcard_lookups()
+        self._test_filter_exclude_lookup()
+        self._test_filter_exists_is_null_lookups()
+        self._test_filter_gt_gte_lt_lte_range_lookups()
 
 
 if __name__ == '__main__':

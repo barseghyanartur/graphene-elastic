@@ -62,12 +62,12 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
 
         time.sleep(3)
 
-    def _test_pagination(self,
-                         expected_num_results,
-                         first=None,
-                         last=None,
-                         after=None,
-                         before=None):
+    def __test_pagination(self,
+                          expected_num_results,
+                          first=None,
+                          last=None,
+                          after=None,
+                          before=None):
         """Test pagination.
 
         :param expected_num_results:
@@ -121,7 +121,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             expected_num_results
         )
 
-    def _test_pagination_required_first_or_last(self):
+    def __test_pagination_required_first_or_last(self):
         """Test pagination.
 
         :param expected_num_results:
@@ -161,7 +161,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
         self.assertIn('`first`', executed['errors'][0]['message'])
         self.assertIn('`last`', executed['errors'][0]['message'])
 
-    def _test_pagination_required_correct_ordering_and_limits(
+    def __test_pagination_required_correct_ordering_and_limits(
             self,
             expected_num_results,
             last=None
@@ -212,29 +212,38 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             created_at = dateutil.parser.parse(edge['node']['createdAt'])
             self.assertGreater(created_at, today)
 
-    def test_pagination(self):
+    def _test_pagination(self):
         """"Test pagination.
 
         :return:
         """
         with self.subTest('Test no params given, all items shall be present'):
-            self._test_pagination(
+            self.__test_pagination(
                 self.num_all_posts
             )
 
         with self.subTest('Test first 12'):
-            self._test_pagination(
+            self.__test_pagination(
                 first=12,
                 expected_num_results=12
             )
         with self.subTest('Test no first or last params given when required'):
-            self._test_pagination_required_first_or_last()
+            self.__test_pagination_required_first_or_last()
 
         with self.subTest('Test correct ordering and limits'):
-            self._test_pagination_required_correct_ordering_and_limits(
+            self.__test_pagination_required_correct_ordering_and_limits(
                 expected_num_results=self.num_future_users,
                 last=self.num_future_users
             )
+
+    def test_all(self):
+        """Test all.
+
+        Since we don't write in specific tests, it's more efficient to run
+        them all from a single method in order to save on speed ups between
+        tests.
+        """
+        self._test_pagination()
 
 
 if __name__ == '__main__':

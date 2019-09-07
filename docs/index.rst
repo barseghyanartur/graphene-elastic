@@ -166,7 +166,7 @@ Sample Django app
 
     ./scripts/run_django.sh runserver
 
-**Open Flask graphiql client**
+**Open Django graphiql client**
 
 .. code-block:: text
 
@@ -218,11 +218,13 @@ declarative manner.
             # For `FilteringFilterBackend` backend
             filter_fields = {
                 # The dictionary key (in this case `title`) is the name of
-                # the corresponding GraphQL query argument. Since lookups are
-                # provided, number of lookups is limited, while term is the
-                # default lookup (as specified). The dictionary value
-                # (in this case `title.raw`) is the field name in the
-                # Elasticsearch document (`PostDocument`).
+                # the corresponding GraphQL query argument. The dictionary
+                # value could be simple or complex structure (in this case
+                # complex). The `field` key points to the `title.raw`, which
+                # is the field name in the Elasticsearch document
+                # (`PostDocument`). Since `lookups` key is provided, number
+                # of lookups is limited to the given set, while term is the
+                # default lookup (as specified in `default_lookup`).
                 'title': {
                     'field': 'title.raw',
                     # Available lookups
@@ -273,26 +275,20 @@ declarative manner.
             # For `OrderingFilterBackend` backend
             ordering_fields = {
                 # The dictionary key (in this case `tags`) is the name of
-                # the corresponding GraphQL query argument. Since no lookups
-                # or default_lookup is provided, defaults are used (all lookups
-                # available, term is the default lookup). The dictionary value
-                # (in this case `tags.raw`) is the field name in the
+                # the corresponding GraphQL query argument. The dictionary
+                # value (in this case `tags.raw`) is the field name in the
                 # Elasticsearch document (`PostDocument`).
                 'title': 'title.raw',
 
                 # The dictionary key (in this case `created_at`) is the name of
-                # the corresponding GraphQL query argument. Since no lookups
-                # or default_lookup is provided, defaults are used (all lookups
-                # available, term is the default lookup). The dictionary value
-                # (in this case `created_at`) is the field name in the
+                # the corresponding GraphQL query argument. The dictionary
+                # value (in this case `created_at`) is the field name in the
                 # Elasticsearch document (`PostDocument`).
                 'created_at': 'created_at',
 
                 # The dictionary key (in this case `num_views`) is the name of
-                # the corresponding GraphQL query argument. Since no lookups
-                # or default_lookup is provided, defaults are used (all lookups
-                # available, term is the default lookup). The dictionary value
-                # (in this case `num_views`) is the field name in the
+                # the corresponding GraphQL query argument. The dictionary
+                # value (in this case `num_views`) is the field name in the
                 # Elasticsearch document (`PostDocument`).
                 'num_views': 'num_views',
             }

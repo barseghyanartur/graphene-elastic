@@ -54,7 +54,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         time.sleep(3)
 
-    def _test_ordering(self, field, direction):
+    def __test_ordering(self, field, direction):
         """Test ordering.
 
         :param field:
@@ -89,7 +89,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         self.assertEqual(sorted_values, fields_values_sorted)
 
-    def _test_default_ordering(self, field, direction):
+    def __test_default_ordering(self, field, direction):
         """Test default ordering.
 
         :param field:
@@ -124,42 +124,53 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         self.assertEqual(sorted_values, fields_values_sorted)
 
-    def test_ordering(self):
+    def _test_ordering(self):
         """"Test ordering (on fields `title` and `num_views`).
 
         :return:
         """
+        # Test ordering (on fields `title` and `num_views`).
         with self.subTest('Test ordering on field `title` ascending'):
-            self._test_ordering(
+            self.__test_ordering(
                 'title',
                 Direction.ASC
             )
 
         with self.subTest('Test ordering on field `title` descending'):
-            self._test_ordering(
+            self.__test_ordering(
                 'title',
                 Direction.DESC
             )
 
         with self.subTest('Test ordering on field `num_views` ascending'):
-            self._test_ordering(
+            self.__test_ordering(
                 'numViews',
                 Direction.ASC
             )
 
         with self.subTest('Test ordering on field `num_views` descending'):
-            self._test_ordering(
+            self.__test_ordering(
                 'numViews',
                 Direction.DESC
             )
 
-    def test_default_ordering(self):
+    def _test_default_ordering(self):
         """Test default ordering (on field `num_views)."""
         with self.subTest('Test default ordering on field `num_views`'):
-            self._test_default_ordering(
+            self.__test_default_ordering(
                 'numViews',
                 Direction.DESC
             )
+
+    def test_all(self):
+        """Test all.
+
+        Since we don't write in specific tests, it's more efficient to run
+        them all from a single method in order to save on speed ups between
+        tests.
+        """
+        self._test_ordering()
+        self._test_default_ordering()
 
 
 if __name__ == '__main__':

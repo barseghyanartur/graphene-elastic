@@ -48,7 +48,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         time.sleep(2)
 
-    def _test_search_content(self, search, num_posts):
+    def __test_search_content(self, search, num_posts):
         """Test search.
 
         content:{%s:"%s"}
@@ -76,35 +76,44 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
             num_posts
         )
 
-    def test_search_content(self):
+    def _test_search_content(self):
         """"Test search content.
 
         :return:
         """
         # Covering specific field lookups: `search:{title:{value:"Another"}}`
         with self.subTest('Test search the content on term "Django"'):
-            self._test_search_content(
+            self.__test_search_content(
                 '{content:{%s:"%s"}}' % (VALUE, self.alice),
                 self.num_alice_posts
             )
         with self.subTest('Test search the content on term "Elastic"'):
-            self._test_search_content(
+            self.__test_search_content(
                 '{content:{%s:"%s"}}' % (VALUE, self.beast),
                 self.num_beast_posts
             )
 
         # Covering all field lookups: `search:{query:"Another"}`
         with self.subTest('Test search the content on term "Django"'):
-            self._test_search_content(
+            self.__test_search_content(
                 '{%s:"%s"}' % (ALL, self.alice),
                 self.num_alice_posts
             )
 
         with self.subTest('Test search the content on term "Elastic"'):
-            self._test_search_content(
+            self.__test_search_content(
                 '{%s:"%s"}' % (ALL, self.beast),
                 self.num_beast_posts
             )
+
+    def test_all(self):
+        """Test all.
+
+        Since we don't write in specific tests, it's more efficient to run
+        them all from a single method in order to save on speed ups between
+        tests.
+        """
+        self._test_search_content()
 
 
 if __name__ == '__main__':
