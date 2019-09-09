@@ -14,7 +14,7 @@ from elasticsearch_dsl import (
     Text,
 )
 from .read_only import ReadOnlyDocument
-from .settings import FARM_ANIMAL_DOCUMENT_NAME
+from .settings import FARM_ANIMAL_DOCUMENT_NAME, ELASTICSEARCH_CONNECTION
 
 try:
     from elasticsearch import logger
@@ -27,7 +27,7 @@ __all__ = (
     'ReadOnlyAnimal',
 )
 
-connections.create_connection(hosts=['localhost'], timeout=20)
+connections.create_connection(**ELASTICSEARCH_CONNECTION)
 
 
 html_strip = analyzer('html_strip',

@@ -568,6 +568,12 @@ type:
 
     ./runtests.py src/graphene_elastic/tests/test_filter_backend.py::FilterBackendElasticTestCase
 
+Testing with Docker
+-------------------
+.. code-block:: sh
+
+    docker-compose -f docker-compose.yml -f docker-compose-test.yml up --build test
+
 Debugging
 =========
 For development purposes, you could use the flask app (easy to debug). Standard
