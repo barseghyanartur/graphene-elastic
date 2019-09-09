@@ -24,9 +24,18 @@ Populate dummy data
 
     ./scripts/populate_elasticsearch_data.sh
 
-Open the browser
-----------------
-http://127.0.0.1:8000/graphql
+Run the test server
+-------------------
+
+.. code-block:: sh
+
+    ./scripts/run_flask.sh
+
+Open the ``graphiql`` client the browser
+----------------------------------------
+.. code-block:: text
+
+    http://127.0.0.1:8001/graphql
 
 Make some experiments
 ---------------------
