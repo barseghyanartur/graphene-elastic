@@ -7,6 +7,7 @@ from schema import schema
 from search_index.documents.settings import (
     BLOG_POST_DOCUMENT_NAME,
     SITE_USER_DOCUMENT_NAME,
+    ELASTICSEARCH_CONNECTION
 )
 from search_index.documents import Post, User
 import factories
@@ -25,7 +26,7 @@ class BaseGrapheneElasticTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = Client(schema)
-        cls.elasticsearch = Elasticsearch()
+        cls.elasticsearch = Elasticsearch(**ELASTICSEARCH_CONNECTION)
         cls.faker = Faker()
 
     def setUp(self):

@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  test:
+    stdin_open: true
+    tty: true
+    container_name: graphene_elastic_test
+    build:
+      context: .
+      dockerfile: ./docker/testing/Dockerfile
+    volumes:
+    - .:/code
+    entrypoint:
+      - /code/docker/testing/entrypoint.sh
+    depends_on:
+    - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+    environment:
+      - 'ELASTICSEARCH_CONNECTION={"hosts": ["elasticsearch"], "timeout": 5}'
