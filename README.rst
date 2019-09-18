@@ -548,7 +548,7 @@ Road-map and development plans.
 
 This package was designed after `django-elasticsearch-dsl-drf
 <https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
-There's a plan to adopt its' functionality to ``graphene-elastic`` (this
+It's intended to offer similar functionality in ``graphene-elastic`` (this
 package).
 
 Lots of features are planned to be released in the upcoming Beta releases:
