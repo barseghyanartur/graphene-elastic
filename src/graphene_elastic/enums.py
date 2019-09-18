@@ -32,7 +32,7 @@ class NoValue(Enum):
         return "<%s.%s>" % (self.__class__.__name__, self.name)
 
 
-def convert_list_to_enum(values, enum_name="DynamicEnum"):
+def convert_list_to_enum(values, enum_name="DynamicEnum", upper=True):
     """Prepare list values for creating an Enum.
 
     Example:
@@ -41,4 +41,8 @@ def convert_list_to_enum(values, enum_name="DynamicEnum"):
     >>> print(prepare_list_for_enum(values))
     {'RED': 'red', 'GREEN': 'green', 'BLUE': 'blue'}
     """
-    return NoValue(enum_name, {el.upper(): el for el in values})
+    if upper:
+        _d = {el.upper(): el for el in values}
+    else:
+        _d = {el: el for el in values}
+    return NoValue(enum_name, _d)

@@ -92,6 +92,21 @@ def construct_self_referenced_fields(self_referenced, registry):
     return fields
 
 
+def construct_backend_fields(backends, connection):
+    """Construct backend fields.
+
+    :param backends:
+    :param connection:
+    :return:
+    """
+    backend_fields = OrderedDict()
+    for backend_cls in backends:
+        backend = backend_cls(connection)
+        backend_fields.update(backend.get_backend_document_fields())
+
+    return backend_fields
+
+
 class ElasticsearchObjectTypeOptions(ObjectTypeOptions):
 
     document = None  # type: Document
@@ -180,6 +195,12 @@ class ElasticsearchObjectType(ObjectType):
         else:
             _meta = ElasticsearchObjectTypeOptions(cls)
 
+        backend_fields = construct_backend_fields(
+            backends=options.get('filter_backends', []),
+            connection=connection
+        )
+        document_fields.update(backend_fields)
+
         _meta.document = document
         _meta.registry = registry
         _meta.fields = document_fields
@@ -187,6 +208,7 @@ class ElasticsearchObjectType(ObjectType):
         _meta.search_fields = options.get('search_fields', {})
         _meta.ordering_fields = options.get('ordering_fields', {})
         _meta.ordering_defaults = options.get('ordering_defaults', [])
+        _meta.highlight_fields = options.get('highlight_fields', {})
         _meta.search_nested_fields = options.get('search_nested_fields', {})
         _meta.filter_backends = options.get('filter_backends', [])
         _meta.connection = connection

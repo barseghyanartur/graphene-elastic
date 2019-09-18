@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import graphene
 
 from ..constants import (
@@ -46,11 +47,49 @@ class BaseBackend(object):
 
     @property
     def filter_fields(self):
-        return self.connection_field.type._meta.node._meta.filter_fields
+        """Filtering filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_fields',
+            {}
+        )
+
+    @property
+    def filter_args_mapping(self):
+        return {k: k for k, v in self.filter_fields.items()}
 
     @property
     def search_fields(self):
-        return self.connection_field.type._meta.node._meta.search_fields
+        """Search filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'search_fields',
+            {}
+        )
+
+    @property
+    def search_args_mapping(self):
+        return {k: k for k, v in self.search_fields.items()}
+
+    @property
+    def ordering_fields(self):
+        return getattr(
+            self.connection_field.type._meta.node_type._meta,
+            "ordering_fields",
+            {}
+        )
+
+    @property
+    def ordering_args_mapping(self):
+        return {k: k for k, v in self.ordering_fields.items()}
+
+    @property
+    def ordering_defaults(self):
+        return getattr(
+            self.connection_field.type._meta.node_type._meta,
+            "ordering_defaults",
+            []
+        )
 
     @property
     def doc_type(self):
@@ -58,7 +97,7 @@ class BaseBackend(object):
 
     @classmethod
     def generic_fields(cls):
-        """Generic backend specific fields.
+        """Generic backend specific filtering fields.
 
         For instance, for search filter backend it would be
         ``{'search': String()}``.
@@ -67,6 +106,13 @@ class BaseBackend(object):
         :rtype dict:
         """
         return {}
+
+    def get_backend_document_fields(self):
+        """Get backend document fields.
+
+        :return:
+        """
+        return OrderedDict()
 
     def get_field_type(self, field_name, field_value, base_field_type):
         """Get field type.

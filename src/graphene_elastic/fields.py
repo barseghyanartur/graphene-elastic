@@ -226,6 +226,7 @@ class ElasticsearchConnectionField(ConnectionField):
                     )
                 )
 
+        # import ipdb; ipdb.set_trace()
         return params
 
     @property

@@ -44,6 +44,7 @@ Main features and highlights
 - Implemented filter backend.
 - Implemented ordering backend.
 - Implemented pagination.
+- Implemented highlight backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -190,6 +191,7 @@ declarative manner.
     from graphene_elastic.filter_backends import (
         FilteringFilterBackend,
         SearchFilterBackend,
+        HighlightFilterBackend,
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
     )
@@ -211,6 +213,7 @@ declarative manner.
             filter_backends = [
                 FilteringFilterBackend,
                 SearchFilterBackend,
+                HighlightFilterBackend,
                 OrderingFilterBackend,
                 DefaultOrderingFilterBackend,
             ]
@@ -298,6 +301,24 @@ declarative manner.
                 '-num_views',  # Field name in the Elasticsearch document
                 'title.raw',  # Field name in the Elasticsearch document
             )
+
+            # For `HighlightFilterBackend` backend
+            highlight_fields = {
+                'title': {
+                    'enabled': True,
+                    'options': {
+                        'pre_tags': ["<b>"],
+                        'post_tags': ["</b>"],
+                    }
+                },
+                'content': {
+                    'options': {
+                        'fragment_size': 50,
+                        'number_of_fragments': 3
+                    }
+                },
+                'category': {},
+            }
 
     # Query definition
     class Query(graphene.ObjectType):
@@ -493,6 +514,29 @@ By default number of results is limited to 100.
       }
     }
 
+Highlight
+^^^^^^^^^
+Simply, list the fields you want to highlight. This works only in combination
+with search.
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(
+            search:{content:{value:"alice"}, title:{value:"alice"}},
+            highlight:[category, content]
+        ) {
+        edges {
+          node {
+            title
+            content
+            highlight
+          }
+          cursor
+        }
+      }
+    }
+
 Road-map
 ========
 Road-map and development plans.
@@ -506,7 +550,6 @@ Lots of features are planned to be released in the upcoming Beta releases:
 - Aggregations (faceted search) backend
 - Post-filter backend
 - Nested backend
-- Highlight backend
 - Suggester backend
 - Global aggregations backend
 - More-like-this backend

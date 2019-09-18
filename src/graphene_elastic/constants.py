@@ -21,6 +21,7 @@ __all__ = (
     "EXTENDED_STRING_LOOKUP_FILTERS",
     "FALSE_VALUES",
     "FIELD",
+    "FRAGMENT_SIZE",
     "FUNCTIONAL_SUGGESTER_COMPLETION_MATCH",
     "FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX",
     "FUNCTIONAL_SUGGESTER_PHRASE_MATCH",
@@ -446,6 +447,7 @@ GT = "gt"
 GTE = "gte"
 LT = "lt"
 LTE = "lte"
+FRAGMENT_SIZE = "fragment_size"
 
 
 # ****************************************************************************
