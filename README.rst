@@ -49,6 +49,10 @@ Main features and highlights
 
 See the `Road-map`_ for what's yet planned to implemented.
 
+Do you need a similar tool for Django REST Framework? Check
+`django-elasticsearch-dsl-drf
+<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
+
 Documentation
 =============
 Documentation is available on `Read the Docs
@@ -541,6 +545,11 @@ with search.
 Road-map
 ========
 Road-map and development plans.
+
+This package was designed after `django-elasticsearch-dsl-drf
+<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
+There's a plan to adopt its' functionality to ``graphene-elastic`` (this
+package).
 
 Lots of features are planned to be released in the upcoming Beta releases:
 
