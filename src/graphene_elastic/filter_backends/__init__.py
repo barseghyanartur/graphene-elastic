@@ -1,6 +1,7 @@
 from .filtering import *
 from .highlight import *
 from .search import *
+from .source import *
 from .ordering import *
 
 __title__ = 'graphene_elastic.filter_backends'

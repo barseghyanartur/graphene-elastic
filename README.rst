@@ -40,11 +40,12 @@ Main features and highlights
   are the core classes to work with ``graphene``.
 - Pluggable backends for searching, filtering, ordering, etc. Don't like
   existing ones? Override, extend or write your own.
-- Implemented search backend.
-- Implemented filter backend.
-- Implemented ordering backend.
-- Implemented pagination.
-- Implemented highlight backend.
+- Search backend.
+- Filter backend.
+- Ordering backend.
+- Pagination.
+- Highlighting backend.
+- Source filtering backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -514,8 +515,8 @@ By default number of results is limited to 100.
       }
     }
 
-Highlight
-^^^^^^^^^
+Highlighting
+^^^^^^^^^^^^
 Simply, list the fields you want to highlight. This works only in combination
 with search.
 
@@ -543,18 +544,17 @@ Road-map and development plans.
 
 Lots of features are planned to be released in the upcoming Beta releases:
 
+- Aggregations (faceted search) backend
+- Suggester backend
+- Post-filter backend
+- Nested backend
+- Global aggregations backend
 - Geo-spatial backend
 - Filter lookup ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase)
 - Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase)
 - Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase)
-- Aggregations (faceted search) backend
-- Post-filter backend
-- Nested backend
-- Suggester backend
-- Global aggregations backend
 - More-like-this backend
 - Complex search backends, such as Simple query search
-- Source filter backend
 
 Stay tuned or reach out if you want to help.
 

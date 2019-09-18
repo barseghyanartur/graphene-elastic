@@ -6,6 +6,7 @@ from graphene_elastic.filter_backends import (
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
     HighlightFilterBackend,
+    SourceFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -33,6 +34,7 @@ class Post(ElasticsearchObjectType):
             FilteringFilterBackend,
             SearchFilterBackend,
             HighlightFilterBackend,
+            SourceFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]

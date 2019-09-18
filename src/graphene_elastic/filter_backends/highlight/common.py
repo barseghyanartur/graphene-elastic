@@ -81,7 +81,7 @@ class HighlightFilterBackend(BaseBackend):
 
     @property
     def highlight_fields(self):
-        """Search filter fields."""
+        """Highlight filter fields."""
         return getattr(
             self.connection_field.type._meta.node._meta,
             'highlight_fields',
@@ -93,7 +93,7 @@ class HighlightFilterBackend(BaseBackend):
         return {k: k for k, v in self.highlight_fields.items()}
 
     def prepare_highlight_fields(self):
-        """Prepare hightlight fields.
+        """Prepare highlight fields.
 
         Possible structures:
 
@@ -114,44 +114,23 @@ class HighlightFilterBackend(BaseBackend):
                 'description': {},
             }
 
-        We shall finally have:
-
-            search_fields = {
-                'title': {
-                    'field': 'title.raw',
-                    'boost': 4
-                },
-                'content': {
-                    'field': 'content',
-                    'boost': 2
-                },
-                'category': {
-                    'field': 'category'
-                }
-            }
-
         Sample query would be:
 
-            {
-              allPostDocuments(search:{query:"Another"}) {
-                pageInfo {
-                  startCursor
-                  endCursor
-                  hasNextPage
-                  hasPreviousPage
-                }
+            query {
+              allPostDocuments(
+                    search:{content:{value:"since"}, title:{value:"decide"}},
+                    highlight:[category, content]
+                ) {
                 edges {
-                  cursor
                   node {
-                    category
                     title
                     content
-                    numViews
+                    highlight
                   }
+                  cursor
                 }
               }
             }
-
 
         :return: Filtering options.
         :rtype: dict
