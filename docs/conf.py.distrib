@@ -24,7 +24,6 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', 'examples', 'apps')))
 sys.path.insert(0, os.path.abspath(os.path.join('..', 'examples', 'apps', 'django_app')))
 try:
     import graphene_elastic
-    # from simple import settings as example_settings
     version = graphene_elastic.__version__
     project = graphene_elastic.__title__
     copyright = graphene_elastic.__copyright__
@@ -33,11 +32,10 @@ except Exception as e:
     project = u'graphene-elastic'
     copyright = u'2019, Artur Barseghyan <artur.barseghyan@gmail.com>'
 
-# -- Django configuration ------------------------------------------------------
-# os.environ["DJANGO_SETTINGS_MODULE"] = "run"
-# import django
-#
-# django.setup()
+try:
+    import rinoh
+except ImportError:
+    rinoh = None
 
 # -- General configuration -----------------------------------------------------
 
@@ -50,8 +48,9 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     # 'rst2pdf.pdfbuilder',
-    'rinoh.frontend.sphinx',
 ]
+if rinoh:
+    extensions.append('rinoh.frontend.sphinx')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
