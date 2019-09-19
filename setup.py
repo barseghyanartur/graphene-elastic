@@ -30,7 +30,7 @@ setup(
         "singledispatch>=3.4.0.3",
         "iso8601>=0.1.12",
     ],
-    python_requires=">=2.7",
+    python_requires=">=3.6",
     zip_safe=True,
     tests_require=[
         "pytest>=3.3.2",
