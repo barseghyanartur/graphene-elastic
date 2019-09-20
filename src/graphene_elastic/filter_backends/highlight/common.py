@@ -37,16 +37,17 @@ class HighlightFilterBackend(BaseBackend):
     prefix = 'highlight'
     has_fields = True
 
+    @property
+    def highlight_fields(self):
+        """Highlight filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_backend_options',
+            {}
+        ).get('highlight_fields', {})
+
     def field_belongs_to(self, field_name):
         return field_name in self.highlight_fields
-
-    def get_backend_default_fields_params(self):
-        """Get backend default filter params.
-
-        :rtype: dict
-        :return:
-        """
-        return {}
 
     def get_backend_fields(self, items, is_filterable_func, get_type_func):
         """Construct backend fields.
@@ -78,19 +79,6 @@ class HighlightFilterBackend(BaseBackend):
                 )
             )
         }
-
-    @property
-    def highlight_fields(self):
-        """Highlight filter fields."""
-        return getattr(
-            self.connection_field.type._meta.node._meta,
-            'highlight_fields',
-            {}
-        )
-
-    @property
-    def highlight_args_mapping(self):
-        return {k: k for k, v in self.highlight_fields.items()}
 
     def prepare_highlight_fields(self):
         """Prepare highlight fields.

@@ -45,51 +45,51 @@ class BaseBackend(object):
     def filter(self, queryset):
         raise NotImplementedError
 
-    @property
-    def filter_fields(self):
-        """Filtering filter fields."""
-        return getattr(
-            self.connection_field.type._meta.node._meta,
-            'filter_fields',
-            {}
-        )
-
-    @property
-    def filter_args_mapping(self):
-        return {k: k for k, v in self.filter_fields.items()}
-
-    @property
-    def search_fields(self):
-        """Search filter fields."""
-        return getattr(
-            self.connection_field.type._meta.node._meta,
-            'search_fields',
-            {}
-        )
-
-    @property
-    def search_args_mapping(self):
-        return {k: k for k, v in self.search_fields.items()}
-
-    @property
-    def ordering_fields(self):
-        return getattr(
-            self.connection_field.type._meta.node_type._meta,
-            "ordering_fields",
-            {}
-        )
-
-    @property
-    def ordering_args_mapping(self):
-        return {k: k for k, v in self.ordering_fields.items()}
-
-    @property
-    def ordering_defaults(self):
-        return getattr(
-            self.connection_field.type._meta.node_type._meta,
-            "ordering_defaults",
-            []
-        )
+    # @property
+    # def filter_fields(self):
+    #     """Filtering filter fields."""
+    #     return getattr(
+    #         self.connection_field.type._meta.node._meta,
+    #         'filter_backend_options',
+    #         {}
+    #     ).get('filter_fields', {})
+    #
+    # @property
+    # def filter_args_mapping(self):
+    #     return {k: k for k, v in self.filter_fields.items()}
+    #
+    # @property
+    # def search_fields(self):
+    #     """Search filter fields."""
+    #     return getattr(
+    #         self.connection_field.type._meta.node._meta,
+    #         'filter_backend_options',
+    #         {}
+    #     ).get('search_fields', {})
+    #
+    # @property
+    # def search_args_mapping(self):
+    #     return {k: k for k, v in self.search_fields.items()}
+    #
+    # @property
+    # def ordering_fields(self):
+    #     return getattr(
+    #         self.connection_field.type._meta.node._meta,
+    #         'filter_backend_options',
+    #         {}
+    #     ).get('ordering_fields', {})
+    #
+    # @property
+    # def ordering_args_mapping(self):
+    #     return {k: k for k, v in self.ordering_fields.items()}
+    #
+    # @property
+    # def ordering_defaults(self):
+    #     return getattr(
+    #         self.connection_field.type._meta.node._meta,
+    #         'filter_backend_options',
+    #         {}
+    #     ).get('ordering_defaults', {})
 
     @property
     def doc_type(self):

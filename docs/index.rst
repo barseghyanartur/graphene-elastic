@@ -690,6 +690,7 @@ Contents:
    highlight_filter_backend
    source_filter_backend
    pagination
+   custom_filter_backends
    settings
    running_elasticsearch
    faq

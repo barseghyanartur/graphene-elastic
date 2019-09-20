@@ -112,10 +112,8 @@ class ElasticsearchObjectTypeOptions(ObjectTypeOptions):
     document = None  # type: Document
     registry = None  # type: Registry
     connection = None  # type: Type[Connection]
-    filter_fields = ()
-    search_fields = ()
-    search_nested_fields = ()
-    # filter_backends = ()
+    # filter_backends = []
+    # filter_backend_options = {}
 
 
 class ElasticsearchObjectType(ObjectType):
@@ -127,15 +125,12 @@ class ElasticsearchObjectType(ObjectType):
                                     skip_registry=False,
                                     only_fields=(),
                                     exclude_fields=(),
-                                    filter_fields=None,
                                     connection=None,
                                     connection_class=None,
                                     use_connection=None,
                                     connection_field_class=None,
                                     interfaces=(),
                                     _meta=None,
-                                    # search_fields=None,
-                                    # filter_backends=[],
                                     **options):
 
         assert is_valid_elasticsearch_document(document), (
@@ -204,13 +199,6 @@ class ElasticsearchObjectType(ObjectType):
         _meta.document = document
         _meta.registry = registry
         _meta.fields = document_fields
-        _meta.filter_fields = filter_fields
-        _meta.search_fields = options.get('search_fields', {})
-        _meta.ordering_fields = options.get('ordering_fields', {})
-        _meta.ordering_defaults = options.get('ordering_defaults', [])
-        _meta.highlight_fields = options.get('highlight_fields', {})
-        _meta.source_fields = options.get('source_fields', {})
-        _meta.search_nested_fields = options.get('search_nested_fields', {})
         _meta.filter_backends = options.get('filter_backends', [])
         _meta.filter_backend_options = dict(options)
         _meta.connection = connection

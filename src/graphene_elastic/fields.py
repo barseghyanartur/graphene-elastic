@@ -4,13 +4,11 @@ from __future__ import absolute_import
 
 from collections import Iterable, OrderedDict
 from functools import partial, reduce
-# import json
 
 import graphene
 # from graphene import NonNull
 # from graphql_relay import connection_from_list
 import elasticsearch_dsl
-# from elasticsearch_dsl import Search, Q
 from promise import Promise
 from graphene.relay import ConnectionField, PageInfo
 from graphene.types.argument import to_arguments
@@ -105,11 +103,11 @@ class ElasticsearchConnectionField(ConnectionField):
     def doc_type(self):
         return self.document._doc_type
 
-    def get_manager(self):  # From graphene-django
-        if self.on:
-            return getattr(self.document, self.on)
-        else:
-            return self.document.search()
+    # def get_manager(self):  # From graphene-django
+    #     if self.on:
+    #         return getattr(self.document, self.on)
+    #     else:
+    #         return self.document.search()
 
     @property
     def registry(self):
@@ -122,36 +120,36 @@ class ElasticsearchConnectionField(ConnectionField):
             dict(self.field_args, **self.reference_args),
         )
 
-    @property
-    def filter_fields(self):
-        return getattr(self.node_type._meta, "filter_fields", {})
-
-    @property
-    def filter_args_mapping(self):
-        # TODO: Move this to backend
-        return {k: k for k, v in self.filter_fields.items()}
-
-    @property
-    def search_fields(self):
-        return getattr(self.node_type._meta, "search_fields", {})
-
-    @property
-    def search_args_mapping(self):
-        # TODO: Move this to backend
-        return {k: k for k, v in self.search_fields.items()}
-
-    @property
-    def ordering_fields(self):
-        return getattr(self.node_type._meta, "ordering_fields", {})
-
-    @property
-    def ordering_args_mapping(self):
-        # TODO: Move this to backend
-        return {k: k for k, v in self.ordering_fields.items()}
-
-    @property
-    def ordering_defaults(self):
-        return getattr(self.node_type._meta, "ordering_defaults", [])
+    # @property
+    # def filter_fields(self):
+    #     return getattr(self.node_type._meta, "filter_fields", {})
+    #
+    # @property
+    # def filter_args_mapping(self):
+    #     # TODO: Move this to backend
+    #     return {k: k for k, v in self.filter_fields.items()}
+    #
+    # @property
+    # def search_fields(self):
+    #     return getattr(self.node_type._meta, "search_fields", {})
+    #
+    # @property
+    # def search_args_mapping(self):
+    #     # TODO: Move this to backend
+    #     return {k: k for k, v in self.search_fields.items()}
+    #
+    # @property
+    # def ordering_fields(self):
+    #     return getattr(self.node_type._meta, "ordering_fields", {})
+    #
+    # @property
+    # def ordering_args_mapping(self):
+    #     # TODO: Move this to backend
+    #     return {k: k for k, v in self.ordering_fields.items()}
+    #
+    # @property
+    # def ordering_defaults(self):
+    #     return getattr(self.node_type._meta, "ordering_defaults", [])
 
     @property
     def default_filter_backends(self):
@@ -226,7 +224,6 @@ class ElasticsearchConnectionField(ConnectionField):
                     )
                 )
 
-        # import ipdb; ipdb.set_trace()
         return params
 
     @property

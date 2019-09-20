@@ -27,18 +27,21 @@ class SearchFilterBackend(BaseBackend):
     prefix = "search"
     has_fields = True
 
-    def field_belongs_to(self, field_name):
-        return field_name in self.connection_field.search_fields
+    @property
+    def search_fields(self):
+        """Search filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_backend_options',
+            {}
+        ).get('search_fields', {})
 
-    # def get_field_options(self, field_name):
-    #     """Get field options.
-    #
-    #     :param field_name:
-    #     :return:
-    #     """
-    #     if field_name in self.connection_field.search_fields:
-    #         return self.connection_field.search_fields[field_name]
-    #     return {}
+    @property
+    def search_args_mapping(self):
+        return {k: k for k, v in self.search_fields.items()}
+
+    def field_belongs_to(self, field_name):
+        return field_name in self.search_fields
 
     def get_backend_default_fields_params(self):
         """Get backend default filter params.
@@ -69,14 +72,6 @@ class SearchFilterBackend(BaseBackend):
                 params,
             )
         )
-
-    # @classmethod
-    # def generic_fields(cls):
-    #     """Generic backend specific fields.
-    #
-    #     :return:
-    #     """
-    #     return {cls.prefix: graphene.String()}
 
     def prepare_search_fields(self):
         """Prepare search fields.
@@ -139,20 +134,16 @@ class SearchFilterBackend(BaseBackend):
 
         # {'query': '', 'title': {'query': '', 'boost': 1}}
 
-        for field, _ in self.connection_field.search_args_mapping.items():
+        for field, _ in self.search_args_mapping.items():
             filter_fields.update({field: {}})
-            options = self.connection_field.search_fields.get(field)
+            options = self.search_fields.get(field)
             # For constructions like 'category': 'category.raw' we shall
             # have the following:
             #
             if options is None or isinstance(options, six.string_types):
                 filter_fields.update(
                     {
-                        field: {
-                            "field": options or field,
-                            # 'default_lookup': LOOKUP_FILTER_TERM,
-                            # 'lookups': tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)
-                        }
+                        field: {"field": options or field}
                     }
                 )
             elif "field" not in options:
@@ -161,95 +152,13 @@ class SearchFilterBackend(BaseBackend):
             else:
                 filter_fields.update({field: options})
 
-            # if (
-            #     field in filter_fields
-            #     and 'lookups' not in filter_fields[field]
-            # ):
-            #     filter_fields[field].update(
-            #         {
-            #             'lookups': tuple(ALL_LOOKUP_FILTERS_AND_QUERIES)
-            #         }
-            #     )
         return filter_fields
-
-    # def prepare_query_params(self):
-    #     """Prepare query params.
-    #
-    #     :return:
-    #     """
-    #     filter_args = dict(self.args).get(self.prefix)
-    #     if not filter_args:
-    #         return {}
-    #
-    #     query_params = {}
-    #     for arg, value in filter_args.items():
-    #         field = self.connection_field.search_args_mapping.get(arg, None)
-    #         if field is None:
-    #             continue
-    #         query_params[field] = value
-    #     return query_params
 
     def get_all_query_params(self):
         filter_args = dict(self.args).get(self.prefix)
         if not filter_args:
             return {}
         return filter_args
-
-    # def get_filter_query_params(self):
-    #     """Get query params to be filtered on.
-    #
-    #     :return: Request query params to filter on.
-    #     :rtype: dict
-    #     """
-    #     query_params = self.prepare_query_params()
-    #
-    #     filter_query_params = {}
-    #     filter_fields = self.prepare_search_fields()
-    #
-    #     for field_name, values in query_params.items():
-    #         query_param_list = self.split_lookup_filter(field_name, maxsplit=1)
-    #         # field_name = query_param_list[0]
-    #
-    #         if field_name in filter_fields:
-    #             lookup_param = None
-    #             if len(query_param_list) > 1:
-    #                 lookup_param = query_param_list[1]
-    #
-    #             valid_lookups = filter_fields[field_name]["lookups"]
-    #
-    #             # If we have default lookup given use it as a default and
-    #             # do not require further suffix specification.
-    #             default_lookup = None
-    #             if "default_lookup" in filter_fields[field_name]:
-    #                 default_lookup = \
-    #                     filter_fields[field_name]["default_lookup"]
-    #
-    #             if lookup_param is None or lookup_param in valid_lookups:
-    #
-    #                 # If we have default lookup given use it as a default
-    #                 # and do not require further suffix specification.
-    #                 if lookup_param is None and default_lookup is not None:
-    #                     lookup_param = str(default_lookup)
-    #
-    #                 if isinstance(values, (list, tuple)):
-    #                     values = [
-    #                         __value.strip()
-    #                         for __value in values
-    #                         if __value.strip() != ""
-    #                     ]
-    #                 else:
-    #                     values = [values]
-    #
-    #                 if values:
-    #                     filter_query_params[field_name] = {
-    #                         "lookup": lookup_param,
-    #                         "values": values,
-    #                         "field": filter_fields[field_name].get(
-    #                             "field", field_name
-    #                         ),
-    #                         "type": self.doc_type.mapping.properties.name,
-    #                     }
-    #     return filter_query_params
 
     def construct_search(self):
         """Construct search.
@@ -298,7 +207,6 @@ class SearchFilterBackend(BaseBackend):
               }
             }
 
-
         Or simply:
 
             query {
@@ -330,7 +238,7 @@ class SearchFilterBackend(BaseBackend):
         for search_field, value in all_query_params.items():
             if search_field == ALL:
                 for field_name_param, field_name \
-                        in self.connection_field.search_args_mapping.items():
+                        in self.search_args_mapping.items():
                     field_options = copy.copy(search_fields[field_name])
                     field = field_options.pop("field", field_name)
 
@@ -418,7 +326,8 @@ class SearchFilterBackend(BaseBackend):
     #
     #                 # In case if we deal with structure 2
     #                 if isinstance(_field, dict):
-    #                     # TODO: take options (such as boost) into consideration
+    #                     # TODO: take options (such as boost) into
+    #                     # consideration
     #                     field = "{}.{}".format(path, _field["name"])
     #                 # In case if we deal with structure 1
     #                 else:

@@ -19,16 +19,14 @@ class SourceFilterBackend(BaseBackend):
     prefix = 'source'
     has_fields = True
 
-    def field_belongs_to(self, field_name):
-        return field_name in self.source_fields
-
-    def get_backend_default_fields_params(self):
-        """Get backend default filter params.
-
-        :rtype: dict
-        :return:
-        """
-        return {}
+    @property
+    def source_fields(self):
+        """Source filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_backend_options',
+            {}
+        ).get('source_fields', {})
 
     def get_backend_fields(self, items, is_filterable_func, get_type_func):
         """Construct backend fields.
@@ -60,19 +58,6 @@ class SourceFilterBackend(BaseBackend):
             )
         }
 
-    @property
-    def source_fields(self):
-        """Source filter fields."""
-        return getattr(
-            self.connection_field.type._meta.node._meta,
-            'source_fields',
-            {}
-        )
-
-    @property
-    def source_args_mapping(self):
-        return {k: k for k, v in self.source_fields.items()}
-
     def prepare_source_fields(self):
         """Prepare source fields.
 
@@ -101,15 +86,6 @@ class SourceFilterBackend(BaseBackend):
         if source_args:
             return source_args
         return source_fields
-
-    def get_source_query_params(self):
-        """Get highlight query params.
-
-        :return: List of search query params.
-        :rtype: list
-        """
-        source_args = dict(self.args).get(self.prefix, {})
-        return source_args
 
     def filter(self, queryset):
         """Filter.

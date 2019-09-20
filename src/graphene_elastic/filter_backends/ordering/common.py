@@ -6,7 +6,7 @@ from six import string_types
 
 from ..base import BaseBackend
 from ..queries import Direction
-from ...compat import nested_sort_entry
+# from ...compat import nested_sort_entry
 
 __title__ = 'graphene_elastic.filter_backends.ordering.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -19,6 +19,28 @@ __all__ = (
 
 
 class OrderingMixin(object):
+
+    @property
+    def _ordering_fields(self):
+        """Ordering filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_backend_options',
+            {}
+        ).get('ordering_fields', {})
+
+    @property
+    def _ordering_args_mapping(self):
+        return {k: k for k, v in self.ordering_fields.items()}
+
+    @property
+    def _ordering_defaults(self):
+        """Ordering filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_backend_options',
+            {}
+        ).get('ordering_defaults', {})
 
     def prepare_ordering_fields(self):
         """Prepare ordering fields.
@@ -33,11 +55,11 @@ class OrderingMixin(object):
         ordering_fields = {}
 
         for arg, value in ordering_args.items():
-            field = self.connection_field.ordering_args_mapping.get(arg, None)
+            field = self.ordering_args_mapping.get(arg, None)
             if field is None:
                 continue
             ordering_fields.update({field: {}})
-            options = self.connection_field.ordering_fields.get(field)
+            options = self.ordering_fields.get(field)
 
             if options is None or isinstance(options, string_types):
                 ordering_fields[field] = {
@@ -68,9 +90,12 @@ class OrderingMixin(object):
                         'order': ordering_direction,
                     }
                 }
-                if 'path' in field:
-                    entry[field['field']].update(
-                        nested_sort_entry(field['path']))
+
+                # TODO: Once nested search is implemented, uncomment.
+                # if 'path' in field:
+                #     entry[field['field']].update(
+                #         nested_sort_entry(field['path']))
+
                 _ordering_params.append(entry)
         elif isinstance(ordering_params, (tuple, list)):
             for ordering_param in ordering_params:
@@ -179,8 +204,17 @@ class OrderingFilterBackend(BaseBackend, OrderingMixin):
     prefix = 'ordering'
     has_fields = True
 
+    @property
+    def ordering_fields(self):
+        """Ordering filter fields."""
+        return self._ordering_fields
+
+    @property
+    def ordering_args_mapping(self):
+        return self._ordering_args_mapping
+
     def field_belongs_to(self, field_name):
-        return field_name in self.connection_field.ordering_fields
+        return field_name in self.ordering_fields
 
     def get_field_type(self, field_name, field_value, base_field_type):
         """Get field type.
@@ -302,6 +336,16 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
     prefix = 'ordering'
     has_fields = False
 
+    @property
+    def ordering_fields(self):
+        """Ordering filter fields."""
+        return self._ordering_fields
+
+    @property
+    def ordering_defaults(self):
+        """Ordering filter fields."""
+        return self._ordering_defaults
+
     def get_ordering_query_params(self):
         """Get ordering query params.
 
@@ -313,7 +357,7 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
         ordering_params_present = False
         # Remove invalid ordering query params
         for query_param, ordering_direction in ordering_query_params.items():
-            if query_param in self.connection_field.ordering_fields:
+            if query_param in self.ordering_fields:
                 ordering_params_present = True
                 break
 
@@ -329,7 +373,7 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
         :return: Ordering params to be used for ordering.
         :rtype: list
         """
-        ordering = getattr(self.connection_field, 'ordering_defaults', None)
+        ordering = self.ordering_defaults
 
         if isinstance(ordering, string_types):
             ordering = [ordering]
@@ -338,10 +382,9 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
         # in order to be properly transformed
         if (
             ordering is not None
-            and hasattr(self.connection_field, 'ordering_fields')
-            and self.connection_field.ordering_fields is not None
+            and self.ordering_fields is not None
             and all(
-                field.lstrip('-') in self.connection_field.ordering_fields
+                field.lstrip('-') in self.ordering_fields
                 for field in ordering
             )
         ):

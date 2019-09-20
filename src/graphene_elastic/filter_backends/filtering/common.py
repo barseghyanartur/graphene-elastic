@@ -47,8 +47,21 @@ class FilteringFilterBackend(BaseBackend):
     prefix = "filter"
     has_fields = True
 
+    @property
+    def filter_fields(self):
+        """Filtering filter fields."""
+        return getattr(
+            self.connection_field.type._meta.node._meta,
+            'filter_backend_options',
+            {}
+        ).get('filter_fields', {})
+
+    @property
+    def filter_args_mapping(self):
+        return {k: k for k, v in self.filter_fields.items()}
+
     def field_belongs_to(self, field_name):
-        return field_name in self.connection_field.filter_fields
+        return field_name in self.filter_fields
 
     def get_field_type(self, field_name, field_value, base_field_type):
         """Get field type.
@@ -81,11 +94,11 @@ class FilteringFilterBackend(BaseBackend):
             )
         )
 
-    def get_field_options(self, field_name):
-        """Get field options."""
-        if field_name in self.connection_field.filter_fields:
-            return self.connection_field.filter_fields[field_name]
-        return {}
+    # def get_field_options(self, field_name):
+    #     """Get field options."""
+    #     if field_name in self.filter_fields:
+    #         return self.filter_fields[field_name]
+    #     return {}
 
     @classmethod
     def get_range_params(cls, value, options):
@@ -929,11 +942,11 @@ class FilteringFilterBackend(BaseBackend):
         filter_fields = {}
 
         for arg, value in filter_args.items():
-            field = self.connection_field.filter_args_mapping.get(arg, None)
+            field = self.filter_args_mapping.get(arg, None)
             if field is None:
                 continue
             filter_fields.update({field: {}})
-            options = self.connection_field.filter_fields.get(field)
+            options = self.filter_fields.get(field)
             # For constructions like 'category': 'category.raw' we shall
             # have the following:
             # TODO: Make sure to use custom (user specified) lookups
@@ -974,7 +987,7 @@ class FilteringFilterBackend(BaseBackend):
         query_params = {}
 
         for arg, filters in filter_args.items():
-            field = self.connection_field.filter_args_mapping.get(arg, None)
+            field = self.filter_args_mapping.get(arg, None)
             if field is None:
                 continue
             query_params[field] = filters

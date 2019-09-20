@@ -17,9 +17,12 @@ are used for versioning (schema follows below):
 
 0.3
 ---
-2019-09-18 (not yet released)
+2019-09-20
 
+- Minor refactoring allowing third-party independent backends do a lot more
+  without touching the core.
 - Source filter backend.
+- More tests.
 
 0.2
 ---
