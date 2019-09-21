@@ -45,7 +45,8 @@ Main features and highlights
 - Ordering backend.
 - Pagination.
 - Highlighting backend.
-- Source filtering backend.
+- Source filter backend.
+- Faceted search backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -553,7 +554,6 @@ package).
 
 Lots of features are planned to be released in the upcoming Beta releases:
 
-- Aggregations (faceted search) backend
 - Suggester backend
 - Post-filter backend
 - Nested backend
