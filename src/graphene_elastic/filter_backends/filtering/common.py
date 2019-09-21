@@ -45,7 +45,7 @@ class FilteringFilterBackend(BaseBackend):
     """Filtering filter backend."""
 
     prefix = "filter"
-    has_fields = True
+    has_query_fields = True
 
     @property
     def filter_fields(self):
@@ -58,9 +58,14 @@ class FilteringFilterBackend(BaseBackend):
 
     @property
     def filter_args_mapping(self):
-        return {k: k for k, v in self.filter_fields.items()}
+        return {field: field for field, value in self.filter_fields.items()}
 
     def field_belongs_to(self, field_name):
+        """Check if given filter field belongs to the backend.
+
+        :param field_name:
+        :return:
+        """
         return field_name in self.filter_fields
 
     def get_field_type(self, field_name, field_value, base_field_type):

@@ -3,10 +3,12 @@ from graphql_relay.connection.arrayconnection import (
     offset_to_cursor,
 )
 from graphql_relay.connection.connectiontypes import (
-    Connection,
+    # Connection,
     PageInfo,
     Edge,
 )
+
+from .relay.connectiontypes import Connection
 
 from .logging import logger
 
@@ -27,7 +29,8 @@ def connection_from_list_slice(
         pageinfo_type=None,
         slice_start=0,
         list_length=0,
-        list_slice_length=None):
+        list_slice_length=None,
+        connection_field=None):
     """
     Given a slice (subset) of an array, returns a connection object for use in
     GraphQL.
@@ -123,7 +126,7 @@ def connection_from_list_slice(
     lower_bound = after_offset + 1 if after else 0
     upper_bound = before_offset if before else list_length
 
-    return connection_type(
+    conn = connection_type(
         edges=edges,
         page_info=pageinfo_type(
             start_cursor=first_edge_cursor,
@@ -132,5 +135,20 @@ def connection_from_list_slice(
                 isinstance(last, int) and start_offset > lower_bound
             ),
             has_next_page=isinstance(first, int) and end_offset < upper_bound
-        )
+        ),
     )
+
+    # This is certainly something to consider to change. Although there are
+    # some original `graphene` code parts that do alter the connection object
+    # directly, in principle, we shouldn't apply anything in this way, but
+    # rather include all the things by overriding appropriate parts,
+    # especially the connection class. However, at the moment of writing,
+    # due to, perhaps, too little investigation on how to do it properly with
+    # `graphene`, this seems to be the most simple and appropriate solution.
+    for backend_cls in connection_field.filter_backends:
+        if backend_cls.has_connection_fields:
+            backend = backend_cls(connection_field)
+            backend.alter_connection(conn, _slice)
+
+    return conn
+

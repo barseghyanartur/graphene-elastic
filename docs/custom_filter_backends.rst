@@ -2,9 +2,12 @@ Custom filter backends
 ======================
 Filter backends can:
 
-- Add new ``graphene`` input types to the schema.
-- Add new ``graphene`` fields to the schema.
+- Add new ``graphene`` input types to the (query) schema.
+- Allow you to request additional information by adding new ``graphene``
+  fields to the schema.
 - Alter current queryset.
+- Alter slice, add additional information next to ``pageInfo`` and ``edges``,
+  such as ``facets``, for example.
 
 Let's learn by example on the ``SourceFilterBackend`` which allows us
 to apply ``source`` query to the current search queryset.
@@ -21,7 +24,7 @@ to apply ``source`` query to the current search queryset.
         """Source filter backend."""
 
         prefix = 'source'  # Name of the GraphQL query filter
-        has_fields = True  # Indicates whether backend has own filter fields
+        has_query_fields = True  # Indicates whether backend has own filtering fields
 
         # The ``source_fields`` is the config options that we set on the
         # ``Post`` object type. In this case - absolutely optional.
@@ -36,7 +39,7 @@ to apply ``source`` query to the current search queryset.
 
         # This is where we dynamically create GraphQL filter fields for this
         # backend.
-        def get_backend_fields(self, items, is_filterable_func, get_type_func):
+        def get_backend_filtering_fields(self, items, is_filterable_func, get_type_func):
             """Construct backend fields.
 
             :param items:

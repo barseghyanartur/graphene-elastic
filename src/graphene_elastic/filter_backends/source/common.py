@@ -17,7 +17,7 @@ class SourceFilterBackend(BaseBackend):
     """Source filter backend."""
 
     prefix = 'source'
-    has_fields = True
+    has_query_fields = True
 
     @property
     def source_fields(self):
@@ -28,14 +28,18 @@ class SourceFilterBackend(BaseBackend):
             {}
         ).get('source_fields', {})
 
-    def get_backend_fields(self, items, is_filterable_func, get_type_func):
-        """Construct backend fields.
+    def get_backend_query_fields(self,
+                                 items,
+                                 is_filterable_func,
+                                 get_type_func):
+        """Construct backend filtering fields.
 
         :param items:
         :param is_filterable_func:
         :param get_type_func:
         :return:
         """
+        # Note, that this is not the same as ``self.source_fields``.
         _keys = list(
             self.connection_field.type._meta.node._meta.fields.keys()
         )

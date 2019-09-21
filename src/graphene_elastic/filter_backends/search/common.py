@@ -25,7 +25,7 @@ class SearchFilterBackend(BaseBackend):
     """Search filter backend."""
 
     prefix = "search"
-    has_fields = True
+    has_query_fields = True
 
     @property
     def search_fields(self):
@@ -38,12 +38,17 @@ class SearchFilterBackend(BaseBackend):
 
     @property
     def search_args_mapping(self):
-        return {k: k for k, v in self.search_fields.items()}
+        return {field: field for field, value in self.search_fields.items()}
 
     def field_belongs_to(self, field_name):
+        """Check if given filter field belongs to the backend.
+
+        :param field_name:
+        :return:
+        """
         return field_name in self.search_fields
 
-    def get_backend_default_fields_params(self):
+    def get_backend_default_query_fields_params(self):
         """Get backend default filter params.
 
         :rtype: dict

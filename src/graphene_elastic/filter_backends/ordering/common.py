@@ -202,7 +202,7 @@ class OrderingFilterBackend(BaseBackend, OrderingMixin):
     """
 
     prefix = 'ordering'
-    has_fields = True
+    has_query_fields = True
 
     @property
     def ordering_fields(self):
@@ -214,6 +214,11 @@ class OrderingFilterBackend(BaseBackend, OrderingMixin):
         return self._ordering_args_mapping
 
     def field_belongs_to(self, field_name):
+        """Check if given filter field belongs to the backend.
+
+        :param field_name:
+        :return:
+        """
         return field_name in self.ordering_fields
 
     def get_field_type(self, field_name, field_value, base_field_type):
@@ -334,7 +339,7 @@ class DefaultOrderingFilterBackend(BaseBackend, OrderingMixin):
     """
 
     prefix = 'ordering'
-    has_fields = False
+    has_query_fields = False
 
     @property
     def ordering_fields(self):

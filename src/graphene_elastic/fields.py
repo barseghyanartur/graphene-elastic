@@ -120,37 +120,6 @@ class ElasticsearchConnectionField(ConnectionField):
             dict(self.field_args, **self.reference_args),
         )
 
-    # @property
-    # def filter_fields(self):
-    #     return getattr(self.node_type._meta, "filter_fields", {})
-    #
-    # @property
-    # def filter_args_mapping(self):
-    #     # TODO: Move this to backend
-    #     return {k: k for k, v in self.filter_fields.items()}
-    #
-    # @property
-    # def search_fields(self):
-    #     return getattr(self.node_type._meta, "search_fields", {})
-    #
-    # @property
-    # def search_args_mapping(self):
-    #     # TODO: Move this to backend
-    #     return {k: k for k, v in self.search_fields.items()}
-    #
-    # @property
-    # def ordering_fields(self):
-    #     return getattr(self.node_type._meta, "ordering_fields", {})
-    #
-    # @property
-    # def ordering_args_mapping(self):
-    #     # TODO: Move this to backend
-    #     return {k: k for k, v in self.ordering_fields.items()}
-    #
-    # @property
-    # def ordering_defaults(self):
-    #     return getattr(self.node_type._meta, "ordering_defaults", [])
-
     @property
     def default_filter_backends(self):
         return [
@@ -214,10 +183,10 @@ class ElasticsearchConnectionField(ConnectionField):
         params = {}
 
         for backend_cls in self.filter_backends:
-            backend = backend_cls(self)
-            if backend.has_fields:
+            if backend_cls.has_query_fields:
+                backend = backend_cls(self)
                 params.update(
-                    backend.get_backend_fields(
+                    backend.get_backend_query_fields(
                         items=items,
                         is_filterable_func=is_filterable,
                         get_type_func=get_type,
@@ -321,6 +290,7 @@ class ElasticsearchConnectionField(ConnectionField):
             connection_type=self.type,
             edge_type=self.type.Edge,
             pageinfo_type=graphene.PageInfo,
+            connection_field=self
         )
         connection.iterable = iterables
         connection.list_length = list_length
@@ -334,7 +304,11 @@ class ElasticsearchConnectionField(ConnectionField):
         return self.default_resolver(root, info, **args)
 
     @classmethod
-    def resolve_connection(cls, connection_type, args, resolved):
+    def resolve_connection(cls,
+                           connection_type,
+                           args,
+                           resolved,
+                           connection_field=None):
         if isinstance(resolved, connection_type):
             return resolved
 
@@ -355,6 +329,7 @@ class ElasticsearchConnectionField(ConnectionField):
             connection_type=connection_type,
             edge_type=connection_type.Edge,
             pageinfo_type=PageInfo,
+            connection_field=connection_field
         )
         connection.iterable = resolved
         connection.length = _len
@@ -366,11 +341,13 @@ class ElasticsearchConnectionField(ConnectionField):
                             connection_type,
                             root,
                             info,
+                            connection_field=None,
                             **args):
         first = args.get("first")
         last = args.get("last")
         enforce_first_or_last = args.get("enforce_first_or_last")
         max_limit = args.get("max_limit")
+        # connection_field = args.get("connection_field")
 
         if enforce_first_or_last:
             assert first or last, (
@@ -397,7 +374,12 @@ class ElasticsearchConnectionField(ConnectionField):
         if isinstance(connection_type, graphene.NonNull):
             connection_type = connection_type.of_type
 
-        on_resolve = partial(cls.resolve_connection, connection_type, args)
+        on_resolve = partial(
+            cls.resolve_connection,
+            connection_type,
+            args,
+            connection_field=connection_field
+        )
 
         if Promise.is_thenable(iterable):
             return Promise.resolve(iterable).then(on_resolve)
@@ -416,5 +398,6 @@ class ElasticsearchConnectionField(ConnectionField):
             resolver,
             self.type,
             max_limit=self.max_limit,
-            enforce_first_or_last=self.enforce_first_or_last
+            enforce_first_or_last=self.enforce_first_or_last,
+            connection_field=self
         )

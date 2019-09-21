@@ -1,6 +1,8 @@
+from elasticsearch_dsl import DateHistogramFacet, RangeFacet
 from graphene import Node
 from graphene_elastic import ElasticsearchObjectType
 from graphene_elastic.filter_backends import (
+    FacetedSearchFilterBackend,
     FilteringFilterBackend,
     SearchFilterBackend,
     OrderingFilterBackend,
@@ -18,6 +20,7 @@ from graphene_elastic.constants import (
 )
 
 from search_index.documents import Post as PostDocument
+from ..custom_backends import CustomFilterBackend
 
 __all__ = (
     'Post',
@@ -35,6 +38,8 @@ class Post(ElasticsearchObjectType):
             SearchFilterBackend,
             HighlightFilterBackend,
             SourceFilterBackend,
+            FacetedSearchFilterBackend,
+            # CustomFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]
@@ -140,4 +145,38 @@ class Post(ElasticsearchObjectType):
                 }
             },
             'category': {},
+        }
+
+        # For `FacetedSearchFilterBackend` backend
+        faceted_search_fields = {
+            'category': 'category.raw',
+            'category_global': {
+                'field': 'category.raw',
+                # 'enabled': True,
+                'global': True,
+            },
+            'tags': {
+                'field': 'tags.raw',
+                'enabled': True,
+                'global': True,
+            },
+            'created_at': {
+                'field': 'created_at',
+                'facet': DateHistogramFacet,
+                'options': {
+                    'interval': 'year',
+                }
+            },
+            'num_views_count': {
+                'field': 'num_views',
+                'facet': RangeFacet,
+                'options': {
+                    'ranges': [
+                        ("<10", (None, 10)),
+                        ("11-20", (11, 20)),
+                        ("20-50", (20, 50)),
+                        (">50", (50, None)),
+                    ]
+                }
+            },
         }

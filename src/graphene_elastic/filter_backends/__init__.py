@@ -1,3 +1,4 @@
+from .faceted_search import *
 from .filtering import *
 from .highlight import *
 from .search import *

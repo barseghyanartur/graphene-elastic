@@ -15,6 +15,15 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.4
+---
+2019-09-22 (not released yet)
+
+- Added faceted search backend.
+- Some refactoring which makes possible for the backends to alter the
+  connection. A lot of minor changes. If you have written custom filter
+  backend, you most likely need to modify some parts.
+
 0.3
 ---
 2019-09-20

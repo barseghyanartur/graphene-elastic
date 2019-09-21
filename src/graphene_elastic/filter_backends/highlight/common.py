@@ -2,8 +2,8 @@ import enum
 import graphene
 from graphene_elastic.types.json_string import JSONString
 
-from ..base import BaseBackend
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
+from ..base import BaseBackend
 
 __title__ = 'graphene_elastic.filter_backends.ordering.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -35,7 +35,7 @@ class HighlightFilterBackend(BaseBackend):
     """Highlight filter backend."""
 
     prefix = 'highlight'
-    has_fields = True
+    has_query_fields = True
 
     @property
     def highlight_fields(self):
@@ -47,10 +47,18 @@ class HighlightFilterBackend(BaseBackend):
         ).get('highlight_fields', {})
 
     def field_belongs_to(self, field_name):
+        """Check if given filter field belongs to the backend.
+
+        :param field_name:
+        :return:
+        """
         return field_name in self.highlight_fields
 
-    def get_backend_fields(self, items, is_filterable_func, get_type_func):
-        """Construct backend fields.
+    def get_backend_query_fields(self,
+                                 items,
+                                 is_filterable_func,
+                                 get_type_func):
+        """Construct backend filtering fields.
 
         :param items:
         :param is_filterable_func:
@@ -58,11 +66,11 @@ class HighlightFilterBackend(BaseBackend):
         :return:
         """
         params = {}
-        for _k, _v in items:
-            if is_filterable_func(_k):
+        for field, value in items:
+            if is_filterable_func(field):
                 # Getting other backend specific fields (schema dependant)
-                if self.field_belongs_to(_k):
-                    params.update({_k: _k})
+                if self.field_belongs_to(field):
+                    params.update({field: field})
         return {
             self.prefix: graphene.Argument(
                 graphene.List(

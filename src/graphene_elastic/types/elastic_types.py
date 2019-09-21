@@ -2,11 +2,15 @@ import graphene
 import elasticsearch_dsl
 
 from collections import OrderedDict
-from graphene.relay import Connection, Node
+from graphene.relay import (
+    # Connection,
+    Node,
+)
 from graphene.types.objecttype import ObjectType, ObjectTypeOptions
 from graphene.types.utils import yank_fields_from_attrs
 
 # from ..fields import ElasticsearchConnectionField
+from ..relay.connection import Connection
 from ..converter import convert_elasticsearch_field
 from ..registry import Registry, get_global_registry
 from ..utils import (
