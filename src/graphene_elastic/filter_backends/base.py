@@ -214,6 +214,7 @@ class BaseBackend(object):
         the `graphene_elastic.relay.connection.Connection` for more
         information).
 
+        :rtype dict:
         :return:
         """
         return {}

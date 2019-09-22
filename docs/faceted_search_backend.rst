@@ -1,6 +1,7 @@
 Faceted search
 ==============
-In order to have faceted search, you should use ``FacetedSearchFilterBackend``.
+Sample type definition (note the usage of ``FacetedSearchFilterBackend`` and
+``faceted_search_fields``).
 
 .. code-block:: python
 
@@ -88,9 +89,9 @@ Sample response:
       "data": {
         "allPostDocuments": {
           "facets": {
-            "_filter_tags": {
+            "tags": {
               "doc_count": 9,
-              "tags": {
+              "aggs": {
                 "doc_count_error_upper_bound": 0,
                 "sum_other_doc_count": 0,
                 "buckets": [
@@ -125,9 +126,9 @@ Sample response:
                 ]
               }
             },
-            "_filter_category": {
+            "category": {
               "doc_count": 9,
-              "category": {
+              "aggs": {
                 "doc_count_error_upper_bound": 0,
                 "sum_other_doc_count": 0,
                 "buckets": [
@@ -178,4 +179,5 @@ Sample response:
     }
 
 Note, that ``category`` appeared in the result because we explicitly requested
-so and the ``tags`` are there because they have been enabled by default.
+so (in ``facets:[category]``) and the ``tags`` are there because they have been
+enabled by default (in ``faceted_search_fields``).

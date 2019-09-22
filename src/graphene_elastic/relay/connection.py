@@ -1,3 +1,9 @@
+"""
+Some overrides of the original ``graphql_relay.connection.connection``
+module. For sanity and ease of updates/sync with modifications from upstream,
+this module isn't formatted in accordance with the rest of the package.
+Pull requests code-style changes wouldn't be accepted.
+"""
 import re
 from collections import (
     # Iterable,

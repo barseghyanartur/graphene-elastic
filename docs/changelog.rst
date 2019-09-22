@@ -17,7 +17,7 @@ are used for versioning (schema follows below):
 
 0.4
 ---
-2019-09-22 (not released yet)
+2019-09-22
 
 - Added faceted search backend.
 - Some refactoring which makes possible for the backends to alter the

@@ -1,9 +1,12 @@
+import copy
+# from collections import OrderedDict
 import enum
 
 from elasticsearch_dsl import TermsFacet
 from elasticsearch_dsl.query import Q
 
 import graphene
+# from graphene.types import Field
 
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
 from ..base import BaseBackend
@@ -17,12 +20,44 @@ __all__ = (
 )
 
 
+def default_agg_field_name_getter(field_name):
+    return '_filter_' + field_name
+
+
+def default_agg_bucket_name_getter(field_name):
+    return field_name
+
+
 class FacetedSearchFilterBackend(BaseBackend):
     """Faceted search filter backend."""
 
     prefix = 'facets'
     has_connection_fields = True
     has_query_fields = True
+
+    # def get_backend_connection_fields(self):
+    #     """Get backend connection fields.
+    #
+    #     Typical use-case - a backend that alters the Connection object
+    #     and adds additional fields next to `edges` and `pageInfo` (see
+    #     the `graphene_elastic.relay.connection.Connection` for more
+    #     information).
+    #
+    #     :rtype dict:
+    #     :return:
+    #     """
+    #     from ...types.json_string import JSONString
+    #     return OrderedDict([
+    #         (
+    #             "facets",
+    #             Field(
+    #                 JSONString,
+    #                 name="facets",
+    #                 required=False,
+    #                 description="Pagination data for this connection.",
+    #             ),
+    #         ),
+    #     ])
 
     def alter_connection(self, connection, slice):
         """Alter connection object.
@@ -119,7 +154,7 @@ class FacetedSearchFilterBackend(BaseBackend):
 
         faceted_search_args = dict(self.args).get(self.prefix, [])
 
-        faceted_search_fields = dict(self.faceted_search_fields)
+        faceted_search_fields = copy.deepcopy(self.faceted_search_fields)
 
         for field, options in faceted_search_fields.items():
             if options is None or isinstance(options, str):
@@ -204,10 +239,15 @@ class FacetedSearchFilterBackend(BaseBackend):
                 )
         return _facets
 
-    def aggregate(self, queryset):
+    def aggregate(self,
+                  queryset,
+                  agg_field_name_getter=default_agg_field_name_getter,
+                  agg_bucket_name_getter=default_agg_bucket_name_getter):
         """Aggregate.
 
         :param queryset:
+        :param agg_field_name_getter: callable.
+        :param agg_bucket_name_getter:
         :return:
         """
         _facets = self.construct_facets()
@@ -223,15 +263,21 @@ class FacetedSearchFilterBackend(BaseBackend):
 
             if _facet['global']:
                 queryset.aggs.bucket(
-                    '_filter_' + _field,
+                    agg_field_name_getter(_field),
                     'global'
-                ).bucket(_field, agg)
+                ).bucket(
+                    agg_bucket_name_getter(_field),
+                    agg
+                )
             else:
                 queryset.aggs.bucket(
-                    '_filter_' + _field,
+                    agg_field_name_getter(_field),
                     'filter',
                     filter=agg_filter
-                ).bucket(_field, agg)
+                ).bucket(
+                    agg_bucket_name_getter(_field),
+                    agg
+                )
 
         return queryset
 
@@ -243,4 +289,8 @@ class FacetedSearchFilterBackend(BaseBackend):
         :return: Updated queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        return self.aggregate(queryset)
+        return self.aggregate(
+            queryset,
+            agg_field_name_getter=lambda field: field,
+            agg_bucket_name_getter=lambda field: 'aggs'
+        )

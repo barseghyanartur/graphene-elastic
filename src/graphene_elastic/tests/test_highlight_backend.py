@@ -20,7 +20,7 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
         )
         for _post in self.alice_posts:
             _post.title = "{} {} {}".format(
-                self.faker.word(),
+                self.faker.word().title(),
                 self.alice,
                 self.faker.word()
             )
@@ -38,7 +38,7 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
         )
         for _post in self.beast_posts:
             _post.title = "{} {} {}".format(
-                self.faker.word(),
+                self.faker.word().title(),
                 self.beast,
                 self.faker.word()
             )

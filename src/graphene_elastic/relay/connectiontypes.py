@@ -1,3 +1,10 @@
+"""
+Some overrides of the original ``graphql_relay.connection.connectiontypes``
+module. For sanity and ease of updates/sync with modifications from upstream,
+this module isn't formatted in accordance with the rest of the package.
+Pull requests code-style changes wouldn't be accepted.
+"""
+
 __title__ = 'graphene_elastic.relay.connectiontypes'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2019 Artur Barseghyan'
