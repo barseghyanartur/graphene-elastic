@@ -571,19 +571,17 @@ Testing
 =======
 Project is covered with tests.
 
+Running tests
+-------------
 By defaults tests are executed against the Elasticsearch 7.x.
 
-Running Elasticsearch
----------------------
 **Run Elasticsearch 7.x with Docker**
 
 .. code-block:: bash
 
     docker-compose up elasticsearch
 
-Running tests
--------------
-Make sure you have the test requirements installed:
+**Install test requirements**
 
 .. code-block:: sh
 
