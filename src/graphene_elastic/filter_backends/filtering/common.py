@@ -24,6 +24,7 @@ from ...constants import (
     LOOKUP_QUERY_STARTSWITH,
     VALUE,
 )
+from ...helpers import to_pascal_case
 from .queries import LOOKUP_FILTER_MAPPING
 from .mixins import FilteringFilterMixin
 
@@ -108,9 +109,9 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             type(
                 "{}{}{}{}".format(
                     DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix.title(),
+                    to_pascal_case(self.prefix),
                     self.connection_field.type.__name__,
-                    field_name.title()
+                    to_pascal_case(field_name)
                 ),
                 (graphene.InputObjectType,),
                 params,
@@ -360,6 +361,7 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             # For all other cases, when we don't have multiple values,
             # we follow the normal flow.
             for option in options:
+                # import ipdb; ipdb.set_trace()
 
                 if option["lookup"] == LOOKUP_FILTER_TERMS:
                     queryset = self.apply_filter_terms(

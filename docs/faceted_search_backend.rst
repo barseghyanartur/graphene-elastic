@@ -32,6 +32,7 @@ Sample type definition (note the usage of ``FacetedSearchFilterBackend`` and
                 'category': 'category.raw',
                 'category_global': {
                     'field': 'category.raw',
+                    # Setting `global` to True, makes the facet global
                     'global': True,
                 },
                 'tags': {

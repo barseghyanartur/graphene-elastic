@@ -191,13 +191,13 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             )
 
         # TODO: Fix this
-        # with self.subTest('Test filter on field `category` '
-        #                   '["Elastic", "Django"] using `in` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         '["Elastic", "Django"]',
-        #         self.num_elastic_posts + self.num_django_posts,
-        #         LOOKUP_QUERY_IN
-        #     )
+        with self.subTest('Test filter on field `category` '
+                          '["Elastic", "Django"] using `in` lookup'):
+            self.__test_filter_text_lookups(
+                '["Elastic", "Django"]',
+                self.num_elastic_posts + self.num_django_posts,
+                LOOKUP_QUERY_IN
+            )
 
     def _test_filter_prefix_starts_ends_with_contains_wildcard_lookups(self):
         """"Test filters `prefix`, `starts_with` and `ends_with` lookups (on
@@ -205,23 +205,21 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         :return:
         """
-        # TODO: Fix this
-        # with self.subTest('Test filter on field `category` "Elastic" '
-        #                   'using `contains` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         '"ytho"',
-        #         self.num_python_posts,
-        #         LOOKUP_QUERY_CONTAINS
-        #     )
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `contains` lookup'):
+            self.__test_filter_text_lookups(
+                '"ytho"',
+                self.num_python_posts,
+                LOOKUP_QUERY_CONTAINS
+            )
 
-        # TODO: Fix this
-        # with self.subTest('Test filter on field `category` "Elastic" '
-        #                   'using `wildcard` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         '"*ytho*"',
-        #         self.num_python_posts,
-        #         LOOKUP_FILTER_WILDCARD
-        #     )
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `wildcard` lookup'):
+            self.__test_filter_text_lookups(
+                '"*ytho*"',
+                self.num_python_posts,
+                LOOKUP_FILTER_WILDCARD
+            )
 
         with self.subTest('Test filter on field `category` "Elastic" '
                           'using `prefix` lookup'):
@@ -239,28 +237,26 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 to_camel_case(LOOKUP_QUERY_STARTSWITH)
             )
 
-        # TODO: Fix this
-        # with self.subTest('Test filter on field `category` "Elastic" '
-        #                   'using `ends_with` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         '"ython"',
-        #         self.num_python_posts,
-        #         to_camel_case(LOOKUP_QUERY_ENDSWITH)
-        #     )
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `ends_with` lookup'):
+            self.__test_filter_text_lookups(
+                '"ython"',
+                self.num_python_posts,
+                to_camel_case(LOOKUP_QUERY_ENDSWITH)
+            )
 
     def _test_filter_exclude_lookup(self):
         """"Test filter `exclude` lookup (on field `category`).
 
         :return:
         """
-        # TODO: Fix this
-        # with self.subTest('Test filter on field `category` "Elastic" '
-        #                   'using `exclude` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         '"Python"',
-        #         self.num_all_posts - self.num_python_posts,
-        #         LOOKUP_QUERY_EXCLUDE
-        #     )
+        with self.subTest('Test filter on field `category` "Elastic" '
+                          'using `exclude` lookup'):
+            self.__test_filter_text_lookups(
+                '"Python"',
+                self.num_all_posts - self.num_python_posts,
+                LOOKUP_QUERY_EXCLUDE
+            )
 
     def _test_filter_exists_is_null_lookups(self):
         """"Test filter `exists` lookup (on fields `category`
@@ -268,28 +264,26 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         :return:
         """
-        # TODO: Fix this
-        # with self.subTest('Test filter on field `category`'
-        #                   'using `exists` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         'true',
-        #         self.num_all_posts,
-        #         LOOKUP_FILTER_EXISTS
-        #     )
+        with self.subTest('Test filter on field `category`'
+                          'using `exists` lookup'):
+            self.__test_filter_text_lookups(
+                'true',
+                self.num_all_posts,
+                LOOKUP_FILTER_EXISTS
+            )
 
-        # TODO: Fix this
-        # with self.subTest('Test filter on field `category`'
-        #                   'using `is_null` lookup'):
-        #     self.__test_filter_text_lookups(
-        #         'false',
-        #         self.num_all_posts,
-        #         to_camel_case(LOOKUP_QUERY_ISNULL)
-        #     )
+        with self.subTest('Test filter on field `category`'
+                          'using `is_null` lookup'):
+            self.__test_filter_text_lookups(
+                'false',
+                self.num_all_posts,
+                to_camel_case(LOOKUP_QUERY_ISNULL)
+            )
 
         # TODO: See if we can test this case
         # with self.subTest('Test filter on field `i_do_not_exist`'
         #                   'using `exists` lookup'):
-        #     self._test_filter_text_lookups(
+        #     self.__test_filter_text_lookups(
         #         'true',
         #         0,
         #         LOOKUP_FILTER_EXISTS,

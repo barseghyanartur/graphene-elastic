@@ -13,6 +13,7 @@ from ...constants import (
     VALUE,
     BOOST,
 )
+from ...helpers import to_pascal_case
 
 __title__ = "graphene_elastic.filter_backends.search.common"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
@@ -70,9 +71,9 @@ class SearchFilterBackend(BaseBackend):
             type(
                 "{}{}{}{}".format(
                     DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix.title(),
+                    to_pascal_case(self.prefix),
                     self.connection_field.type.__name__,
-                    field_name.title()
+                    to_pascal_case(field_name)
                 ),
                 (graphene.InputObjectType,),
                 params,

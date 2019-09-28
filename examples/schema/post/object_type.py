@@ -18,6 +18,7 @@ from graphene_elastic.constants import (
     LOOKUP_FILTER_WILDCARD,
     LOOKUP_QUERY_EXCLUDE,
     LOOKUP_QUERY_IN,
+    LOOKUP_QUERY_CONTAINS,
 )
 
 from search_index.documents import Post as PostDocument
@@ -60,12 +61,13 @@ class Post(ElasticsearchObjectType):
                 'field': 'title.raw',  # Field name in the Elastic doc
                 # Available lookups
                 'lookups': [
+                    LOOKUP_FILTER_PREFIX,
                     LOOKUP_FILTER_TERM,
                     LOOKUP_FILTER_TERMS,
-                    LOOKUP_FILTER_PREFIX,
                     LOOKUP_FILTER_WILDCARD,
-                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_CONTAINS,
                     LOOKUP_QUERY_EXCLUDE,
+                    LOOKUP_QUERY_IN,
                 ],
                 # Default lookup
                 'default_lookup': LOOKUP_FILTER_TERM,
@@ -198,12 +200,13 @@ class Post(ElasticsearchObjectType):
                 'field': 'title.raw',  # Field name in the Elastic doc
                 # Available lookups
                 'lookups': [
+                    LOOKUP_FILTER_PREFIX,
                     LOOKUP_FILTER_TERM,
                     LOOKUP_FILTER_TERMS,
-                    LOOKUP_FILTER_PREFIX,
                     LOOKUP_FILTER_WILDCARD,
-                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_CONTAINS,
                     LOOKUP_QUERY_EXCLUDE,
+                    LOOKUP_QUERY_IN,
                 ],
                 # Default lookup
                 'default_lookup': LOOKUP_FILTER_TERM,

@@ -50,7 +50,8 @@ Main features and highlights
 - Pagination.
 - Highlighting backend.
 - Source filter backend.
-- Faceted search backend.
+- Faceted search backend (including global aggregations).
+- Post filter backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -558,16 +559,14 @@ package).
 
 Lots of features are planned to be released in the upcoming Beta releases:
 
-- Suggester backend
-- Post-filter backend
-- Nested backend
-- Global aggregations backend
-- Geo-spatial backend
-- Filter lookup ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase)
-- Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase)
-- Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase)
-- More-like-this backend
-- Complex search backends, such as Simple query search
+- Suggester backend.
+- Nested backend.
+- Geo-spatial backend.
+- Filter lookup ``geo_bounding_box`` (or ``geoBoundingBox`` for camelCase).
+- Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase).
+- Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase).
+- More-like-this backend.
+- Complex search backends, such as Simple query search.
 
 Stay tuned or reach out if you want to help.
 

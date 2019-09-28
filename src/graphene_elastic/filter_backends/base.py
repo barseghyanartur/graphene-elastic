@@ -8,6 +8,7 @@ from ..constants import (
     SEPARATOR_LOOKUP_COMPLEX_VALUE,
     SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE,
 )
+from ..helpers import to_pascal_case
 
 __title__ = "graphene_elastic.filter_backends.base"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
@@ -185,7 +186,7 @@ class BaseBackend(object):
                 type(
                     "{}{}{}BackendFilter".format(
                         DYNAMIC_CLASS_NAME_PREFIX,
-                        self.prefix.title(),
+                        to_pascal_case(self.prefix),
                         self.connection_field.type.__name__
                     ),
                     (graphene.InputObjectType,),

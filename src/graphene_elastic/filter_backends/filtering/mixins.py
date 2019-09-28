@@ -1,3 +1,4 @@
+from typing import Callable
 import operator
 from elasticsearch_dsl.query import Q
 import six
@@ -21,6 +22,10 @@ __all__ = ("FilteringFilterMixin",)
 
 class FilteringFilterMixin(object):
     """Filtering filter mixin."""
+
+    apply_query: Callable
+    apply_filter: Callable
+    split_lookup_complex_value: Callable
 
     @classmethod
     def get_range_params(cls, value, options):

@@ -9,6 +9,7 @@ import graphene
 # from graphene.types import Field
 
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
+from ...helpers import to_pascal_case
 from ..base import BaseBackend
 
 __title__ = 'graphene_elastic.filter_backends.faceted_search.common'
@@ -116,7 +117,7 @@ class FacetedSearchFilterBackend(BaseBackend):
                         enum.Enum(
                             "{}{}{}BackendEnum".format(
                                 DYNAMIC_CLASS_NAME_PREFIX,
-                                self.prefix.title(),
+                                to_pascal_case(self.prefix),
                                 self.connection_field.type.__name__
                             ),
                             params

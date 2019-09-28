@@ -17,15 +17,16 @@ are used for versioning (schema follows below):
 
 0.5
 ---
-2019-09-28 (not yet released)
+2019-09-29
 
 - PostFilter backend.
+- Documentation improvements.
 
 0.4
 ---
 2019-09-23
 
-- Added faceted search backend.
+- Added faceted search backend (with global aggregations support).
 - Some refactoring which makes possible for the backends to alter the
   connection. A lot of minor changes. If you have written custom filter
   backend, you most likely need to modify some parts.

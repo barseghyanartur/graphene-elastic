@@ -24,6 +24,7 @@ from ...constants import (
     LOOKUP_QUERY_STARTSWITH,
     VALUE,
 )
+from ...helpers import to_pascal_case
 
 from ..filtering.mixins import FilteringFilterMixin
 from ..filtering.queries import LOOKUP_FILTER_MAPPING
@@ -114,9 +115,9 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
             type(
                 "{}{}{}{}".format(
                     DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix,
+                    to_pascal_case(self.prefix),
                     self.connection_field.type.__name__,
-                    field_name.title()
+                    to_pascal_case(field_name)
                 ),
                 (graphene.InputObjectType,),
                 params,
@@ -134,7 +135,7 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
 
         Possible structures:
 
-            filter_fields = {
+            post_filter_fields = {
                 'title': {
                     'field': 'title.raw',
                     'lookups': [
@@ -152,7 +153,7 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
 
         We shall finally have:
 
-            filter_fields = {
+            post_filter_fields = {
                 'title': {
                     'field': 'title.raw',
                     'lookups': [
@@ -502,6 +503,10 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
         :param kwargs:
         :return:
         """
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         return queryset.post_filter(*args, **kwargs)
 
     @classmethod
@@ -514,4 +519,8 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
         :param kwargs:
         :return:
         """
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         return queryset.post_filter(*args, **kwargs)
