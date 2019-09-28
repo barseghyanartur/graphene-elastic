@@ -13,6 +13,7 @@ Contents:
    quick_start
    searching
    filtering
+   post_filter_backend
    ordering
    highlight_filter_backend
    source_filter_backend
