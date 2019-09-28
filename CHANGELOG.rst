@@ -15,6 +15,12 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.5
+---
+2019-09-28 (not yet released)
+
+- PostFilter backend.
+
 0.4
 ---
 2019-09-23

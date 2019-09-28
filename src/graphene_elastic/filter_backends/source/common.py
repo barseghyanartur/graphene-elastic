@@ -1,3 +1,4 @@
+import copy
 import enum
 import graphene
 
@@ -22,11 +23,12 @@ class SourceFilterBackend(BaseBackend):
     @property
     def source_fields(self):
         """Source filter fields."""
-        return getattr(
+        source_fields = getattr(
             self.connection_field.type._meta.node._meta,
             'filter_backend_options',
             {}
         ).get('source_fields', {})
+        return copy.deepcopy(source_fields)
 
     def get_backend_query_fields(self,
                                  items,

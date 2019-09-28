@@ -1,6 +1,7 @@
 """
 Ordering backend.
 """
+import copy
 import graphene
 from six import string_types
 
@@ -23,11 +24,12 @@ class OrderingMixin(object):
     @property
     def _ordering_fields(self):
         """Ordering filter fields."""
-        return getattr(
+        ordering_fields = getattr(
             self.connection_field.type._meta.node._meta,
             'filter_backend_options',
             {}
         ).get('ordering_fields', {})
+        return copy.deepcopy(ordering_fields)
 
     @property
     def _ordering_args_mapping(self):
@@ -36,11 +38,12 @@ class OrderingMixin(object):
     @property
     def _ordering_defaults(self):
         """Ordering filter fields."""
-        return getattr(
+        ordering_defaults = getattr(
             self.connection_field.type._meta.node._meta,
             'filter_backend_options',
             {}
         ).get('ordering_defaults', {})
+        return copy.deepcopy(ordering_defaults)
 
     def prepare_ordering_fields(self):
         """Prepare ordering fields.

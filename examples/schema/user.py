@@ -6,6 +6,7 @@ from graphene_elastic import (
 )
 from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
+    PostFilterFilteringBackend,
     SearchFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
@@ -36,7 +37,8 @@ class User(ElasticsearchObjectType):
         document = UserDocument
         interfaces = (Node,)
         filter_backends = [
-            FilteringFilterBackend,
+            # FilteringFilterBackend,
+            # PostFilterFilteringBackend,
             SearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
@@ -87,6 +89,35 @@ class User(ElasticsearchObjectType):
         ordering_defaults = (
             'created_at',
         )
+        post_filter_fields = {
+            'pf_first_name': {
+                'field': 'first_name.raw',
+                'lookups': [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_FILTER_PREFIX,
+                    LOOKUP_FILTER_WILDCARD,
+                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_EXCLUDE,
+                ],
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'pf_last_name': {
+                'field': 'last_name.raw',
+                'lookups': [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_FILTER_PREFIX,
+                    LOOKUP_FILTER_WILDCARD,
+                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_EXCLUDE,
+                ],
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'pf_email': 'email.raw',
+            'pf_created_at': 'created_at',
+            'pf_is_active': 'is_active',
+        }
 
 
 class Query(graphene.ObjectType):

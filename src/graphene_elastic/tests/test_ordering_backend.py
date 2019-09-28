@@ -1,4 +1,3 @@
-import time
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -52,7 +51,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
             self.elastic_posts + self.django_posts + self.python_posts
         )
 
-        time.sleep(3)
+        self.sleep()
 
     def __test_ordering(self, field, direction):
         """Test ordering.

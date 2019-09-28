@@ -37,7 +37,7 @@ class ReadOnlyAnimal(ElasticsearchObjectType):
         document = ReadOnlyAnimalDocument
         interfaces = (Node,)
         filter_backends = [
-            FilteringFilterBackend,
+            # FilteringFilterBackend,
             SearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,

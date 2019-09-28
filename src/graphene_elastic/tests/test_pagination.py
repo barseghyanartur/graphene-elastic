@@ -1,5 +1,4 @@
 import datetime
-import time
 import unittest
 import dateutil
 import factories
@@ -60,7 +59,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
         self.num_all_users = self.num_past_users + self.num_future_users
         self.all_users = self.past_users + self.future_users
 
-        time.sleep(3)
+        self.sleep()
 
     def __test_pagination(self,
                           expected_num_results,

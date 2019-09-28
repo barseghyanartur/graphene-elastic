@@ -1,4 +1,5 @@
 import logging
+import time
 import unittest
 from faker import Faker
 from graphene.test import Client
@@ -10,7 +11,6 @@ from search_index.documents.settings import (
     ELASTICSEARCH_CONNECTION
 )
 from search_index.documents import Post, User
-import factories
 
 __all__ = (
     'BaseGrapheneElasticTestCase',
@@ -33,7 +33,10 @@ class BaseGrapheneElasticTestCase(unittest.TestCase):
         super(BaseGrapheneElasticTestCase, self).setUp()
         self.remove_elasticsearch_indexes()
         self.create_elasticsearch_indexes()
-        # self.populate_elasticsearch_data()
+
+    @classmethod
+    def sleep(cls, value=3):
+        time.sleep(value)
 
     def remove_elasticsearch_indexes(self):
         """"""
@@ -56,15 +59,3 @@ class BaseGrapheneElasticTestCase(unittest.TestCase):
             Post.init()
         except Exception as err:
             LOGGER.error(err)
-    #
-    # def populate_elasticsearch_data(self):
-    #     """"""
-    #     posts = factories.PostFactory.create_batch(self.num_posts)
-    #
-    #     for post in posts:
-    #         post.save()
-    #
-    #     users = factories.UserFactory.create_batch(self.num_users)
-    #
-    #     for user in users:
-    #         user.save()

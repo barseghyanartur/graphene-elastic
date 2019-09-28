@@ -1,5 +1,4 @@
 import unittest
-import time
 import factories
 from .base import BaseGrapheneElasticTestCase
 from ..constants import ALL, VALUE
@@ -56,7 +55,7 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
         for _post in self.other_posts:
             _post.save()
 
-        time.sleep(2)
+        self.sleep(2)
 
     def __check_values(self, edges, stack):
         for node in edges:

@@ -25,12 +25,12 @@ from .converter import (
     convert_elasticsearch_field,
     ElasticsearchConversionError,
 )
-from .filter_backends import (
-    SearchFilterBackend,
-    FilteringFilterBackend,
-    OrderingFilterBackend,
-    DefaultOrderingFilterBackend,
-)
+# from .filter_backends import (
+#     SearchFilterBackend,
+#     FilteringFilterBackend,
+#     OrderingFilterBackend,
+#     DefaultOrderingFilterBackend,
+# )
 from .logging import logger
 from .registry import get_global_registry
 from .settings import graphene_settings
@@ -123,10 +123,10 @@ class ElasticsearchConnectionField(ConnectionField):
     @property
     def default_filter_backends(self):
         return [
-            SearchFilterBackend,
-            FilteringFilterBackend,
-            OrderingFilterBackend,
-            DefaultOrderingFilterBackend,
+            # SearchFilterBackend,
+            # FilteringFilterBackend,
+            # OrderingFilterBackend,
+            # DefaultOrderingFilterBackend,
         ]
 
     @property
@@ -185,19 +185,19 @@ class ElasticsearchConnectionField(ConnectionField):
         for backend_cls in self.filter_backends:
             if backend_cls.has_query_fields:
                 backend = backend_cls(self)
-                params.update(
-                    backend.get_backend_query_fields(
-                        items=items,
-                        is_filterable_func=is_filterable,
-                        get_type_func=get_type,
-                    )
+                _query_fields = backend.get_backend_query_fields(
+                    items=items,
+                    is_filterable_func=is_filterable,
+                    get_type_func=get_type,
                 )
+                if _query_fields:
+                    params.update(_query_fields)
 
         return params
 
     @property
     def field_args(self):
-        return self._field_args(self.fields.items())
+        return self._field_args(list(self.fields.items()))
 
     @property
     def reference_args(self):

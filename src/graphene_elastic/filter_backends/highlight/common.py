@@ -1,3 +1,4 @@
+import copy
 import enum
 import graphene
 from graphene_elastic.types.json_string import JSONString
@@ -40,11 +41,12 @@ class HighlightFilterBackend(BaseBackend):
     @property
     def highlight_fields(self):
         """Highlight filter fields."""
-        return getattr(
+        highlight_fields = getattr(
             self.connection_field.type._meta.node._meta,
             'filter_backend_options',
             {}
         ).get('highlight_fields', {})
+        return copy.deepcopy(highlight_fields)
 
     def field_belongs_to(self, field_name):
         """Check if given filter field belongs to the backend.

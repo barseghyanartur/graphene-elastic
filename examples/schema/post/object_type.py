@@ -6,6 +6,7 @@ from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
     SearchFilterBackend,
     OrderingFilterBackend,
+    PostFilterFilteringBackend,
     DefaultOrderingFilterBackend,
     HighlightFilterBackend,
     SourceFilterBackend,
@@ -20,7 +21,7 @@ from graphene_elastic.constants import (
 )
 
 from search_index.documents import Post as PostDocument
-from ..custom_backends import CustomFilterBackend
+# from ..custom_backends import CustomFilterBackend
 
 __all__ = (
     'Post',
@@ -35,6 +36,7 @@ class Post(ElasticsearchObjectType):
         interfaces = (Node,)
         filter_backends = [
             FilteringFilterBackend,
+            PostFilterFilteringBackend,
             SearchFilterBackend,
             HighlightFilterBackend,
             SourceFilterBackend,
@@ -45,7 +47,7 @@ class Post(ElasticsearchObjectType):
         ]
         # For `FilteringFilterBackend` backend
         filter_fields = {
-            'id': '_id',
+            # 'id': '_id',
             # The dictionary key (in this case `title`) is the name of
             # the corresponding GraphQL query argument. The dictionary
             # value could be simple or complex structure (in this case
@@ -179,4 +181,56 @@ class Post(ElasticsearchObjectType):
                     ]
                 }
             },
+        }
+
+        # For `PostFilterFilteringBackend` backend
+        post_filter_fields = {
+            # 'pf_id': '_id',
+            # The dictionary key (in this case `title`) is the name of
+            # the corresponding GraphQL query argument. The dictionary
+            # value could be simple or complex structure (in this case
+            # complex). The `field` key points to the `title.raw`, which
+            # is the field name in the Elasticsearch document
+            # (`PostDocument`). Since `lookups` key is provided, number
+            # of lookups is limited to the given set, while term is the
+            # default lookup (as specified in `default_lookup`).
+            'title': {
+                'field': 'title.raw',  # Field name in the Elastic doc
+                # Available lookups
+                'lookups': [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_FILTER_PREFIX,
+                    LOOKUP_FILTER_WILDCARD,
+                    LOOKUP_QUERY_IN,
+                    LOOKUP_QUERY_EXCLUDE,
+                ],
+                # Default lookup
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+
+            # The dictionary key (in this case `category`) is the name of
+            # the corresponding GraphQL query argument. Since no lookups
+            # or default_lookup is provided, defaults are used (all lookups
+            # available, term is the default lookup). The dictionary value
+            # (in this case `category.raw`) is the field name in the
+            # Elasticsearch document (`PostDocument`).
+            'category': 'category.raw',
+
+            # The dictionary key (in this case `tags`) is the name of
+            # the corresponding GraphQL query argument. Since no lookups
+            # or default_lookup is provided, defaults are used (all lookups
+            # available, term is the default lookup). The dictionary value
+            # (in this case `tags.raw`) is the field name in the
+            # Elasticsearch document (`PostDocument`).
+            'tags': 'tags.raw',
+
+            # The dictionary key (in this case `num_views`) is the name of
+            # the corresponding GraphQL query argument. Since no lookups
+            # or default_lookup is provided, defaults are used (all lookups
+            # available, term is the default lookup). The dictionary value
+            # (in this case `num_views`) is the field name in the
+            # Elasticsearch document (`PostDocument`).
+            'num_views': 'num_views',
+            'i_do_not_exist': 'i_do_not_exist',
         }

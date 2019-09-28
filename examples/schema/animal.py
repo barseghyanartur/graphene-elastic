@@ -6,6 +6,7 @@ from graphene_elastic import (
 )
 from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
+    PostFilterFilteringBackend,
     SearchFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
@@ -38,10 +39,13 @@ class Animal(ElasticsearchObjectType):
         interfaces = (Node,)
         filter_backends = [
             FilteringFilterBackend,
+            PostFilterFilteringBackend,
             SearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]
+
+        # For filter backend
         filter_fields = {
             'id': {
                 'field': 'id',
@@ -60,10 +64,14 @@ class Animal(ElasticsearchObjectType):
                 'default_lookup': LOOKUP_FILTER_TERM,
             },
         }
+
+        # For search backend
         search_fields = {
             'action': None,
             'entity': None,
         }
+
+        # For ordering backend
         ordering_fields = {
             'id': 'id',
             'publish_date': 'publish_date',
@@ -71,10 +79,31 @@ class Animal(ElasticsearchObjectType):
             'entity': 'entity.raw',
         }
 
+        # For default ordering backend
         ordering_defaults = (
             'id',
             'publish_date'
         )
+
+        # For filter backend
+        post_filter_fields = {
+            'id': {
+                'field': 'id',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'action': {
+                'field': 'action.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'entity': {
+                'field': 'entity.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'app': {
+                'field': 'app.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+        }
 
 
 class Query(graphene.ObjectType):

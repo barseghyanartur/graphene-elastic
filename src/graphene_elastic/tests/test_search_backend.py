@@ -46,7 +46,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         for _post in self.other_posts:
             _post.save()
 
-        time.sleep(2)
+        self.sleep(2)
 
     def __test_search_content(self, search, num_posts):
         """Test search.

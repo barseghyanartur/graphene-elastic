@@ -30,11 +30,12 @@ class SearchFilterBackend(BaseBackend):
     @property
     def search_fields(self):
         """Search filter fields."""
-        return getattr(
+        search_fields = getattr(
             self.connection_field.type._meta.node._meta,
             'filter_backend_options',
             {}
         ).get('search_fields', {})
+        return copy.deepcopy(search_fields)
 
     @property
     def search_args_mapping(self):
@@ -69,7 +70,7 @@ class SearchFilterBackend(BaseBackend):
             type(
                 "{}{}{}{}".format(
                     DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix,
+                    self.prefix.title(),
                     self.connection_field.type.__name__,
                     field_name.title()
                 ),

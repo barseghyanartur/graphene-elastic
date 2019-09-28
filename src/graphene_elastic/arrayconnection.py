@@ -109,7 +109,7 @@ def connection_from_list_slice(
         max(start_offset - slice_start, 0):
         list_slice_length - (slice_end - end_offset)
     ]
-    logger.debug(_slice_qs.to_dict())
+    logger.debug_json(_slice_qs.to_dict())
 
     _slice = _slice_qs.execute()
 

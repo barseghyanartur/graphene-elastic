@@ -24,20 +24,21 @@ from ...constants import (
     LOOKUP_QUERY_STARTSWITH,
     VALUE,
 )
-from .queries import LOOKUP_FILTER_MAPPING
-from .mixins import FilteringFilterMixin
 
-__title__ = "graphene_elastic.filter_backends.filtering.common"
+from ..filtering.mixins import FilteringFilterMixin
+from ..filtering.queries import LOOKUP_FILTER_MAPPING
+
+__title__ = "graphene_elastic.filter_backends.post_filter.common"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
 __copyright__ = "2019 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
-__all__ = ("FilteringFilterBackend",)
+__all__ = ("PostFilterFilteringBackend",)
 
 
-class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
-    """Filtering filter backend."""
+class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
+    """Post filter filtering backend."""
 
-    prefix = "filter"
+    prefix = 'postFilter'
     has_query_fields = True
 
     @property
@@ -47,8 +48,13 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             self.connection_field.type._meta.node._meta,
             'filter_backend_options',
             {}
-        ).get('filter_fields', {})
-
+        ).get('post_filter_fields', {})
+        if not filter_fields:
+            filter_fields = getattr(
+                self.connection_field.type._meta.node._meta,
+                'filter_backend_options',
+                {}
+            ).get('filter_fields', {})
         return copy.deepcopy(filter_fields)
 
     @property
@@ -77,7 +83,7 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
         if not self.filter_fields:
             return {}
 
-        return super(FilteringFilterBackend, self).get_backend_query_fields(
+        return super(PostFilterFilteringBackend, self).get_backend_query_fields(
             items=items,
             is_filterable_func=is_filterable_func,
             get_type_func=get_type_func
@@ -108,7 +114,7 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             type(
                 "{}{}{}{}".format(
                     DYNAMIC_CLASS_NAME_PREFIX,
-                    self.prefix.title(),
+                    self.prefix,
                     self.connection_field.type.__name__,
                     field_name.title()
                 ),
@@ -485,3 +491,27 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
                     )
 
         return queryset
+
+    @classmethod
+    def apply_filter(cls, queryset, options=None, args=None, kwargs=None):
+        """Apply filter.
+
+        :param queryset:
+        :param options:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return queryset.post_filter(*args, **kwargs)
+
+    @classmethod
+    def apply_query(cls, queryset, options=None, args=None, kwargs=None):
+        """Apply query.
+
+        :param queryset:
+        :param options:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return queryset.post_filter(*args, **kwargs)

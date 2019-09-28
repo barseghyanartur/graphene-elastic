@@ -31,7 +31,7 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
             )
             _post.save()
 
-        time.sleep(2)
+        self.sleep(2)
 
     def __check_values(self, edges, stack, empty_stack):
         for node in edges:
