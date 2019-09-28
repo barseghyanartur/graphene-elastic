@@ -151,4 +151,3 @@ def connection_from_list_slice(
             backend.alter_connection(conn, _slice)
 
     return conn
-
