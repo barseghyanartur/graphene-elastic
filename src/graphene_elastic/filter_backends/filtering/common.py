@@ -361,7 +361,6 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             # For all other cases, when we don't have multiple values,
             # we follow the normal flow.
             for option in options:
-                # import ipdb; ipdb.set_trace()
 
                 if option["lookup"] == LOOKUP_FILTER_TERMS:
                     queryset = self.apply_filter_terms(

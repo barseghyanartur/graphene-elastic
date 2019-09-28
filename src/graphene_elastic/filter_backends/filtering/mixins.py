@@ -505,8 +505,7 @@ class FilteringFilterMixin(object):
         _queries = []
         for _value in _values:
             _queries.append(Q("term", **{options["field"]: _value}))
-        # if not _queries:
-        # import pytest; pytest.set_trace()
+
         if _queries:
             queryset = cls.apply_query(
                 queryset=queryset,
