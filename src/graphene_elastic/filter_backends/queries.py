@@ -1,3 +1,5 @@
+import datetime
+from decimal import Decimal
 import graphene
 from ..enums import NoValue
 
@@ -42,6 +44,25 @@ class _ListOfTypeString(graphene.List):
             **kwargs
         )
 
+
+_number_or_date_types = (
+    graphene.Decimal,
+    graphene.Float,
+    graphene.Int,
+    graphene.Date,
+    graphene.DateTime,
+)
+
+
+class _NumberOrDate(graphene.InputObjectType):
+    """Number or Date."""
+
+    decimal = graphene.Decimal(required=False)
+    float = graphene.Float(required=False)
+    int = graphene.Int(required=False)
+    datetime = graphene.DateTime(required=False)
+    date = graphene.Date(required=False)
+
 # ***************************************************************
 # ************************* Filtering ***************************
 # ***************************************************************
@@ -74,8 +95,8 @@ class Range(graphene.InputObjectType):
             {range: {lower: "1000", upper: "2000", boost: "2.0"}]}}
         ]
     """
-    lower = graphene.Decimal(required=True)
-    upper = graphene.Decimal()
+    lower = graphene.Field(_NumberOrDate, required=True)
+    upper = graphene.Field(_NumberOrDate)
     boost = graphene.Decimal()
 
 
@@ -182,7 +203,7 @@ class In(_ListOfTypeString):
     """
 
 
-class Gt(graphene.Decimal):
+class Gt(_NumberOrDate):
     """Gt.
 
         filter:[
@@ -190,10 +211,13 @@ class Gt(graphene.Decimal):
         ]
     """
 
+    class Meta:
+        types = list(_number_or_date_types)
+
     required = True
 
 
-class Gte(graphene.Decimal):
+class Gte(_NumberOrDate):
     """Gte.
 
         filter:[
@@ -201,10 +225,13 @@ class Gte(graphene.Decimal):
         ]
     """
 
+    class Meta:
+        types = list(_number_or_date_types)
+
     required = True
 
 
-class Lt(graphene.Decimal):
+class Lt(_NumberOrDate):
     """Lt.
 
         filter:[
@@ -212,16 +239,22 @@ class Lt(graphene.Decimal):
         ]
     """
 
+    class Meta:
+        types = list(_number_or_date_types)
+
     required = True
 
 
-class Lte(graphene.Decimal):
+class Lte(_NumberOrDate):
     """Lte.
 
         filter:[
             {category: {lte: "1"}]}}
         ]
     """
+
+    class Meta:
+        types = list(_number_or_date_types)
 
     required = True
 

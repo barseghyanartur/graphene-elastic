@@ -28,6 +28,26 @@ class FilteringFilterMixin(object):
     split_lookup_complex_value: Callable
 
     @classmethod
+    def get_range_param_value(cls, value):
+        """Get range param value.
+
+        :param value:
+        :type value:
+            graphene_elastic.filter_backends.filtering.queries.InputObjectType
+        :return:
+        """
+        if not value:
+            return None
+
+        return (
+            value.decimal
+            or value.float
+            or value.int
+            or value.date
+            or value.datetime
+        )
+
+    @classmethod
     def get_range_params(cls, value, options):
         """Get params for `range` query.
 
@@ -39,8 +59,8 @@ class FilteringFilterMixin(object):
 
             {
               allPostDocuments(filter:{numViews:{range:{
-                    lower:"100",
-                    upper:"200",
+                    lower:{decimal:"100"},
+                    upper:{decimal: "200"},
                     boost:"2.0"
                   }}}) {
                 edges {
@@ -56,7 +76,8 @@ class FilteringFilterMixin(object):
 
         :param value:
         :param options:
-        :type value: str
+        :type value:
+            graphene_elastic.filter_backends.filtering.queries.InputObjectType
         :type options: dict
         :return: Params to be used in `range` query.
         :rtype: dict
@@ -64,10 +85,12 @@ class FilteringFilterMixin(object):
         if LOWER not in value:
             return {}
 
-        params = {GTE: float(value.get(LOWER, None))}
+        params = {GTE: cls.get_range_param_value(value.get(LOWER, None))}
 
         if UPPER in value:
-            params.update({LTE: float(value.get(UPPER, None))})
+            params.update({
+                LTE: cls.get_range_param_value(value.get(UPPER, None))
+            })
 
         if BOOST in value:
             params.update({BOOST: float(value.get(BOOST, None))})
@@ -85,7 +108,10 @@ class FilteringFilterMixin(object):
         Example:
 
             {
-              allPostDocuments(filter:{numViews:{gt:"100", lt:"200"}}) {
+              allPostDocuments(filter:{numViews:{
+                    gt:{decimal:"100"},
+                    lt:{decimal:"200"}
+                }}) {
                 edges {
                   node {
                     category
@@ -100,7 +126,8 @@ class FilteringFilterMixin(object):
         :param value:
         :param lookup:
         :param options:
-        :type value: str
+        :type value:
+            graphene_elastic.filter_backends.filtering.queries.InputObjectType
         :type lookup: str
         :type options: dict
         :return: Params to be used in `range` query.
@@ -109,7 +136,12 @@ class FilteringFilterMixin(object):
         if not value:
             return {}
 
-        params = {lookup: value}
+        _value = cls.get_range_param_value(value)
+
+        if not _value:
+            return {}
+
+        params = {lookup: _value}
 
         if BOOST in options:
             params.update({BOOST: float(options.get(BOOST, None))})
@@ -220,8 +252,8 @@ class FilteringFilterMixin(object):
 
             {
               allPostDocuments(filter:{numViews:{range:{
-                    lower:"100",
-                    upper:"200"
+                    lower:{decimal:"100"},
+                    upper:{decimal:"200"}
                   }}}) {
                 edges {
                   node {
@@ -472,7 +504,9 @@ class FilteringFilterMixin(object):
         Example:
 
             query {
-              allPostDocuments(postFilter:{tags:{in:["photography", "models"]}}) {
+              allPostDocuments(postFilter:{tags:{
+                    in:["photography", "models"]
+                }}) {
                 edges {
                   node {
                     category
@@ -526,7 +560,9 @@ class FilteringFilterMixin(object):
         Example:
 
             query {
-              allPostDocuments(filter:{numViews:{gt:"100"}}) {
+              allPostDocuments(filter:{numViews:{
+                    gt:{decimal:"100"}
+                }}) {
                 edges {
                   node {
                     category
@@ -571,7 +607,9 @@ class FilteringFilterMixin(object):
         Example:
 
             query {
-              allPostDocuments(filter:{numViews:{gte:"100"}}) {
+              allPostDocuments(filter:{numViews:{
+                    gte:{decimal:"100"}
+                }}) {
                 edges {
                   node {
                     category
@@ -616,7 +654,9 @@ class FilteringFilterMixin(object):
         Example:
 
             query {
-              allPostDocuments(filter:{numViews:{lt:"200"}}) {
+              allPostDocuments(filter:{numViews:{
+                    lt:{decimal:"200"}
+                }}) {
                 edges {
                   node {
                     category
@@ -661,7 +701,9 @@ class FilteringFilterMixin(object):
         Example:
 
             query {
-              allPostDocuments(filter:{numViews:{lte:"200"}}) {
+              allPostDocuments(filter:{numViews:{
+                    lte:{decimal:"200"}
+                }}) {
                 edges {
                   node {
                     category

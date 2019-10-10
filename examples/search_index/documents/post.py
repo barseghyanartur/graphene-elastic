@@ -90,7 +90,8 @@ class Post(Document):
         self.tags.append(name)
 
     def save(self, ** kwargs):
-        self.created_at = datetime.datetime.now()
+        if not self.created_at:
+            self.created_at = datetime.datetime.now()
         return super().save(** kwargs)
 
 

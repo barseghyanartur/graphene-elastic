@@ -121,7 +121,7 @@ Filter lookup ``gt``
 .. code-block:: javascript
 
     query {
-      allPostDocuments(postFilter:{numViews:{gt:"100"}}) {
+      allPostDocuments(postFilter:{numViews:{gt:{decimal:"100"}}}) {
         edges {
           node {
             category
@@ -138,7 +138,7 @@ Filter lookup ``gte``
 .. code-block:: javascript
 
     query {
-      allPostDocuments(postFilter:{numViews:{gte:"100"}}) {
+      allPostDocuments(postFilter:{numViews:{gte:{decimal:"100"}}}) {
         edges {
           node {
             category
@@ -173,7 +173,7 @@ Filter lookup ``lt``
 .. code-block:: javascript
 
     query {
-      allPostDocuments(postFilter:{numViews:{lt:"200"}}) {
+      allPostDocuments(postFilter:{numViews:{lt:{decimal:"200"}}}) {
         edges {
           node {
             category
@@ -190,7 +190,7 @@ Filter lookup ``lte``
 .. code-block:: javascript
 
     query {
-      allPostDocuments(postFilter:{numViews:{lte:"200"}}) {
+      allPostDocuments(postFilter:{numViews:{lte:{decimal:"200"}}}) {
         edges {
           node {
             category
@@ -226,8 +226,8 @@ Filter lookup ``range``
 
     query {
       allPostDocuments(postFilter:{numViews:{range:{
-            lower:"100",
-            upper:"200"
+            lower:{decimal:"100"},
+            upper:{decimal:"200"}
           }}}) {
         edges {
           node {
