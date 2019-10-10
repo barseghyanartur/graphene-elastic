@@ -17,7 +17,7 @@ are used for versioning (schema follows below):
 
 0.6
 ---
-2019-10-10
+2019-10-11
 
 .. note::
 
@@ -32,6 +32,40 @@ are used for versioning (schema follows below):
   input types. This makes it possible to use the following types in comparison:
   ``decimal.Decimal``, ``float``, ``int``, ``datetime.datetime`` and
   ``datetime.date``.
+
+Sample new GraphQL query:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(postFilter:{numViews:{gt:{decimal:"100.00"}}}) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
+
+Sample old GraphQL query:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(postFilter:{numViews:{gt:"100.00"}}) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
 
 0.5
 ---
