@@ -1,3 +1,4 @@
+import datetime
 import unittest
 
 from graphene.utils.str_converters import to_camel_case
@@ -50,7 +51,10 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.elastic_posts = factories.PostFactory.create_batch(
             self.num_elastic_posts,
             category='Elastic',
-            tags=None
+            tags=None,
+            created_at=self.faker.date_between(
+                start_date="+1d", end_date="+30d"
+            )
         )
         for _post in self.elastic_posts:
             _post.save()
@@ -58,7 +62,10 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.num_django_posts = 3
         self.django_posts = factories.PostFactory.create_batch(
             self.num_django_posts,
-            category='Django'
+            category='Django',
+            created_at=self.faker.date_between(
+                start_date="+1d", end_date="+30d"
+            )
         )
         for _post in self.django_posts:
             _post.save()
@@ -67,6 +74,9 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.python_posts = factories.ManyViewsPostFactory.create_batch(
             self.num_python_posts,
             category='Python',
+            created_at=self.faker.date_between(
+                start_date="-30d", end_date="-1d"
+            )
         )
         for _post in self.python_posts:
             _post.save()
@@ -79,6 +89,12 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.all_posts = (
             self.elastic_posts + self.django_posts + self.python_posts
         )
+
+        self.num_future_posts = (
+            self.num_elastic_posts + self.num_django_posts
+        )
+        self.num_past_posts = self.num_python_posts
+        self.today = datetime.datetime.now().strftime('%Y-%m-%d')
 
         self.sleep()
 
@@ -117,11 +133,13 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         )
 
     def __test_filter_number_lookups(self,
+                                     field,
                                      value,
                                      num_posts,
                                      lookup=LOOKUP_QUERY_GT):
         """Test filter number lookups (on field `num_views`).
 
+        :param field:
         :param value:
         :param num_posts:
         :param lookup:
@@ -129,7 +147,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         _query = """
         query {
-          allPostDocuments(filter:{numViews:{%s:%s}}) {
+          allPostDocuments(filter:{%s:{%s:%s}}) {
             edges {
               node {
                 category
@@ -141,11 +159,12 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % (lookup, value)
+        """ % (field, lookup, value)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),
-            num_posts
+            num_posts,
+            _query
         )
 
     def _test_filter_term_terms_lookup(self):
@@ -300,7 +319,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
             self.__test_filter_number_lookups(
-                '"0.1"',
+                'numViews',
+                '{decimal:"0.1"}',
                 self.num_all_posts
             )
 
@@ -308,16 +328,40 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `gt` lookup'):
             self.__test_filter_number_lookups(
-                '"1999"',
+                'numViews',
+                '{decimal:"1999"}',
                 self.num_python_posts
+            )
+
+        # This should be Elastic and Django posts only, since they have
+        # dates in future.
+        with self.subTest('Test filter on field `created_at` '
+                          'using `gt` lookup'):
+            self.__test_filter_number_lookups(
+                'createdAt',
+                '{date:"%s"}' % self.today,
+                self.num_future_posts,
+                lookup=LOOKUP_QUERY_GT
             )
 
         # This shall be all posts (including 0).
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
             self.__test_filter_number_lookups(
-                '"0"',
+                'numViews',
+                '{decimal:"0"}',
                 self.num_all_posts,
+                lookup=LOOKUP_QUERY_GTE
+            )
+
+        # This should be Elastic and Django posts only, since they have
+        # dates in future.
+        with self.subTest('Test filter on field `created_at` '
+                          'using `gt` lookup'):
+            self.__test_filter_number_lookups(
+                'createdAt',
+                '{date:"%s"}' % self.today,
+                self.num_future_posts,
                 lookup=LOOKUP_QUERY_GTE
             )
 
@@ -325,7 +369,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `gte` lookup'):
             self.__test_filter_number_lookups(
-                '"2000"',
+                'numViews',
+                '{decimal:"2000"}',
                 self.num_python_posts,
                 lookup=LOOKUP_QUERY_GTE
             )
@@ -334,8 +379,20 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
             self.__test_filter_number_lookups(
-                '"10001"',
+                'numViews',
+                '{decimal:"10001"}',
                 self.num_all_posts,
+                lookup=LOOKUP_QUERY_LT
+            )
+
+        # This should be Python posts only, since they have
+        # dates in past.
+        with self.subTest('Test filter on field `created_at` '
+                          'using `lt` lookup'):
+            self.__test_filter_number_lookups(
+                'createdAt',
+                '{date:"%s"}' % self.today,
+                self.num_past_posts,
                 lookup=LOOKUP_QUERY_LT
             )
 
@@ -343,7 +400,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `lt` lookup'):
             self.__test_filter_number_lookups(
-                '"2000"',
+                'numViews',
+                '{decimal:"2000"}',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LT
             )
@@ -352,8 +410,20 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
             self.__test_filter_number_lookups(
-                '"10000"',
+                'numViews',
+                '{decimal:"10000"}',
                 self.num_all_posts,
+                lookup=LOOKUP_QUERY_LTE
+            )
+
+        # This should be Python posts only, since they have
+        # dates in past.
+        with self.subTest('Test filter on field `created_at` '
+                          'using `lte` lookup'):
+            self.__test_filter_number_lookups(
+                'createdAt',
+                '{date:"%s"}' % self.today,
+                self.num_past_posts,
                 lookup=LOOKUP_QUERY_LTE
             )
 
@@ -361,7 +431,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `num_views` '
                           'using `lte` lookup'):
             self.__test_filter_number_lookups(
-                '"1999"',
+                'numViews',
+                '{decimal:"1999"}',
                 self.num_all_posts - self.num_python_posts,
                 lookup=LOOKUP_QUERY_LTE
             )
@@ -376,10 +447,18 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 if 100 <= _p.num_views <= 300:
                     _count += 1
             self.__test_filter_number_lookups(
-                '{%s: "%s", %s: "%s"}' % (LOWER, '100', UPPER, '300'),
+                'numViews',
+                '{%s: {decimal:"%s"}, %s: {decimal:"%s"}}' % (
+                    LOWER,
+                    '100',
+                    UPPER,
+                    '300'
+                ),
                 _count,
                 lookup=LOOKUP_FILTER_RANGE
             )
+
+    # TODO: Test range dates
 
     def test_all(self):
         """Test all.

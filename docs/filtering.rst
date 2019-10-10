@@ -116,10 +116,18 @@ Filter lookup ``exists``
 
 Filter lookup ``gt``
 ~~~~~~~~~~~~~~~~~~~~
+Available value types are:
+
+- decimal
+- float
+- int
+- datetime
+- date
+
 .. code-block:: javascript
 
     query {
-      allPostDocuments(filter:{numViews:{gt:"100"}}) {
+      allPostDocuments(filter:{numViews:{gt:{decimal:"100.05"}}}) {
         edges {
           node {
             category
@@ -133,10 +141,12 @@ Filter lookup ``gt``
 
 Filter lookup ``gte``
 ~~~~~~~~~~~~~~~~~~~~~
+*Same value types as in ``gt``*
+
 .. code-block:: javascript
 
     query {
-      allPostDocuments(filter:{numViews:{gte:"100"}}) {
+      allPostDocuments(filter:{numViews:{gte:{decimal:"100.05"}}}) {
         edges {
           node {
             category
@@ -168,10 +178,12 @@ Filter lookup ``in``
 
 Filter lookup ``lt``
 ~~~~~~~~~~~~~~~~~~~~
+*Same value types as in ``gt``*
+
 .. code-block:: javascript
 
     query {
-      allPostDocuments(filter:{numViews:{lt:"200"}}) {
+      allPostDocuments(filter:{numViews:{lt:{date:"2019-10-09"}}}) {
         edges {
           node {
             category
@@ -185,10 +197,12 @@ Filter lookup ``lt``
 
 Filter lookup ``lte``
 ~~~~~~~~~~~~~~~~~~~~~
+*Same value types as in ``gt``*
+
 .. code-block:: javascript
 
     query {
-      allPostDocuments(filter:{numViews:{lte:"200"}}) {
+      allPostDocuments(filter:{numViews:{lte:{date:"2009-10-09"}}}) {
         edges {
           node {
             category
@@ -220,12 +234,13 @@ Filter lookup ``prefix``
 
 Filter lookup ``range``
 ~~~~~~~~~~~~~~~~~~~~~~~
+*Same value types as in ``gt``*
 .. code-block:: javascript
 
     query {
       allPostDocuments(filter:{numViews:{range:{
-            lower:"100",
-            upper:"200"
+            lower:{decimal:"100.05"},
+            upper:{decimal:"200.05"}
           }}}) {
         edges {
           node {

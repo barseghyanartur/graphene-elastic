@@ -96,6 +96,15 @@ class Post(ElasticsearchObjectType):
             # (in this case `num_views`) is the field name in the
             # Elasticsearch document (`PostDocument`).
             'num_views': 'num_views',
+
+            # The dictionary key (in this case `created_at`) is the name of
+            # the corresponding GraphQL query argument. Since no lookups
+            # or default_lookup is provided, defaults are used (all lookups
+            # available, term is the default lookup). The dictionary value
+            # (in this case `created_at`) is the field name in the
+            # Elasticsearch document (`PostDocument`).
+            'created_at': 'created_at',
+
             'i_do_not_exist': 'i_do_not_exist',
         }
 
@@ -235,5 +244,14 @@ class Post(ElasticsearchObjectType):
             # (in this case `num_views`) is the field name in the
             # Elasticsearch document (`PostDocument`).
             'num_views': 'num_views',
+
+            # The dictionary key (in this case `created_at`) is the name of
+            # the corresponding GraphQL query argument. Since no lookups
+            # or default_lookup is provided, defaults are used (all lookups
+            # available, term is the default lookup). The dictionary value
+            # (in this case `created_at`) is the field name in the
+            # Elasticsearch document (`PostDocument`).
+            'created_at': 'created_at',
+
             'i_do_not_exist': 'i_do_not_exist',
         }

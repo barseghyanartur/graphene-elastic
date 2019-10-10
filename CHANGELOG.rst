@@ -15,12 +15,64 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
-0.6
+0.7
 ---
-2019-10-03 (not yet released)
+2019-10-xx (not yet released)
 
 - Simple search query backend.
 - Deprecating old search backend.
+
+0.6
+---
+2019-10-11
+
+.. note::
+
+    Release dedicated to John Lennon. Happy birthday, dear John!
+
+.. note::
+
+    This release introduces minor backwards incompatibility for ``range``,
+    ``gt``, ``gte``, ``lt`` and ``lte`` filters. You should update your code.
+
+- The ``range``, ``gt``, ``gte``, ``lt`` and ``lte`` filters are now complex
+  input types. This makes it possible to use the following types in comparison:
+  ``decimal.Decimal``, ``float``, ``int``, ``datetime.datetime`` and
+  ``datetime.date``.
+
+Sample new GraphQL query:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(postFilter:{numViews:{gt:{decimal:"100.00"}}}) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
+
+Sample old GraphQL query:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(postFilter:{numViews:{gt:"100.00"}}) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
 
 0.5
 ---
