@@ -1,4 +1,5 @@
 from .common import *
+from .compound import *
 
 __title__ = 'graphene_elastic.filter_backends.search'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

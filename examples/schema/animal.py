@@ -10,6 +10,7 @@ from graphene_elastic.filter_backends import (
     SearchFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
+    CompoundSearchFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -40,7 +41,8 @@ class Animal(ElasticsearchObjectType):
         filter_backends = [
             FilteringFilterBackend,
             PostFilterFilteringBackend,
-            SearchFilterBackend,
+            # SearchFilterBackend,
+            CompoundSearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]
