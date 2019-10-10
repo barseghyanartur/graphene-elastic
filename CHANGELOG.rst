@@ -33,6 +33,40 @@ are used for versioning (schema follows below):
   ``decimal.Decimal``, ``float``, ``int``, ``datetime.datetime`` and
   ``datetime.date``.
 
+Sample new GraphQL query:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(postFilter:{numViews:{gt:{decimal:"100.00"}}}) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
+
+Sample old GraphQL query:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(postFilter:{numViews:{gt:"100.00"}}) {
+        edges {
+          node {
+            category
+            title
+            content
+            numViews
+          }
+        }
+      }
+    }
+
 0.5
 ---
 2019-09-29
