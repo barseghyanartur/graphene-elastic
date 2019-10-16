@@ -1,8 +1,12 @@
-from graphene_elastic import ElasticsearchObjectType
+import graphene
+from graphene_elastic import (
+    ElasticsearchObjectType,
+    ElasticsearchConnectionField,
+)
 from graphene_elastic.filter_backends import (
     FacetedSearchFilterBackend,
     FilteringFilterBackend,
-    SearchFilterBackend,
+    CompoundSearchFilterBackend,
     OrderingFilterBackend,
     PostFilterFilteringBackend,
     DefaultOrderingFilterBackend,
@@ -10,23 +14,25 @@ from graphene_elastic.filter_backends import (
     SourceFilterBackend,
 )
 
-from search_index.documents import Post as PostDocument
-# from ..custom_backends import CustomFilterBackend
-from ..meta.post import AbstractPostDocumentMeta
+from search_index.documents import ReadOnlyPost as ReadOnlyPostDocument
+from .meta.post import AbstractPostDocumentMeta
+
 __all__ = (
-    'Post',
+    'ReadOnlyPost',
+    'Query',
+    'schema',
 )
 
 
-class Post(ElasticsearchObjectType):
-    """PostDocument object type."""
+class ReadOnlyPost(ElasticsearchObjectType):
+    """Read only PostDocument object type."""
 
     class Meta(AbstractPostDocumentMeta):
-        document = PostDocument
+        document = ReadOnlyPostDocument
         filter_backends = [
             FilteringFilterBackend,
             PostFilterFilteringBackend,
-            SearchFilterBackend,
+            CompoundSearchFilterBackend,
             HighlightFilterBackend,
             SourceFilterBackend,
             FacetedSearchFilterBackend,
@@ -37,12 +43,12 @@ class Post(ElasticsearchObjectType):
 
     # class Meta:
     #
-    #     document = PostDocument
+    #     document = ReadOnlyPostDocument
     #     interfaces = (Node,)
     #     filter_backends = [
     #         FilteringFilterBackend,
     #         PostFilterFilteringBackend,
-    #         SearchFilterBackend,
+    #         CompoundSearchFilterBackend,
     #         HighlightFilterBackend,
     #         SourceFilterBackend,
     #         FacetedSearchFilterBackend,
@@ -259,3 +265,14 @@ class Post(ElasticsearchObjectType):
     #
     #         'i_do_not_exist': 'i_do_not_exist',
     #     }
+
+
+class Query(graphene.ObjectType):
+    """ReadOnlyPostDocument query."""
+
+    all_read_only_post_documents = ElasticsearchConnectionField(ReadOnlyPost)
+
+
+schema = graphene.Schema(
+    query=Query
+)

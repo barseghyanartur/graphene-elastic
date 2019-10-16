@@ -1,4 +1,11 @@
+import copy
+
 from elasticsearch_dsl.query import Q
+
+from ....constants import (
+    ALL,
+    VALUE,
+)
 
 from .base import BaseSearchQueryBackend
 
@@ -15,47 +22,48 @@ class MatchPhraseQueryBackend(BaseSearchQueryBackend):
 
     query_type = 'match_phrase'
 
-    @classmethod
-    def construct_search(cls, search_backend):
+    def construct_search(self):
         """Construct search.
 
-        :param request:
-        :param view:
-        :param search_backend:
         :return:
         """
-        query_params = search_backend.get_search_query_params(request)
-        __queries = []
-        for search_term in query_params:
-            __values = search_backend.split_lookup_name(search_term, 1)
-            __len_values = len(__values)
-            if __len_values > 1:
-                field, value = __values
-                if field in view.search_fields:
-                    # Initial kwargs for the match query
-                    field_kwargs = {field: {'query': value}}
-                    # In case if we deal with structure 2
-                    if isinstance(view.search_fields, dict):
-                        extra_field_kwargs = view.search_fields[field]
-                        if extra_field_kwargs:
-                            field_kwargs[field].update(extra_field_kwargs)
-                    # The match query
-                    __queries.append(
-                        Q(cls.query_type, **field_kwargs)
-                    )
-            else:
-                for field in view.search_fields:
-                    # Initial kwargs for the match query
-                    field_kwargs = {field: {'query': search_term}}
+        query_params = self.get_search_query_params()
+        search_fields = self.prepare_search_fields()
+        _queries = []
+        for search_field, value in query_params.items():
+            if search_field == ALL:
+                for field_name_param, field_name \
+                        in self.search_args_mapping.items():
+                    field_options = copy.copy(search_fields[field_name])
+                    field = field_options.pop("field", field_name)
 
-                    # In case if we deal with structure 2
-                    if isinstance(view.search_fields, dict):
-                        extra_field_kwargs = view.search_fields[field]
-                        if extra_field_kwargs:
-                            field_kwargs[field].update(extra_field_kwargs)
-
+                    if isinstance(value, dict):
+                        # For constructions like:
+                        # {'title': {'value': 'Produce', 'boost': 1}}
+                        _query = value.pop(VALUE)
+                        _field_options = copy.copy(value)
+                        value = _query
+                        field_options.update(_field_options)
+                    field_kwargs = {field: {"query": value}}
+                    if field_options:
+                        field_kwargs[field].update(field_options)
                     # The match query
-                    __queries.append(
-                        Q(cls.query_type, **field_kwargs)
-                    )
-        return __queries
+                    _queries.append(Q(self.query_type, **field_kwargs))
+            elif search_field in search_fields:
+                field_options = copy.copy(search_fields[search_field])
+                field = field_options.pop("field", search_field)
+
+                if isinstance(value, dict):
+                    # For constructions like:
+                    # {'title': {'value': 'Produce', 'boost': 1}}
+                    _query = value.pop(VALUE)
+                    _field_options = copy.copy(value)
+                    value = _query
+                    field_options.update(_field_options)
+                field_kwargs = {field: {"query": value}}
+                if field_options:
+                    field_kwargs[field].update(field_options)
+                # The match query
+                _queries.append(Q(self.query_type, **field_kwargs))
+
+        return _queries

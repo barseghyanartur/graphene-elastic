@@ -13,9 +13,8 @@ from elasticsearch_dsl import (
     Text,
     Integer,
     Float,
-
-
 )
+from .read_only import ReadOnlyDocument
 from .settings import BLOG_POST_DOCUMENT_NAME, ELASTICSEARCH_CONNECTION
 
 try:
@@ -27,6 +26,7 @@ except ImportError:
 __all__ = (
     'Comment',
     'Post',
+    'ReadOnlyPost',
 )
 
 connections.create_connection(**ELASTICSEARCH_CONNECTION)
@@ -93,6 +93,36 @@ class Post(Document):
         if not self.created_at:
             self.created_at = datetime.datetime.now()
         return super().save(** kwargs)
+
+
+class ReadOnlyPost(ReadOnlyDocument):
+    title = Text(
+        analyzer=html_strip,
+        fields={'raw': Keyword()}
+    )
+    # title_suggest = Completion()
+    content = Text()
+    created_at = Date()
+    published = Boolean()
+    category = Text(
+        analyzer=html_strip,
+        fields={'raw': Keyword()}
+    )
+    comments = Nested(Comment)
+    tags = Text(
+        analyzer=html_strip,
+        fields={'raw': Keyword(multi=True)},
+        multi=True
+    )
+    num_views = Integer()
+
+    class Index:
+        name = BLOG_POST_DOCUMENT_NAME
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 1,
+            'blocks': {'read_only_allow_delete': None},
+        }
 
 
 try:

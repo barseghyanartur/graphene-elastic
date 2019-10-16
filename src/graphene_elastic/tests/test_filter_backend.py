@@ -40,6 +40,8 @@ __all__ = (
 
 class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
+    endpoint = 'allPostDocuments'
+
     def setUp(self):
         super(FilterBackendElasticTestCase, self).setUp()
 
@@ -112,7 +114,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         _query = """
         query {
-          allPostDocuments(filter:{%s:{%s:%s}}) {
+          %s(filter:{%s:{%s:%s}}) {
             edges {
               node {
                 category
@@ -124,7 +126,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % (field, lookup, query)
+        """ % (self.endpoint, field, lookup, query)
         print(_query)
         executed = self.client.execute(_query)
         self.assertEqual(
@@ -147,7 +149,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         _query = """
         query {
-          allPostDocuments(filter:{%s:{%s:%s}}) {
+          %s(filter:{%s:{%s:%s}}) {
             edges {
               node {
                 category
@@ -159,7 +161,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % (field, lookup, value)
+        """ % (self.endpoint, field, lookup, value)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),

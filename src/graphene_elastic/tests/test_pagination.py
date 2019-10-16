@@ -11,6 +11,8 @@ __all__ = (
 
 class PaginationTestCase(BaseGrapheneElasticTestCase):
 
+    query_name = 'allPostDocuments'
+
     def setUp(self):
         super(PaginationTestCase, self).setUp()
 
@@ -92,7 +94,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
 
         _query = """
         {
-          allPostDocuments%s {
+          %s%s {
             pageInfo {
               startCursor
               endCursor
@@ -110,25 +112,19 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % _query_args
+        """ % (self.query_name, _query_args)
         print(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         # TODO: Perhaps, check firsts and lasts?
         self.assertEqual(
-            len(executed['data']['allPostDocuments']['edges']),
+            len(executed['data'][self.query_name]['edges']),
             expected_num_results
         )
 
     def __test_pagination_required_first_or_last(self):
         """Test pagination.
 
-        :param expected_num_results:
-        :param first:
-        :param last:
-        :param after:
-        :param before:
-        :param ordering:
         :return:
         """
         _query = """
@@ -243,6 +239,11 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
         tests.
         """
         self._test_pagination()
+
+
+class PaginationCompoundTestCase(PaginationTestCase):
+
+    query_name = 'allReadOnlyPostDocuments'
 
 
 if __name__ == '__main__':

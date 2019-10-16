@@ -1,7 +1,6 @@
 import copy
 
 from elasticsearch_dsl.query import Q
-import six
 
 from ....constants import (
     ALL,
@@ -20,88 +19,6 @@ class MatchQueryBackend(BaseSearchQueryBackend):
     """Match query backend."""
 
     query_type = 'match'
-
-    @classmethod
-    def prepare_search_fields(self):
-        """Prepare search fields.
-
-        Possible structures:
-
-            search_fields = {
-                'title': {'boost': 4, 'field': 'title.raw'},
-                'content': {'boost': 2},
-                'category': None,
-            }
-
-        We shall finally have:
-
-            search_fields = {
-                'title': {
-                    'field': 'title.raw',
-                    'boost': 4
-                },
-                'content': {
-                    'field': 'content',
-                    'boost': 2
-                },
-                'category': {
-                    'field': 'category'
-                }
-            }
-
-        Sample query would be:
-
-            {
-              allPostDocuments(search:{query:"Another"}) {
-                pageInfo {
-                  startCursor
-                  endCursor
-                  hasNextPage
-                  hasPreviousPage
-                }
-                edges {
-                  cursor
-                  node {
-                    category
-                    title
-                    content
-                    numViews
-                  }
-                }
-              }
-            }
-
-
-        :return: Filtering options.
-        :rtype: dict
-        """
-        filter_args = dict(self.args).get(self.prefix)
-        if not filter_args:
-            return {}
-
-        filter_fields = {}
-
-        # {'query': '', 'title': {'query': '', 'boost': 1}}
-
-        for field, _ in self.search_args_mapping.items():
-            filter_fields.update({field: {}})
-            options = self.search_fields.get(field)
-            # For constructions like 'category': 'category.raw' we shall
-            # have the following:
-            #
-            if options is None or isinstance(options, six.string_types):
-                filter_fields.update(
-                    {
-                        field: {"field": options or field}
-                    }
-                )
-            elif "field" not in options:
-                filter_fields.update({field: options})
-                filter_fields[field]["field"] = field
-            else:
-                filter_fields.update({field: options})
-
-        return filter_fields
 
     def construct_search(self):
         """Construct search.
@@ -148,37 +65,3 @@ class MatchQueryBackend(BaseSearchQueryBackend):
                 _queries.append(Q(self.query_type, **field_kwargs))
 
         return _queries
-        # __queries = []
-        # for search_term in query_params.items():
-        #     __values = search_backend.split_lookup_name(search_term, 1)
-        #     __len_values = len(__values)
-        #     if __len_values > 1:
-        #         field, value = __values
-        #         if field in view.search_fields:
-        #             # Initial kwargs for the match query
-        #             field_kwargs = {field: {'query': value}}
-        #             # In case if we deal with structure 2
-        #             if isinstance(view.search_fields, dict):
-        #                 extra_field_kwargs = view.search_fields[field]
-        #                 if extra_field_kwargs:
-        #                     field_kwargs[field].update(extra_field_kwargs)
-        #             # The match query
-        #             __queries.append(
-        #                 Q(cls.query_type, **field_kwargs)
-        #             )
-        #     else:
-        #         for field in view.search_fields:
-        #             # Initial kwargs for the match query
-        #             field_kwargs = {field: {'query': search_term}}
-        #
-        #             # In case if we deal with structure 2
-        #             if isinstance(view.search_fields, dict):
-        #                 extra_field_kwargs = view.search_fields[field]
-        #                 if extra_field_kwargs:
-        #                     field_kwargs[field].update(extra_field_kwargs)
-        #
-        #             # The match query
-        #             __queries.append(
-        #                 Q(cls.query_type, **field_kwargs)
-        #             )
-        # return __queries
