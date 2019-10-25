@@ -26,16 +26,16 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             category='Elastic',
             tags=None
         )
-        for _post in self.elastic_posts:
-            _post.save()
+        # for _post in self.elastic_posts:
+        #     _post.save()
 
         self.num_django_posts = 11
         self.django_posts = factories.PostFactory.create_batch(
             self.num_django_posts,
             category='Django'
         )
-        for _post in self.django_posts:
-            _post.save()
+        # for _post in self.django_posts:
+        #     _post.save()
 
         self.num_all_posts = self.num_elastic_posts + self.num_django_posts
         self.all_posts = (
@@ -47,16 +47,16 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             self.num_future_users,
             created_at=self.faker.future_datetime()
         )
-        for _post in self.future_users:
-            _post.save()
+        # for _post in self.future_users:
+        #     _post.save()
 
         self.num_past_users = 59
         self.past_users = factories.UserFactory.create_batch(
             self.num_past_users,
             created_at=self.faker.past_datetime()
         )
-        for _post in self.past_users:
-            _post.save()
+        # for _post in self.past_users:
+        #     _post.save()
 
         self.num_all_users = self.num_past_users + self.num_future_users
         self.all_users = self.past_users + self.future_users

@@ -55,8 +55,8 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.other_posts = factories.PostFactory.create_batch(
             self.num_other_posts
         )
-        for _post in self.other_posts:
-            _post.save()
+        # for _post in self.other_posts:
+        #     _post.save()
 
         self.sleep(2)
 

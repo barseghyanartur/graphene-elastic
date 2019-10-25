@@ -123,5 +123,13 @@ class BaseSearchQueryBackend(object):
     def get_search_query_params(self) -> dict:
         return self.search_backend.get_search_query_params()
 
+    def field_belongs_to(self, field_name) -> bool:
+        """Check if given filter field belongs to the backend.
+
+        :param field_name:
+        :return:
+        """
+        return field_name in self.search_fields
+
     # def prepare_search_fields(self) -> dict:
     #     return self.search_backend.prepare_search_fields()

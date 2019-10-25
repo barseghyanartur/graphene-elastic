@@ -55,8 +55,8 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 start_date="+1d", end_date="+30d"
             )
         )
-        for _post in self.elastic_posts:
-            _post.save()
+        # for _post in self.elastic_posts:
+        #     _post.save()
 
         self.num_django_posts = 3
         self.django_posts = factories.PostFactory.create_batch(
@@ -66,8 +66,8 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 start_date="+1d", end_date="+30d"
             )
         )
-        for _post in self.django_posts:
-            _post.save()
+        # for _post in self.django_posts:
+        #     _post.save()
 
         self.num_python_posts = 2
         self.python_posts = factories.ManyViewsPostFactory.create_batch(
@@ -77,8 +77,8 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 start_date="-30d", end_date="-1d"
             )
         )
-        for _post in self.python_posts:
-            _post.save()
+        # for _post in self.python_posts:
+        #     _post.save()
 
         self.num_all_posts = (
             self.num_elastic_posts +

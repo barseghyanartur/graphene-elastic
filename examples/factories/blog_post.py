@@ -6,6 +6,7 @@ from factory.fuzzy import FuzzyChoice
 
 from search_index.documents import Post
 
+from .elasticsearch_dsl_factory import ElasticsearchFactory
 
 __all__ = (
     'Comment',
@@ -62,7 +63,7 @@ TAGS = (
 )
 
 
-class PostFactory(Factory):
+class PostFactory(ElasticsearchFactory):
     """Post factory."""
 
     class Meta(object):

@@ -54,7 +54,14 @@ class CompoundSearchFilterBackend(BaseSearchFilterBackend):
         :param field_name:
         :return:
         """
-        return field_name in self.search_fields
+        _query_backends = self._get_query_backends()
+        _field_belongs_to = []
+
+        for query_backend_cls in _query_backends:
+            _query_backend = query_backend_cls(self)
+            _check = _query_backend.field_belongs_to(field_name)
+            if _check:
+                return True
 
     def get_backend_default_query_fields_params(self):
         """Get backend default filter params.

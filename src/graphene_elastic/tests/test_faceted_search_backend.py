@@ -48,8 +48,8 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.other_posts = factories.PostFactory.create_batch(
             self.num_other_posts
         )
-        for _post in self.other_posts:
-            _post.save()
+        # for _post in self.other_posts:
+        #     _post.save()
 
         time.sleep(2)
 

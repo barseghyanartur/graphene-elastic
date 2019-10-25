@@ -31,8 +31,8 @@ class Animal(ElasticsearchObjectType):
         filter_backends = [
             FilteringFilterBackend,
             PostFilterFilteringBackend,
-            # SearchFilterBackend,
-            CompoundSearchFilterBackend,
+            SearchFilterBackend,
+            # CompoundSearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]
