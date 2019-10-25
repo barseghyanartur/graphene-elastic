@@ -14,8 +14,8 @@ class BaseAddressFactory(DjangoModelFactory):
     house_number = Faker('building_number')
     zip_code = Faker('postcode')
     city = SubFactory('factories.books_city.CityFactory')
-    latitude = Faker('latitude')
-    longitude = Faker('longitude')
+    # latitude = Faker('latitude')
+    # longitude = Faker('longitude')
 
     class Meta(object):
         """Meta class."""
