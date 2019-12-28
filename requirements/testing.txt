@@ -3,7 +3,6 @@
 -r debug.txt
 -r django.txt
 -r docs.txt
--r elastic_7x.txt
 -r flask.txt
 -r responder.txt
 -r test.txt

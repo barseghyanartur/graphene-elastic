@@ -8,10 +8,20 @@ language: python
 matrix:
   fast_finish: true
   include:
-  - env: TOX_ENV=py36-elastic6
+  - env: TOX_ENV=py36-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
     python: 3.6
-  - env: TOX_ENV=py37-elastic6
+  - env: TOX_ENV=py36-elastic7
+    python: 3.6
+
+  - env: TOX_ENV=py37-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
     python: 3.7
+  - env: TOX_ENV=py37-elastic7
+    python: 3.7
+
+  - env: TOX_ENV=py38-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
+    python: 3.8
+  - env: TOX_ENV=py38-elastic67
+    python: 3.8
 
 env:
   global:
@@ -26,7 +36,7 @@ before_install:
   - sudo apt-get update && sudo apt-get install elasticsearch -y
   - sudo -i service elasticsearch restart
 
-install: pip install -r requirements/testing.txt
+install: pip install -r requirements/test.txt
 
 before_script:
   # sleep for elasticsearch
