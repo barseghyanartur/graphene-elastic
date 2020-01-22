@@ -6,6 +6,13 @@ setup(
     description="Graphene Elasticsearch (DSL) integration",
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
+    project_urls={
+        "Bug Tracker": "https://github.com/barseghyanartur/graphene-elastic/",
+        "Documentation": "https://graphene-elastic.readthedocs.io/",
+        "Source Code": "https://github.com/barseghyanartur/graphene-elastic/",
+        "Changelog": "https://graphene-elastic.readthedocs.io/"
+                     "en/latest/changelog.html",
+    },
     author="Artur Barseghyan",
     author_email="artur.barseghyan@gmail.com",
     license="GPL 2.0/LGPL 2.1",
@@ -15,6 +22,7 @@ setup(
         "Topic :: Software Development :: Libraries",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     keywords="api graphql protocol rest relay graphene elasticsearch "
     "elasticsearch-dsl",
