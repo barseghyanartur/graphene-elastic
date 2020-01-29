@@ -20,7 +20,7 @@ matrix:
 
   - env: TOX_ENV=py38-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
     python: 3.8
-  - env: TOX_ENV=py38-elastic67
+  - env: TOX_ENV=py38-elastic7
     python: 3.8
 
 env:

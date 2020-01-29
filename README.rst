@@ -34,8 +34,8 @@ integration for `Graphene <http://graphene-python.org/>`__.
 
 Prerequisites
 =============
-- Graphene 2.x. *Support for Graphene 1.x is not planned, but might be considered.*
-- Python 3.6, 3.7. *Support for Python 2 is not intended.*
+- Graphene 2.x. *Support for Graphene 1.x is considered.*
+- Python 3.6, 3.7, 3.8. *Support for Python 2 is not intended.*
 - Elasticsearch 6.x, 7.x. *Support for Elasticsearch 5.x is not intended.*
 
 Main features and highlights
@@ -599,7 +599,7 @@ To test against specific environment, type:
 
 .. code-block:: sh
 
-    tox -e py37
+    tox -e py38-elastic7
 
 To test just your working environment type:
 
