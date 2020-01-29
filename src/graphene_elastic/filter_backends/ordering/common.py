@@ -1,13 +1,12 @@
 """
 Ordering backend.
 """
-import copy
+from copy import deepcopy
 import graphene
 from six import string_types
 
 from ..base import BaseBackend
 from ..queries import Direction
-# from ...compat import nested_sort_entry
 
 __title__ = 'graphene_elastic.filter_backends.ordering.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -29,7 +28,7 @@ class OrderingMixin(object):
             'filter_backend_options',
             {}
         ).get('ordering_fields', {})
-        return copy.deepcopy(ordering_fields)
+        return deepcopy(ordering_fields)
 
     @property
     def _ordering_args_mapping(self):
@@ -43,7 +42,7 @@ class OrderingMixin(object):
             'filter_backend_options',
             {}
         ).get('ordering_defaults', {})
-        return copy.deepcopy(ordering_defaults)
+        return deepcopy(ordering_defaults)
 
     def prepare_ordering_fields(self):
         """Prepare ordering fields.

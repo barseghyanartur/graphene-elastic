@@ -1,10 +1,10 @@
-import copy
+from copy import deepcopy
 import enum
 import graphene
+from stringcase import pascalcase as to_pascal_case
 
 from ..base import BaseBackend
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
-from ...helpers import to_pascal_case
 
 __title__ = 'graphene_elastic.filter_backends.ordering.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -29,7 +29,7 @@ class SourceFilterBackend(BaseBackend):
             'filter_backend_options',
             {}
         ).get('source_fields', {})
-        return copy.deepcopy(source_fields)
+        return deepcopy(source_fields)
 
     def get_backend_query_fields(self,
                                  items,

@@ -1,5 +1,6 @@
 from collections import OrderedDict
 import graphene
+from stringcase import pascalcase as to_pascal_case
 
 from ..constants import (
     DYNAMIC_CLASS_NAME_PREFIX,
@@ -8,7 +9,6 @@ from ..constants import (
     SEPARATOR_LOOKUP_COMPLEX_VALUE,
     SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE,
 )
-from ..helpers import to_pascal_case
 
 __title__ = "graphene_elastic.filter_backends.base"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"

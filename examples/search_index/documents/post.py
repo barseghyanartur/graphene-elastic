@@ -13,8 +13,6 @@ from elasticsearch_dsl import (
     Text,
     Integer,
     Float,
-
-
 )
 from .settings import BLOG_POST_DOCUMENT_NAME, ELASTICSEARCH_CONNECTION
 
