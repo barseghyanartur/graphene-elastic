@@ -1,10 +1,10 @@
-import copy
+from copy import deepcopy
 import enum
 import graphene
 from graphene_elastic.types.json_string import JSONString
+from stringcase import pascalcase as to_pascal_case
 
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
-from ...helpers import to_pascal_case
 from ..base import BaseBackend
 
 __title__ = 'graphene_elastic.filter_backends.ordering.common'
@@ -47,7 +47,7 @@ class HighlightFilterBackend(BaseBackend):
             'filter_backend_options',
             {}
         ).get('highlight_fields', {})
-        return copy.deepcopy(highlight_fields)
+        return deepcopy(highlight_fields)
 
     def field_belongs_to(self, field_name):
         """Check if given filter field belongs to the backend.

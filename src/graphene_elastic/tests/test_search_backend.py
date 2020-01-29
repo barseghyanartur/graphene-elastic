@@ -1,5 +1,4 @@
 import unittest
-import time
 import factories
 from .base import BaseGrapheneElasticTestCase
 from ..constants import ALL, VALUE

@@ -1,8 +1,7 @@
-import unittest
 import time
+import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
-from ..constants import ALL, VALUE
 
 __all__ = (
     'FacetedSearchBackendElasticTestCase',

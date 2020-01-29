@@ -1,6 +1,7 @@
-import copy
+from copy import deepcopy
 import graphene
 import six
+from stringcase import pascalcase as to_pascal_case
 
 from ..base import BaseBackend
 from ...constants import (
@@ -24,7 +25,6 @@ from ...constants import (
     LOOKUP_QUERY_STARTSWITH,
     VALUE,
 )
-from ...helpers import to_pascal_case
 
 from ..filtering.mixins import FilteringFilterMixin
 from ..filtering.queries import LOOKUP_FILTER_MAPPING
@@ -56,7 +56,7 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
                 'filter_backend_options',
                 {}
             ).get('filter_fields', {})
-        return copy.deepcopy(filter_fields)
+        return deepcopy(filter_fields)
 
     @property
     def filter_args_mapping(self):

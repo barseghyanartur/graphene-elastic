@@ -1,4 +1,4 @@
-import copy
+from copy import deepcopy
 # from collections import OrderedDict
 import enum
 
@@ -6,10 +6,10 @@ from elasticsearch_dsl import TermsFacet
 from elasticsearch_dsl.query import Q
 
 import graphene
+from stringcase import pascalcase as to_pascal_case
 # from graphene.types import Field
 
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
-from ...helpers import to_pascal_case
 from ..base import BaseBackend
 
 __title__ = 'graphene_elastic.filter_backends.faceted_search.common'
@@ -83,7 +83,7 @@ class FacetedSearchFilterBackend(BaseBackend):
             'filter_backend_options',
             {}
         ).get('faceted_search_fields', {})
-        return copy.deepcopy(search_fields)
+        return deepcopy(search_fields)
 
     def field_belongs_to(self, field_name):
         """Check if given filter field belongs to the backend.
@@ -156,7 +156,7 @@ class FacetedSearchFilterBackend(BaseBackend):
 
         faceted_search_args = dict(self.args).get(self.prefix, [])
 
-        faceted_search_fields = copy.deepcopy(self.faceted_search_fields)
+        faceted_search_fields = deepcopy(self.faceted_search_fields)
 
         for field, options in faceted_search_fields.items():
             if options is None or isinstance(options, str):

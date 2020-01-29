@@ -1,10 +1,11 @@
-import copy
+from copy import copy, deepcopy
 import operator
 
 import graphene
 import six
 
 from elasticsearch_dsl.query import Q
+from stringcase import pascalcase as to_pascal_case
 
 from ..base import BaseBackend
 from ...constants import (
@@ -13,7 +14,6 @@ from ...constants import (
     VALUE,
     BOOST,
 )
-from ...helpers import to_pascal_case
 
 __title__ = "graphene_elastic.filter_backends.search.common"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
@@ -36,7 +36,7 @@ class SearchFilterBackend(BaseBackend):
             'filter_backend_options',
             {}
         ).get('search_fields', {})
-        return copy.deepcopy(search_fields)
+        return deepcopy(search_fields)
 
     @property
     def search_args_mapping(self):
@@ -246,14 +246,14 @@ class SearchFilterBackend(BaseBackend):
             if search_field == ALL:
                 for field_name_param, field_name \
                         in self.search_args_mapping.items():
-                    field_options = copy.copy(search_fields[field_name])
+                    field_options = copy(search_fields[field_name])
                     field = field_options.pop("field", field_name)
 
                     if isinstance(value, dict):
                         # For constructions like:
                         # {'title': {'value': 'Produce', 'boost': 1}}
                         _query = value.pop(VALUE)
-                        _field_options = copy.copy(value)
+                        _field_options = copy(value)
                         value = _query
                         field_options.update(_field_options)
                     field_kwargs = {field: {"query": value}}
@@ -262,14 +262,14 @@ class SearchFilterBackend(BaseBackend):
                     # The match query
                     _queries.append(Q("match", **field_kwargs))
             elif search_field in search_fields:
-                field_options = copy.copy(search_fields[search_field])
+                field_options = copy(search_fields[search_field])
                 field = field_options.pop("field", search_field)
 
                 if isinstance(value, dict):
                     # For constructions like:
                     # {'title': {'value': 'Produce', 'boost': 1}}
                     _query = value.pop(VALUE)
-                    _field_options = copy.copy(value)
+                    _field_options = copy(value)
                     value = _query
                     field_options.update(_field_options)
                 field_kwargs = {field: {"query": value}}

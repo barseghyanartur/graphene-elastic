@@ -37,6 +37,7 @@ setup(
         "elasticsearch-dsl>=6.0",
         "singledispatch>=3.4.0.3",
         "iso8601>=0.1.12",
+        "stringcase",
     ],
     python_requires=">=3.6",
     zip_safe=True,
