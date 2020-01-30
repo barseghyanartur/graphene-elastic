@@ -2,6 +2,8 @@
 import copy
 import graphene
 
+from stringcase import pascalcase as to_pascal_case
+
 from .base import BaseSearchFilterBackend
 from ...constants import (
     DYNAMIC_CLASS_NAME_PREFIX,
@@ -9,7 +11,7 @@ from ...constants import (
     VALUE,
     BOOST,
 )
-from ...helpers import to_pascal_case
+
 from .query_backends import (
     MatchQueryBackend,
     # NestedQueryBackend,
