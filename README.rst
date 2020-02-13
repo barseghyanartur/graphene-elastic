@@ -34,7 +34,7 @@ integration for `Graphene <http://graphene-python.org/>`__.
 
 Prerequisites
 =============
-- Graphene 2.x. *Support for Graphene 1.x is considered.*
+- Graphene 2.x. *Support for Graphene 1.x is not intended.*
 - Python 3.6, 3.7, 3.8. *Support for Python 2 is not intended.*
 - Elasticsearch 6.x, 7.x. *Support for Elasticsearch 5.x is not intended.*
 

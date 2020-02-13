@@ -17,10 +17,19 @@ are used for versioning (schema follows below):
 
 0.7
 ---
-2019-10-xx (not yet released)
+2020-xx-xx (not yet released)
 
 - Simple search query backend.
 - Deprecating old search backend.
+
+0.6.1
+-----
+2020-02-13
+
+- Tested against Python 3.8.
+- Tested against Elasticsearch 6.x and 7.x on Travis.
+- Replace some custom code parts (casing related) with `stringcase` package
+  functionality.
 
 0.6
 ---

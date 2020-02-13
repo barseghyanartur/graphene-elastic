@@ -2,12 +2,13 @@ from setuptools import find_packages, setup
 
 setup(
     name="graphene-elastic",
-    version="0.6",
+    version="0.6.1",
     description="Graphene Elasticsearch (DSL) integration",
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
     project_urls={
-        "Bug Tracker": "https://github.com/barseghyanartur/graphene-elastic/",
+        "Bug Tracker": "https://github.com/barseghyanartur/graphene-elastic/"
+                       "issues",
         "Documentation": "https://graphene-elastic.readthedocs.io/",
         "Source Code": "https://github.com/barseghyanartur/graphene-elastic/",
         "Changelog": "https://graphene-elastic.readthedocs.io/"
