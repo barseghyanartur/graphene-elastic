@@ -7,7 +7,8 @@ setup(
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
     project_urls={
-        "Bug Tracker": "https://github.com/barseghyanartur/graphene-elastic/",
+        "Bug Tracker": "https://github.com/barseghyanartur/graphene-elastic/"
+                       "issues",
         "Documentation": "https://graphene-elastic.readthedocs.io/",
         "Source Code": "https://github.com/barseghyanartur/graphene-elastic/",
         "Changelog": "https://graphene-elastic.readthedocs.io/"
