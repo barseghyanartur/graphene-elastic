@@ -15,6 +15,15 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.6.1
+-----
+2020-02-13
+
+- Tested against Python 3.8.
+- Tested against Elasticsearch 6.x and 7.x on Travis.
+- Replace some custom code parts (casing related) with `stringcase` package
+  functionality.
+
 0.6
 ---
 2019-10-11
