@@ -50,7 +50,7 @@ backend. That's where we might use the source backend.
 
 **Sample response:**
 
-As you could see, although we do ask for more fields in the ``node {...}```
+As you could see, although we do ask for more fields in the ``node {...}``
 part, the requested fields are empty. We only get data in the fields we
 have specified in ``source`` (they are ``title`` and ``id``).
 
