@@ -235,6 +235,7 @@ Filter lookup ``prefix``
 Filter lookup ``range``
 ~~~~~~~~~~~~~~~~~~~~~~~
 *Same value types as in ``gt``*
+
 .. code-block:: javascript
 
     query {
