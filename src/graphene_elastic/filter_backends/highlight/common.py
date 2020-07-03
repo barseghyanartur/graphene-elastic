@@ -1,7 +1,7 @@
 from copy import deepcopy
 import enum
 import graphene
-from graphene_elastic.types.json_string import JSONString
+from graphene_elastic.types.json_string import ElasticJSONString
 from stringcase import pascalcase as to_pascal_case
 
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
@@ -29,7 +29,7 @@ def highlight_resolver(parent, args, context=None, info=None):
     return parent.meta._d_.get('highlight')
 
 
-class HighlightField(JSONString):
+class HighlightField(ElasticJSONString):
     """Highlight field."""
 
 
