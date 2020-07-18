@@ -205,6 +205,7 @@ class OrderingFilterBackend(BaseBackend, OrderingMixin):
 
     prefix = 'ordering'
     has_query_fields = True
+    score_field_name = 'score'
 
     @property
     def ordering_fields(self):
@@ -250,6 +251,16 @@ class OrderingFilterBackend(BaseBackend, OrderingMixin):
             ordering_query_params,
             ordering_fields
         )
+
+    def get_backend_default_query_fields_params(self):
+        """Get default query fields params for the backend.
+
+        :rtype: dict
+        :return:
+        """
+        if self.field_belongs_to(self.score_field_name):
+            return {self.score_field_name: graphene.Argument(Direction)}
+        return {}
 
     def filter(self, queryset):
         """Filter the queryset.
