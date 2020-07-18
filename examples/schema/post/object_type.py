@@ -10,6 +10,7 @@ from graphene_elastic.filter_backends import (
     DefaultOrderingFilterBackend,
     HighlightFilterBackend,
     SourceFilterBackend,
+    ScoreFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -43,6 +44,7 @@ class Post(ElasticsearchObjectType):
             SourceFilterBackend,
             FacetedSearchFilterBackend,
             # CustomFilterBackend,
+            ScoreFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]
@@ -134,6 +136,12 @@ class Post(ElasticsearchObjectType):
             # value (in this case `num_views`) is the field name in the
             # Elasticsearch document (`PostDocument`).
             'num_views': 'num_views',
+
+            # Add ordering by score. The dictionary key (in this case `score`)
+            # is the name of the corresponding GraphQL query argument (how you
+            # want it to be). The dictionary value (in this case `_score`) is
+            # the reserved Elasticsearch name.
+            'score': '_score',
         }
 
         # For `DefaultOrderingFilterBackend` backend
