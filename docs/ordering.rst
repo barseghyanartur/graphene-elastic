@@ -41,3 +41,25 @@ Multiple values are allowed:
         }
       }
     }
+
+Ordering by scores is implemented as well:
+
+.. code-block:: javascript
+
+    query {
+      allPostDocuments(
+            search:{query:"Alice"},
+            ordering:{score:DESC}
+        ) {
+        edges {
+          node {
+            id
+            title
+            content
+            category
+            createdAt
+            score
+          }
+        }
+      }
+    }
