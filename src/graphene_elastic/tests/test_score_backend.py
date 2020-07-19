@@ -30,40 +30,13 @@ class ScoreBackendElasticTestCase(BaseGrapheneElasticTestCase):
             )
             _post.save()
 
-        self.beast = "Jabberwocky"
-        self.num_beast_posts = 5
-        self.beast_posts = factories.PostFactory.create_batch(
-            self.num_beast_posts
-        )
-        for _post in self.beast_posts:
-            _post.title = "{} {} {}".format(
-                self.faker.word().title(),
-                self.beast,
-                self.faker.word()
-            )
-            _post.content = "{} {} {}".format(
-                self.faker.paragraph(),
-                self.beast,
-                self.faker.paragraph()
-            )
-            _post.save()
-
-        self.num_other_posts = 40
-        self.other_posts = factories.PostFactory.create_batch(
-            self.num_other_posts
-        )
-        for _post in self.other_posts:
-            _post.save()
-
         self.sleep(2)
 
-    def __check_values(self, edges, stack):
+    def __check_values(self, edges):
         for node in edges:
-            for key, value in stack.items():
-                if key in node['node']['highlight']:
-                    self.assertIn(value, node['node']['highlight'][key][0])
+            self.assertIn('score', node['node'])
 
-    def __test_search_content(self, search, num_posts, stack):
+    def __test_search_content(self, search, num_posts):
         """Test search.
 
         content:{%s:"%s"}
@@ -73,12 +46,12 @@ class ScoreBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         query = """
         query {
-          allPostDocuments(search:%s) {
+          allPostDocuments(search:%s, ordering:{score:DESC}) {
             edges {
               node {
                 category
                 title
-                highlight
+                score
               }
             }
           }
@@ -90,10 +63,7 @@ class ScoreBackendElasticTestCase(BaseGrapheneElasticTestCase):
             len(executed['data']['allPostDocuments']['edges']),
             num_posts
         )
-        self.__check_values(
-            executed['data']['allPostDocuments']['edges'],
-            stack
-        )
+        self.__check_values(executed['data']['allPostDocuments']['edges'])
         return executed
 
     def _test_search_content(self):
@@ -101,45 +71,11 @@ class ScoreBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         :return:
         """
-        # Covering specific field lookups: `search:{title:{value:"Another"}}`
-        with self.subTest('Test search the content on term "Django"'):
-            self.__test_search_content(
-                '{content:{%s:"%s"}}' % (VALUE, self.alice),
-                self.num_alice_posts,
-                {
-                    'title': '<b>{}</b>'.format(self.alice),
-                    'content': '<em>{}</em>'.format(self.alice),
-                }
-            )
-        with self.subTest('Test search the content on term "Elastic"'):
-            self.__test_search_content(
-                '{content:{%s:"%s"}}' % (VALUE, self.beast),
-                self.num_beast_posts,
-                {
-                    'title': '<b>{}</b>'.format(self.beast),
-                    'content': '<em>{}</em>'.format(self.beast),
-                }
-            )
-
-        # Covering all field lookups: `search:{query:"Another"}`
-        with self.subTest('Test search the content on term "Django"'):
+        # Covering all field lookups: `search:{query:"Alice"}`
+        with self.subTest('Test search the content on term "Alice"'):
             self.__test_search_content(
                 '{%s:"%s"}' % (ALL, self.alice),
-                self.num_alice_posts,
-                {
-                    'title': '<b>{}</b>'.format(self.alice),
-                    'content': '<em>{}</em>'.format(self.alice),
-                }
-            )
-
-        with self.subTest('Test search the content on term "Elastic"'):
-            self.__test_search_content(
-                '{%s:"%s"}' % (ALL, self.beast),
-                self.num_beast_posts,
-                {
-                    'title': '<b>{}</b>'.format(self.beast),
-                    'content': '<em>{}</em>'.format(self.beast),
-                }
+                self.num_alice_posts
             )
 
     def test_all(self):
