@@ -1,6 +1,6 @@
 Score
 =====
-Score is [relevance](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/query-filter-context.html)
+Score is `relevance <https://www.elastic.co/guide/en/elasticsearch/reference/7.x/query-filter-context.html>`__
 in Elasticsearch.
 
 **Sample type definition:**
