@@ -42,7 +42,7 @@ Multiple values are allowed:
       }
     }
 
-Ordering by scores is implemented as well:
+Ordering by score is implemented as well:
 
 .. code-block:: javascript
 
