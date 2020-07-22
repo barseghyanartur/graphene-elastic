@@ -114,9 +114,9 @@ def convert_field_to_datetime(field, registry=None):
 @convert_elasticsearch_field.register(elasticsearch_fields.Object)
 @convert_elasticsearch_field.register(elasticsearch_fields.Nested)
 def convert_field_to_jsonstring(field, registry=None):
-    from .types import JSONString
+    from .types import ElasticJSONString
 
-    return JSONString(
+    return ElasticJSONString(
         description=get_field_description(field, registry),
         required=field._required,
     )

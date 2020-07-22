@@ -1,13 +1,13 @@
 from copy import deepcopy
 import enum
 import graphene
-from graphene_elastic.types.json_string import JSONString
+from graphene_elastic.types.json_string import ElasticJSONString
 from stringcase import pascalcase as to_pascal_case
 
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
 from ..base import BaseBackend
 
-__title__ = 'graphene_elastic.filter_backends.ordering.common'
+__title__ = 'graphene_elastic.filter_backends.highlight.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2019-2020 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
@@ -29,7 +29,7 @@ def highlight_resolver(parent, args, context=None, info=None):
     return parent.meta._d_.get('highlight')
 
 
-class HighlightField(JSONString):
+class HighlightField(ElasticJSONString):
     """Highlight field."""
 
 

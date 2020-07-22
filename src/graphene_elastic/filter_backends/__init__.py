@@ -3,6 +3,7 @@ from .post_filter import *
 from .filtering import *
 from .highlight import *
 from .ordering import *
+from .score import *
 from .search import *
 from .source import *
 

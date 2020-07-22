@@ -52,6 +52,7 @@ Main features and highlights
 - Source filter backend.
 - Faceted search backend (including global aggregations).
 - Post filter backend.
+- Score filter backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 

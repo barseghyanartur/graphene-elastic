@@ -9,7 +9,7 @@ __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2019-2020 Artur Barseghyan'
 __license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
 __all__ = (
-    'JSONString',
+    'ElasticJSONString',
     'to_serializable',
 )
 
@@ -29,7 +29,7 @@ def to_serializable(o):
     return o
 
 
-class JSONString(OriginalJSONString):
+class ElasticJSONString(OriginalJSONString):
     @staticmethod
     def serialize(dt):
         # return to_serializable(dt)

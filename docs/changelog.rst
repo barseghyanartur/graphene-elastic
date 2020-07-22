@@ -15,6 +15,25 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.6.3
+-----
+2020-07-19
+
+.. note::
+
+    Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
+    and all the victims of Turkish and Azerbaijani aggression.
+
+- Added `ScoreFilterBackend` and ordering by score.
+
+0.6.2
+-----
+2020-07-07
+
+- Renamed JSONString to ElasticJSONString and changed references in related 
+  files. The reason for this change is to support `grapehene_federation` 
+  `build_schema` which eventually helps build federated schemas
+
 0.6.1
 -----
 2020-02-13

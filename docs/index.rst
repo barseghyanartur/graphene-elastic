@@ -52,6 +52,7 @@ Main features and highlights
 - Source filter backend.
 - Faceted search backend (including global aggregations).
 - Post filter backend.
+- Score filter backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -691,6 +692,7 @@ Contents:
    ordering
    highlight_filter_backend
    source_filter_backend
+   score_filter_backend
    faceted_search_backend
    pagination
    custom_filter_backends

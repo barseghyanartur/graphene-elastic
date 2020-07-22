@@ -122,7 +122,7 @@ class Connection(ObjectType):
         edge = type(edge_name, edge_bases, {"Meta": EdgeMeta})
         cls.Edge = edge
 
-        from graphene_elastic.types.json_string import JSONString
+        from graphene_elastic.types.json_string import ElasticJSONString
 
         options["name"] = name
         _meta.node = node
@@ -148,7 +148,7 @@ class Connection(ObjectType):
                 (
                     "facets",
                     Field(
-                        JSONString,
+                        ElasticJSONString,
                         name="facets",
                         required=False,
                         description="Pagination data for this connection.",
