@@ -115,6 +115,12 @@ class AbstractPostDocumentMeta:
         # value (in this case `num_views`) is the field name in the
         # Elasticsearch document (`PostDocument`).
         'num_views': 'num_views',
+
+        # Add ordering by score. The dictionary key (in this case `score`)
+        # is the name of the corresponding GraphQL query argument (how you
+        # want it to be). The dictionary value (in this case `_score`) is
+        # the reserved Elasticsearch name.
+        'score': '_score',
     }
 
     # For `DefaultOrderingFilterBackend` backend
