@@ -49,7 +49,24 @@ class Comment(InnerDoc):
 class Post(Document):
     title = Text(
         analyzer=html_strip,
-        fields={'raw': Keyword()}
+        fields={
+            'raw': Keyword(),
+            'suggest': Completion(),
+            'suggest_context': Completion(
+                contexts=[
+                    {
+                        "name": "tag",
+                        "type": "category",
+                        "path": "tags.raw",
+                    },
+                    {
+                        "name": "category",
+                        "type": "category",
+                        "path": "category.raw",
+                    },
+                ]
+            ),
+        }
     )
     # title_suggest = Completion()
     content = Text()
