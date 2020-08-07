@@ -11,6 +11,7 @@ from graphene_elastic.filter_backends import (
     HighlightFilterBackend,
     SourceFilterBackend,
     ScoreFilterBackend,
+    SuggestFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -28,6 +29,7 @@ from search_index.documents import Post as PostDocument
 
 __all__ = (
     'Post',
+    'PostSuggest',
 )
 
 
@@ -265,6 +267,27 @@ class Post(ElasticsearchObjectType):
             'i_do_not_exist': 'i_do_not_exist',
         }
 
+
+class PostSuggest(ElasticsearchObjectType):
+
+    class Meta:
+
+        document = PostDocument
+        # interfaces = (Node,)
+        filter_backends = [
+            # FilteringFilterBackend,
+            # PostFilterFilteringBackend,
+            # SearchFilterBackend,
+            # HighlightFilterBackend,
+            # SourceFilterBackend,
+            # FacetedSearchFilterBackend,
+            # # CustomFilterBackend,
+            # ScoreFilterBackend,
+            # OrderingFilterBackend,
+            # DefaultOrderingFilterBackend,
+            SuggestFilterBackend,
+        ]
+
         # Suggester fields
         suggester_fields = {
             'title_suggest': {
@@ -288,9 +311,9 @@ class Post(ElasticsearchObjectType):
                 # reference/6.1/suggester-context.html" for the reference.
                 'completion_options': {
                     'category_filters': {
-                        'title_suggest_tag': 'tag',
-                        'title_suggest_state': 'state',
-                        'title_suggest_publisher': 'publisher',
+                        'title_tag': 'tag',
+                        'title_state': 'state',
+                        'title_publisher': 'publisher',
                     },
                 },
                 'options': {

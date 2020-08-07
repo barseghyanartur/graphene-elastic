@@ -6,6 +6,7 @@ from .ordering import *
 from .score import *
 from .search import *
 from .source import *
+from .suggest import *
 
 __title__ = 'graphene_elastic.filter_backends'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
