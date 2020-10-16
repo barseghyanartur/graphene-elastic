@@ -215,7 +215,9 @@ declarative manner.
         LOOKUP_QUERY_EXCLUDE,
         LOOKUP_QUERY_IN,
     )
-
+   
+    from search_index.documents.post import Post as PostDocument
+ 
     # Object type definition
     class Post(ElasticsearchObjectType):
 
