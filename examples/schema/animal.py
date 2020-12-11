@@ -10,6 +10,7 @@ from graphene_elastic.filter_backends import (
     SearchFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
+    SimpleQueryStringBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -24,9 +25,9 @@ from search_index.documents import Animal as AnimalDocument
 
 
 __all__ = (
-    'Animal',
-    'Query',
-    'schema',
+    "Animal",
+    "Query",
+    "schema",
 )
 
 
@@ -43,65 +44,66 @@ class Animal(ElasticsearchObjectType):
             SearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
+            SimpleQueryStringBackend,
         ]
 
         # For filter backend
         filter_fields = {
-            'id': {
-                'field': 'id',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "id": {
+                "field": "id",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
-            'action': {
-                'field': 'action.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "action": {
+                "field": "action.raw",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
-            'entity': {
-                'field': 'entity.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "entity": {
+                "field": "entity.raw",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
-            'app': {
-                'field': 'app.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "app": {
+                "field": "app.raw",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
         }
 
         # For search backend
         search_fields = {
-            'action': None,
-            'entity': None,
+            "action": None,
+            "entity": None,
         }
+
+        # For simple query backend
+        simple_query_string_options = {"fields": ["action", "entity"]}
 
         # For ordering backend
         ordering_fields = {
-            'id': 'id',
-            'publish_date': 'publish_date',
-            'action': 'action.raw',
-            'entity': 'entity.raw',
+            "id": "id",
+            "publish_date": "publish_date",
+            "action": "action.raw",
+            "entity": "entity.raw",
         }
 
         # For default ordering backend
-        ordering_defaults = (
-            'id',
-            'publish_date'
-        )
+        ordering_defaults = ("id", "publish_date")
 
         # For filter backend
         post_filter_fields = {
-            'id': {
-                'field': 'id',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "id": {
+                "field": "id",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
-            'action': {
-                'field': 'action.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "action": {
+                "field": "action.raw",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
-            'entity': {
-                'field': 'entity.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "entity": {
+                "field": "entity.raw",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
-            'app': {
-                'field': 'app.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
+            "app": {
+                "field": "app.raw",
+                "default_lookup": LOOKUP_FILTER_TERM,
             },
         }
 
@@ -112,6 +114,4 @@ class Query(graphene.ObjectType):
     animals = ElasticsearchConnectionField(Animal)
 
 
-schema = graphene.Schema(
-    query=Query
-)
+schema = graphene.Schema(query=Query)
