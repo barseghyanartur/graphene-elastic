@@ -53,6 +53,7 @@ Main features and highlights
 - Faceted search backend (including global aggregations).
 - Post filter backend.
 - Score filter backend.
+- Simple Query String backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -215,9 +216,7 @@ declarative manner.
         LOOKUP_QUERY_EXCLUDE,
         LOOKUP_QUERY_IN,
     )
-   
-    from search_index.documents.post import Post as PostDocument
- 
+
     # Object type definition
     class Post(ElasticsearchObjectType):
 
@@ -569,7 +568,7 @@ Lots of features are planned to be released in the upcoming Beta releases:
 - Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase).
 - Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase).
 - More-like-this backend.
-- Complex search backends, such as Simple query search.
+- Complex search backends, such as Query string search.
 
 Stay tuned or reach out if you want to help.
 
