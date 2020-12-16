@@ -12,6 +12,7 @@ from graphene_elastic.filter_backends import (
     SourceFilterBackend,
     ScoreFilterBackend,
     SimpleQueryStringBackend,
+    QueryStringBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -47,6 +48,7 @@ class Post(ElasticsearchObjectType):
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
             SimpleQueryStringBackend,
+            QueryStringBackend,
         ]
         # For `FilteringFilterBackend` backend
         filter_fields = {
@@ -113,6 +115,11 @@ class Post(ElasticsearchObjectType):
         }
 
         simple_query_string_options = {
+            "fields": ["title^2", "content", "category"],
+            "boost": 2,
+        }
+
+        query_string_options = {
             "fields": ["title^2", "content", "category"],
             "boost": 2,
         }
