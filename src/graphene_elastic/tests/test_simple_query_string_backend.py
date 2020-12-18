@@ -1,7 +1,10 @@
 import unittest
+import uuid
+
 import factories
-from .base import BaseGrapheneElasticTestCase
 from ..constants import ALL, VALUE
+from ..logging import logger
+from .base import BaseGrapheneElasticTestCase
 
 __all__ = ("SimpleQueryStringBackendElasticTestCase",)
 
@@ -9,14 +12,21 @@ __all__ = ("SimpleQueryStringBackendElasticTestCase",)
 class SimpleQueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
     def setUp(self):
         super(SimpleQueryStringBackendElasticTestCase, self).setUp()
+        self.white_rabbit_partial = "White Rabbit is dead {}".format(
+            uuid.uuid4()
+        )
         self.alice = "Alice"
         self.num_alice_posts = 9
         self.alice_posts = factories.PostFactory.create_batch(
             self.num_alice_posts
         )
-        for _post in self.alice_posts:
-            _post.content = "{} {} {}".format(
-                self.faker.paragraph(), self.alice, self.faker.paragraph()
+        for _counter, _post in enumerate(self.alice_posts):
+            _partial = self.white_rabbit_partial if _counter == 0 else ''
+            _post.content = "{} {} {} {}".format(
+                self.faker.paragraph(),
+                self.alice,
+                self.faker.paragraph(),
+                _partial
             )
             _post.save()
 
@@ -62,10 +72,12 @@ class SimpleQueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
             % search
         )
-        print(query)
+        logger.debug_json(query)
         executed = self.client.execute(query)
         self.assertEqual(
-            len(executed["data"]["allPostDocuments"]["edges"]), num_posts
+            len(executed["data"]["allPostDocuments"]["edges"]),
+            num_posts,
+            query
         )
 
     def _test_search_content(self):
@@ -74,23 +86,35 @@ class SimpleQueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
         :return:
         """
         # Covering specific field lookups: `search:{title:{value:"Another"}}`
-        with self.subTest('Test search the content on term "Alice"'):
+        with self.subTest('Test search the content on term: Alice'):
             self.__test_search_content(
                 '"%s"' % self.alice,
                 self.num_alice_posts,
             )
-        with self.subTest('Test search the content on term "Jabberwocky"'):
+
+        with self.subTest('Test search the content on term: Jabberwocky'):
             self.__test_search_content(
                 '"%s"' % self.beast,
                 self.num_beast_posts,
             )
 
         with self.subTest(
-            'Test search the content on term "Alice Jabberwocky"'
+            'Test search the content on term: Alice Jabberwocky'
         ):
             self.__test_search_content(
                 '"%s %s"' % (self.alice, self.beast),
                 self.num_alice_posts + self.num_beast_posts,
+            )
+
+        with self.subTest(
+            'Test search the content on term: "White Rabbit" +Alice'
+        ):
+            self.__test_search_content(
+                '"%s"' % "'{white_rabbit}' +{alice}".format(
+                    white_rabbit=self.white_rabbit_partial,
+                    alice=self.alice
+                ),
+                1,
             )
 
     def test_all(self):

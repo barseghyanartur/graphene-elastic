@@ -1,7 +1,10 @@
 import unittest
+import uuid
+
 import factories
-from .base import BaseGrapheneElasticTestCase
 from ..constants import ALL, VALUE
+from ..logging import logger
+from .base import BaseGrapheneElasticTestCase
 
 __all__ = ("QueryStringBackendElasticTestCase",)
 
@@ -9,14 +12,21 @@ __all__ = ("QueryStringBackendElasticTestCase",)
 class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
     def setUp(self):
         super(QueryStringBackendElasticTestCase, self).setUp()
+        self.black_rabbit_partial = "Black Rabbit is dead {}".format(
+            uuid.uuid4()
+        )
         self.alice = "Alice"
         self.num_alice_posts = 9
         self.alice_posts = factories.PostFactory.create_batch(
             self.num_alice_posts
         )
-        for _post in self.alice_posts:
-            _post.content = "{} {} {}".format(
-                self.faker.paragraph(), self.alice, self.faker.paragraph()
+        for _counter, _post in enumerate(self.alice_posts):
+            _partial = self.black_rabbit_partial if _counter == 0 else ''
+            _post.content = "{} {} {} {}".format(
+                self.faker.paragraph(),
+                self.alice,
+                self.faker.paragraph(),
+                _partial
             )
             _post.save()
 
@@ -62,10 +72,12 @@ class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
             % search
         )
-        print(query)
+        logger.debug_json(query)
         executed = self.client.execute(query)
         self.assertEqual(
-            len(executed["data"]["allPostDocuments"]["edges"]), num_posts
+            len(executed["data"]["allPostDocuments"]["edges"]),
+            num_posts,
+            query
         )
 
     def _test_search_content(self):
@@ -79,6 +91,7 @@ class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 '"%s"' % self.alice,
                 self.num_alice_posts,
             )
+
         with self.subTest('Test search the content on term "Jabberwocky"'):
             self.__test_search_content(
                 '"%s"' % self.beast,
@@ -91,6 +104,17 @@ class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
             self.__test_search_content(
                 '"%s %s"' % (self.alice, self.beast),
                 self.num_alice_posts + self.num_beast_posts,
+            )
+
+        with self.subTest(
+            'Test search the content on term: "White Rabbit" +Alice'
+        ):
+            self.__test_search_content(
+                '"%s"' % "({black_rabbit}) AND {alice}".format(
+                    black_rabbit=self.black_rabbit_partial,
+                    alice=self.alice
+                ),
+                1,
             )
 
     def test_all(self):
