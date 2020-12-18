@@ -7,6 +7,8 @@ Subpackages
 .. toctree::
 
    graphene_elastic.filter_backends
+   graphene_elastic.relay
+   graphene_elastic.tests
    graphene_elastic.types
 
 Submodules
@@ -16,6 +18,22 @@ graphene\_elastic.advanced\_types module
 ----------------------------------------
 
 .. automodule:: graphene_elastic.advanced_types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+graphene\_elastic.arrayconnection module
+----------------------------------------
+
+.. automodule:: graphene_elastic.arrayconnection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+graphene\_elastic.compat module
+-------------------------------
+
+.. automodule:: graphene_elastic.compat
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,10 +70,10 @@ graphene\_elastic.fields module
    :undoc-members:
    :show-inheritance:
 
-graphene\_elastic.helpers module
+graphene\_elastic.logging module
 --------------------------------
 
-.. automodule:: graphene_elastic.helpers
+.. automodule:: graphene_elastic.logging
    :members:
    :undoc-members:
    :show-inheritance:
@@ -80,6 +98,14 @@ graphene\_elastic.utils module
 ------------------------------
 
 .. automodule:: graphene_elastic.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+graphene\_elastic.versions module
+---------------------------------
+
+.. automodule:: graphene_elastic.versions
    :members:
    :undoc-members:
    :show-inheritance:

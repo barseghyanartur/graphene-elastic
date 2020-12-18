@@ -12,6 +12,22 @@ graphene\_elastic.filter\_backends.filtering.common module
    :undoc-members:
    :show-inheritance:
 
+graphene\_elastic.filter\_backends.filtering.mixins module
+----------------------------------------------------------
+
+.. automodule:: graphene_elastic.filter_backends.filtering.mixins
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+graphene\_elastic.filter\_backends.filtering.queries module
+-----------------------------------------------------------
+
+.. automodule:: graphene_elastic.filter_backends.filtering.queries
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------

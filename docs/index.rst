@@ -53,7 +53,8 @@ Main features and highlights
 - Faceted search backend (including global aggregations).
 - Post filter backend.
 - Score filter backend.
-- Simple Query String backend.
+- Query string backend.
+- Simple query string backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -568,7 +569,6 @@ Lots of features are planned to be released in the upcoming Beta releases:
 - Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase).
 - Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase).
 - More-like-this backend.
-- Complex search backends, such as Query string search.
 
 Stay tuned or reach out if you want to help.
 
@@ -695,6 +695,8 @@ Contents:
    source_filter_backend
    score_filter_backend
    faceted_search_backend
+   query_string_backend
+   simple_query_string_backend
    pagination
    custom_filter_backends
    settings
