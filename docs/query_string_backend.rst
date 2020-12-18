@@ -49,12 +49,6 @@ Implementation of
       }
     }
 
-**Sample response:**
-
-As you could see, score is calculated.
-
-.. code-block:: javascript
-
 **Sample response**
 
 .. code-block:: javascript
