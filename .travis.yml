@@ -13,15 +13,17 @@ matrix:
   - env: TOX_ENV=py36-elastic7
     python: 3.6
 
-  - env: TOX_ENV=py37-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt ALLOW_FAILURES=yes
+  - env: TOX_ENV=py37-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt ALLOW_FAILURE=true
     python: 3.7
-  - env: TOX_ENV=py37-elastic7 ALLOW_FAILURES=yes
+  - env: TOX_ENV=py37-elastic7 ALLOW_FAILURE=true
     python: 3.7
 
   - env: TOX_ENV=py38-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
     python: 3.8
   - env: TOX_ENV=py38-elastic7
     python: 3.8
+  allow_failures:
+    - env: ALLOW_FAILURE=true
 
 env:
   global:
@@ -47,7 +49,3 @@ script: travis_retry tox -e $TOX_ENV
 after_success:
   - pip install coveralls
   - coveralls
-
-jobs:
-  allow_failures:
-    - env: ALLOW_FAILURES=yes
