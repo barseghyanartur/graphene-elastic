@@ -81,7 +81,7 @@ class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
         )
 
     def _test_search_content(self):
-        """ "Test search content.
+        """Test search content.
 
         :return:
         """
