@@ -84,7 +84,10 @@ class PostFilterFilteringBackend(BaseBackend, FilteringFilterMixin):
         if not self.filter_fields:
             return {}
 
-        return super(PostFilterFilteringBackend, self).get_backend_query_fields(
+        return super(
+            PostFilterFilteringBackend,
+            self
+        ).get_backend_query_fields(
             items=items,
             is_filterable_func=is_filterable_func,
             get_type_func=get_type_func

@@ -37,8 +37,7 @@ class QueryStringBackend(BaseBackend):
             }
 
         For list of all options: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
-
-        """
+        """  # NOQA
         query_string_options = getattr(
             self.connection_field.type._meta.node._meta,
             "filter_backend_options",

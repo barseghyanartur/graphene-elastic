@@ -36,9 +36,9 @@ class SimpleQueryStringBackend(BaseBackend):
                 'minimum_should_match': 3
             }
 
-        For list of all options: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
-
-        """
+        For list of all options: 
+        https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
+        """  # NOQA
         simple_query_string_options = getattr(
             self.connection_field.type._meta.node._meta,
             "filter_backend_options",
@@ -63,7 +63,6 @@ class SimpleQueryStringBackend(BaseBackend):
         :param queryset:
         :return:
         """
-
         options = self.simple_query_string_options
         fields = options.pop("fields", [])
         query = self.get_all_query_params()

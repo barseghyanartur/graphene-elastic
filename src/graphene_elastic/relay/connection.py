@@ -45,8 +45,8 @@ __all__ = (
 # class PageInfo(ObjectType):
 #     class Meta:
 #         description = (
-#             "The Relay compliant `PageInfo` type, containing data necessary to"
-#             " paginate this connection."
+#             "The Relay compliant `PageInfo` type, containing data necessary "
+#             "to paginate this connection."
 #         )
 #
 #     has_next_page = Boolean(
@@ -90,14 +90,19 @@ class Connection(ObjectType):
     @classmethod
     def __init_subclass_with_meta__(cls, node=None, name=None, **options):
         _meta = ConnectionOptions(cls)
-        assert node, "You have to provide a node in {}.Meta".format(cls.__name__)
+        assert node, "You have to provide a node in {}." \
+                     "Meta".format(cls.__name__)
         assert isinstance(node, NonNull) or issubclass(
             node, (Scalar, Enum, ObjectType, Interface, Union, NonNull)
         ), ('Received incompatible node "{}" for Connection {}.').format(
             node, cls.__name__
         )
 
-        base_name = re.sub("Connection$", "", name or cls.__name__) or node._meta.name
+        base_name = re.sub(
+            "Connection$",
+            "",
+            name or cls.__name__
+        ) or node._meta.name
         if not name:
             name = "{}Connection".format(base_name)
 
@@ -106,12 +111,14 @@ class Connection(ObjectType):
 
         class EdgeBase(object):
             node = Field(_node, description="The item at the end of the edge")
-            cursor = String(required=True, description="A cursor for use in pagination")
+            cursor = String(
+                required=True,
+                description="A cursor for use in pagination"
+            )
 
         class EdgeMeta:
-            description = "A Relay edge containing a `{}` and its cursor.".format(
-                base_name
-            )
+            description = "A Relay edge containing a `{}` and " \
+                          "its cursor.".format(base_name)
 
         edge_name = "{}Edge".format(base_name)
         if edge_class:
@@ -159,7 +166,8 @@ class Connection(ObjectType):
         # for backend_cls in backends:
         #     if backend_cls.has_connection_fields:
         #         backend = backend_cls()
-        #         connection_fields_type = backend.get_backend_connection_fields_type()
+        #         connection_fields_type = \
+        #             backend.get_backend_connection_fields_type()
         #         if connection_fields_type:
         #             try:
         #                 _meta.fields.update(connection_fields_type)
@@ -187,8 +195,10 @@ class Connection(ObjectType):
 #
 #         if is_node(connection_type):
 #             raise Exception(
-#                 "ConnectionFields now need a explicit ConnectionType for Nodes.\n"
-#                 "Read more: https://github.com/graphql-python/graphene/blob/v2.0.0/UPGRADE-v2.0.md#node-connections"
+#                 "ConnectionFields now need a explicit ConnectionType for "
+#                 "Nodes.\n"
+#                 "Read more: https://github.com/graphql-python/graphene/"
+#                 "blob/v2.0.0/UPGRADE-v2.0.md#node-connections"
 #             )
 #
 #         assert issubclass(connection_type, Connection), (
@@ -201,10 +211,10 @@ class Connection(ObjectType):
 #         if isinstance(resolved, connection_type):
 #             return resolved
 #
-#         assert isinstance(resolved, Iterable), (
-#             "Resolved value from the connection field have to be iterable or instance of {}. "
-#             'Received "{}"'
-#         ).format(connection_type, resolved)
+        # assert isinstance(resolved, Iterable), (
+        #     "Resolved value from the connection field have to be iterable "
+        #     'or instance of {}. Received "{}"'
+        # ).format(connection_type, resolved)
 #         connection = connection_from_list(
 #             resolved,
 #             args,
@@ -216,7 +226,8 @@ class Connection(ObjectType):
 #         return connection
 #
 #     @classmethod
-#     def connection_resolver(cls, resolver, connection_type, root, info, **args):
+#     def connection_resolver(cls, resolver, connection_type,
+#                             root, info, **args):
 #         resolved = resolver(root, info, **args)
 #
 #         if isinstance(connection_type, NonNull):
@@ -226,7 +237,9 @@ class Connection(ObjectType):
 #         return maybe_thenable(resolved, on_resolve)
 #
 #     def get_resolver(self, parent_resolver):
-#         resolver = super(IterableConnectionField, self).get_resolver(parent_resolver)
+#         resolver = super(IterableConnectionField, self).get_resolver(
+#             parent_resolver
+#         )
 #         return partial(self.connection_resolver, resolver, self.type)
 #
 #
