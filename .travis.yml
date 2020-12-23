@@ -23,7 +23,8 @@ matrix:
   - env: TOX_ENV=py38-elastic7
     python: 3.8
   allow_failures:
-    - python: 3.7
+    - python: 3.7  # Temporary allow failures. A Travis issue.
+    - python: 3.8  # Temporary allow failures. A Travis issue.
 
 env:
   global:
