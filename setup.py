@@ -39,6 +39,7 @@ setup(
         "singledispatch>=3.4.0.3",
         "iso8601>=0.1.12",
         "stringcase",
+        'typing;python_version<"3.7"',  # Used in Python < 3.6 dist
     ],
     python_requires=">=3.6",
     zip_safe=True,
