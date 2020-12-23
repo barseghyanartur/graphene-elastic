@@ -51,7 +51,6 @@ install: pip install -r requirements/test.txt
 before_script:
   # sleep for elasticsearch
   - wget -q --waitretry=3 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
-  - pip uninstall typing -y
 
 script: travis_retry tox -e $TOX_ENV
 
