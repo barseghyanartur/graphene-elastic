@@ -39,14 +39,13 @@ before_install:
   - sudo apt-get update && sudo apt-get install elasticsearch -y
   - sudo -i service elasticsearch restart
   - pip install --upgrade pip
-  - pip uninstall typing -y
-  - pip uninstall dataclasses -y
 
 install: pip install -r requirements/test.txt
 
 before_script:
   # sleep for elasticsearch
   - wget -q --waitretry=3 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
+  - pip uninstall typing -y
 
 script: travis_retry tox -e $TOX_ENV
 
