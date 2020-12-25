@@ -31,6 +31,7 @@ codebin.py
 /examples/apps/db.sqlite3
 /var/
 /examples/apps/django_app/local_overrides.py
+/examples/apps/flask_app/local_overrides.py
 /examples/tmp/
 /examples/logs/
 /examples/media/

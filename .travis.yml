@@ -27,10 +27,16 @@ matrix:
     python: 3.9
   - env: TOX_ENV=py39-elastic7
     python: 3.9
+
+  - env: TOX_ENV=py310-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
+    python: 3.10
+  - env: TOX_ENV=py310-elastic7
+    python: 3.10
   allow_failures:
 #    - python: 3.7
 #    - python: 3.8
-    - python: 3.9
+#    - python: 3.9
+    - python: 3.10
 
 env:
   global:
