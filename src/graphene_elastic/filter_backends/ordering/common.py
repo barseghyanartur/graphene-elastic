@@ -28,11 +28,17 @@ class OrderingMixin(object):
             'filter_backend_options',
             {}
         ).get('ordering_fields', {})
-        return deepcopy(ordering_fields)
+        _ordering_fields = deepcopy(ordering_fields)
+        if isinstance(_ordering_fields, (list, tuple, set)):
+            _ordering_fields = {k: k for k in _ordering_fields}
+        return _ordering_fields
 
     @property
     def _ordering_args_mapping(self):
-        return {k: k for k, v in self.ordering_fields.items()}
+        if isinstance(self.ordering_fields, dict):
+            return {k: k for k, v in self.ordering_fields.items()}
+        elif isinstance(self.ordering_fields, (tuple, list, set)):
+            return {k: k for k in self.ordering_fields}
 
     @property
     def _ordering_defaults(self):
@@ -99,7 +105,7 @@ class OrderingMixin(object):
                 #         nested_sort_entry(field['path']))
 
                 _ordering_params.append(entry)
-        elif isinstance(ordering_params, (tuple, list)):
+        elif isinstance(ordering_params, (tuple, list, set)):
             for ordering_param in ordering_params:
                 ordering_direction = Direction.ASC.value
                 field = {'field': ordering_param}
