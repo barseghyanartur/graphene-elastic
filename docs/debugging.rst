@@ -1,5 +1,7 @@
 Debugging
 =========
+Logging queries to console
+--------------------------
 The ``LOGGING_LEVEL`` key represents the logging level (defaults to
 ``logging.ERROR``). Override if needed.
 

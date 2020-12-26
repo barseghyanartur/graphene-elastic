@@ -14,9 +14,9 @@ def project_dir(base):
 
 sys.path.insert(0, project_dir("../../examples"))
 
-from factories.blog_post import PostFactory
-from factories.site_user import UserFactory
-from factories.farm_animal import AnimalFactory
+from factories.blog_post import PostFactory  # NOQA
+from factories.site_user import UserFactory  # NOQA
+from factories.farm_animal import AnimalFactory  # NOQA
 
 
 def generate(num_items=100):

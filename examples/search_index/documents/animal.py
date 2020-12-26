@@ -30,13 +30,15 @@ __all__ = (
 connections.create_connection(**ELASTICSEARCH_CONNECTION)
 
 
-html_strip = analyzer('html_strip',
+html_strip = analyzer(
+    'html_strip',
     tokenizer="standard",
     filter=["lowercase", "stop", "snowball"],
     char_filter=["html_strip"]
 )
 
-html_strip_preserve_case = analyzer('html_strip',
+html_strip_preserve_case = analyzer(
+    'html_strip',
     tokenizer="standard",
     filter=["stop", "snowball"],
     char_filter=["html_strip"]

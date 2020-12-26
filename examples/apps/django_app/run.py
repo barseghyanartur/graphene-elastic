@@ -36,8 +36,8 @@ DATABASES = {
 
 configure(locals(), django_admin=True)
 
-from graphene_django.views import GraphQLView
-from graphene_elastic.settings import graphene_settings
+from graphene_django.views import GraphQLView  # NOQA
+from graphene_elastic.settings import graphene_settings  # NOQA
 route(
     'graphql',
     GraphQLView.as_view(
