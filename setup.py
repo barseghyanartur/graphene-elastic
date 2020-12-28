@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="graphene-elastic",
-    version="0.6.3",
+    version="0.6.6",
     description="Graphene Elasticsearch (DSL) integration",
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
@@ -24,6 +24,8 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     keywords="api graphql protocol rest relay graphene elasticsearch "
     "elasticsearch-dsl",
@@ -39,6 +41,7 @@ setup(
         "singledispatch>=3.4.0.3",
         "iso8601>=0.1.12",
         "stringcase",
+        'typing;python_version<"3.7"',  # Used in Python < 3.6 dist
     ],
     python_requires=">=3.6",
     zip_safe=True,

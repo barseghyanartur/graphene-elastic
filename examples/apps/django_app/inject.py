@@ -15,4 +15,7 @@ def project_dir(base):
 
 sys.path.insert(0, project_dir("../../../src"))
 sys.path.insert(0, project_dir("../../../examples"))
-sys.path.insert(0, '/home/delusionalinsanity/bbrepos/graphene-elastic/examples')
+sys.path.insert(
+    0,
+    '/home/delusionalinsanity/bbrepos/graphene-elastic/examples'
+)

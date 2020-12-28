@@ -21,7 +21,9 @@ INSTALLED_APPS = [
 GRAPHENE = {
     "SCHEMA": "schema.schema",
     "SCHEMA_INDENT": 2,
-    "MIDDLEWARE": ("graphene_django.debug.DjangoDebugMiddleware",),
+    "MIDDLEWARE": (
+        "graphene_django.debug.DjangoDebugMiddleware",
+    ),
 }
 
 
@@ -34,9 +36,15 @@ DATABASES = {
 
 configure(locals(), django_admin=True)
 
-from graphene_django.views import GraphQLView
-
-route('graphql', GraphQLView.as_view(graphiql=True))
+from graphene_django.views import GraphQLView  # NOQA
+from graphene_elastic.settings import graphene_settings  # NOQA
+route(
+    'graphql',
+    GraphQLView.as_view(
+        graphiql=True,
+        middleware=graphene_settings.MIDDLEWARE
+    ),
+)
 
 if __name__ == '__main__':
     application = run()

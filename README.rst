@@ -35,7 +35,7 @@ integration for `Graphene <http://graphene-python.org/>`__.
 Prerequisites
 =============
 - Graphene 2.x. *Support for Graphene 1.x is not intended.*
-- Python 3.6, 3.7, 3.8. *Support for Python 2 is not intended.*
+- Python 3.6, 3.7, 3.8, 3.9 and 3.10. *Support for Python 2 is not intended.*
 - Elasticsearch 6.x, 7.x. *Support for Elasticsearch 5.x is not intended.*
 
 Main features and highlights
@@ -53,6 +53,8 @@ Main features and highlights
 - Faceted search backend (including global aggregations).
 - Post filter backend.
 - Score filter backend.
+- Query string backend.
+- Simple query string backend.
 
 See the `Road-map`_ for what's yet planned to implemented.
 
@@ -567,7 +569,6 @@ Lots of features are planned to be released in the upcoming Beta releases:
 - Filter lookup ``geo_distance`` (or ``geoDistance`` for camelCase).
 - Filter lookup ``geo_polygon`` (or ``geoPolygon`` for camelCase).
 - More-like-this backend.
-- Complex search backends, such as Simple query search.
 
 Stay tuned or reach out if you want to help.
 

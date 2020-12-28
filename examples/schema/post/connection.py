@@ -1,7 +1,7 @@
 import graphene
 from graphene_elastic import ElasticsearchConnectionField
 
-from .object_type import Post, PostSuggest
+from .object_type import Post, AlternativePost, PostSuggest
 
 __all__ = (
     'ConnectionQueryMixin',
@@ -45,6 +45,7 @@ class ConnectionQueryMixin:
     """
     all_post_documents = ElasticsearchConnectionField(Post)
     all_post_suggestions = ElasticsearchConnectionField(PostSuggest)
+    alternative_post_documents = ElasticsearchConnectionField(AlternativePost)
 
 
 class Query(

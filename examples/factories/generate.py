@@ -1,5 +1,8 @@
 import os
 import sys
+import uuid
+
+from faker import Faker
 
 
 def project_dir(base):
@@ -11,9 +14,9 @@ def project_dir(base):
 
 sys.path.insert(0, project_dir("../../examples"))
 
-from factories.blog_post import PostFactory
-from factories.site_user import UserFactory
-from factories.farm_animal import AnimalFactory
+from factories.blog_post import PostFactory  # NOQA
+from factories.site_user import UserFactory  # NOQA
+from factories.farm_animal import AnimalFactory  # NOQA
 
 
 def generate(num_items=100):
@@ -23,16 +26,32 @@ def generate(num_items=100):
     :type num_items: int
     :return:
     """
+    # Generic Post data
     posts = PostFactory.create_batch(num_items)
 
     for post in posts:
         post.save()
 
+    # Specific Post data
+    faker = Faker()
+    post = PostFactory(title="Alice", )
+    white_rabbit = "White Rabbit is dead {}".format(
+        uuid.uuid4()
+    )
+    post.content = "{} {} {}".format(
+        faker.paragraph(),
+        white_rabbit,
+        faker.paragraph(),
+    )
+    post.save()
+
+    # Generic User data
     users = UserFactory.create_batch(num_items)
 
     for user in users:
         user.save()
 
+    # Generic Animal data
     animals = AnimalFactory.create_batch(num_items)
 
     for animal in animals:

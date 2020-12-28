@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 services:
   - elasticsearch
@@ -23,6 +23,21 @@ matrix:
   - env: TOX_ENV=py38-elastic7
     python: 3.8
 
+  - env: TOX_ENV=py39-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
+    python: 3.9
+  - env: TOX_ENV=py39-elastic7
+    python: 3.9
+
+  - env: TOX_ENV=py310-elastic6 ES_APT_URL=https://artifacts.elastic.co/packages/6.x/apt
+    python: 3.10
+  - env: TOX_ENV=py310-elastic7
+    python: 3.10
+  allow_failures:
+#    - python: 3.7
+#    - python: 3.8
+#    - python: 3.9
+    - python: 3.10
+
 env:
   global:
     - ES_APT_URL=https://artifacts.elastic.co/packages/7.x/apt
@@ -35,6 +50,7 @@ before_install:
   - sudo apt-get remove --purge elasticsearch -y
   - sudo apt-get update && sudo apt-get install elasticsearch -y
   - sudo -i service elasticsearch restart
+  - pip install --upgrade pip
 
 install: pip install -r requirements/test.txt
 

@@ -17,7 +17,7 @@ DEFAULTS = {
     "SCHEMA": None,
     "SCHEMA_OUTPUT": "schema.json",
     "SCHEMA_INDENT": 2,
-    # "MIDDLEWARE": (),
+    "MIDDLEWARE": (),
     # Set to True if the connection fields must have
     # either the first or last argument
     "RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST": False,
@@ -31,9 +31,15 @@ IMPORT_STRINGS = ("MIDDLEWARE", "SCHEMA")
 
 
 def perform_import(val, setting_name):
-    """
-    If the given setting is a string import notation,
-    then perform the necessary import or imports.
+    """Perform import.
+
+    If the given setting is a string import notation, then perform the
+    necessary import or imports.
+
+    Example:
+
+    >>> perform_import('apps.middleware.timing_middleware', 'MIDDLEWARE')
+    >>> perform_import(['apps.middleware.timing_middleware'], 'MIDDLEWARE')
     """
     if val is None:
         return None
@@ -45,8 +51,11 @@ def perform_import(val, setting_name):
 
 
 def import_from_string(val, setting_name):
-    """
-    Attempt to import a class from a string representation.
+    """Attempt to import a class from a string representation.
+
+    Example:
+
+    >>> import_from_string('apps.middleware.timing_middleware', 'MIDDLEWARE')
     """
     try:
         # Nod to tastypie's use of importlib.

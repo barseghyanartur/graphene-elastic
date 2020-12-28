@@ -15,6 +15,40 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.6.6
+-----
+2020-12-25
+
+.. note::
+
+    Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
+    and all the victims of Turkish and Azerbaijani aggression.
+
+- Enable middleware.
+- Tested against Python 3.9 and 3.10.
+
+0.6.5
+-----
+2020-12-19
+
+.. note::
+
+    Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
+    and all the victims of Turkish and Azerbaijani aggression.
+
+- Added `QueryStringBackend`.
+
+0.6.4
+-----
+2020-12-12
+
+.. note::
+
+    Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
+    and all the victims of Turkish and Azerbaijani aggression.
+
+- Added `SimpleQueryStringBackend`.
+
 0.6.3
 -----
 2020-07-19

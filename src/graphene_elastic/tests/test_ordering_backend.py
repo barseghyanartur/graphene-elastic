@@ -53,16 +53,22 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         self.sleep()
 
-    def __test_ordering(self, field, direction):
+    def __test_ordering(
+        self,
+        field,
+        direction,
+        document_type_name="allPostDocuments"
+    ):
         """Test ordering.
 
         :param field:
         :param direction:
+        :param document_type_name:
         :return:
         """
         _query = """
         {
-          allPostDocuments(ordering:{%s:%s}) {
+          %s(ordering:{%s:%s}) {
             edges {
               node {
                 category
@@ -74,11 +80,11 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % (field, direction.name)
+        """ % (document_type_name, field, direction.name)
         print(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
-        for edge in executed['data']['allPostDocuments']['edges']:
+        for edge in executed['data'][document_type_name]['edges']:
             field_value = edge.get('node', {}).get(field, None)
             fields_values_sorted.append(field_value)
 
@@ -88,16 +94,22 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
         self.assertEqual(sorted_values, fields_values_sorted)
 
-    def __test_default_ordering(self, field, direction):
+    def __test_default_ordering(
+        self,
+        field,
+        direction,
+        document_type_name="allPostDocuments"
+    ):
         """Test default ordering.
 
         :param field:
         :param direction:
+        :param document_type_name:
         :return:
         """
         _query = """
         {
-          allPostDocuments {
+          %s {
             edges {
               node {
                 category
@@ -109,11 +121,11 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """
+        """ % document_type_name
         print(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
-        for edge in executed['data']['allPostDocuments']['edges']:
+        for edge in executed['data'][document_type_name]['edges']:
             field_value = edge.get('node', {}).get(field, None)
             fields_values_sorted.append(field_value)
 
@@ -153,12 +165,41 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 Direction.DESC
             )
 
+    def _test_alternative_ordering(self):
+        """"Test ordering (on fields `title` and `num_views`).
+
+        :return:
+        """
+        # Test ordering (on field `num_views`).
+        with self.subTest('Test ordering on field `num_views` ascending'):
+            self.__test_ordering(
+                'numViews',
+                Direction.ASC,
+                'alternativePostDocuments'
+            )
+
+        with self.subTest('Test ordering on field `num_views` descending'):
+            self.__test_ordering(
+                'numViews',
+                Direction.DESC,
+                'alternativePostDocuments'
+            )
+
     def _test_default_ordering(self):
         """Test default ordering (on field `num_views)."""
         with self.subTest('Test default ordering on field `num_views`'):
             self.__test_default_ordering(
                 'numViews',
                 Direction.DESC
+            )
+
+    def _test_alternative_default_ordering(self):
+        """Test default ordering (on field `num_views)."""
+        with self.subTest('Test default ordering on field `num_views`'):
+            self.__test_default_ordering(
+                'numViews',
+                Direction.DESC,
+                'alternativePostDocuments'
             )
 
     def test_all(self):
@@ -170,6 +211,8 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         self._test_ordering()
         self._test_default_ordering()
+        self._test_alternative_ordering()
+        self._test_alternative_default_ordering()
 
 
 if __name__ == '__main__':

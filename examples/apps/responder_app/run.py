@@ -1,11 +1,15 @@
 import responder
 
 from inject import *  # Should be present before any other project imports
+
 from schema import schema
 
 api = responder.API()
 
-view = responder.ext.GraphQLView(api=api, schema=schema)
+view = responder.ext.GraphQLView(
+    api=api,
+    schema=schema
+)
 
 api.add_route("/graphql", view)
 

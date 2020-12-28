@@ -23,5 +23,5 @@ class Query(
 schema = graphene.Schema(
     query=Query,
     # auto_camelcase=False,
-    # types=[Post, User]
+    # types=[Post, User],
 )

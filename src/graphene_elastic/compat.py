@@ -28,7 +28,10 @@
 #     path_list = path.split('.')
 #     for _ in reversed(path_list):
 #         if nested_path:
-#             nested_path = {'path': '.'.join(path_list), 'nested': nested_path}
+#             nested_path = {
+#                 'path': '.'.join(path_list),
+#                 'nested': nested_path
+#             }
 #         else:
 #             nested_path = {'path': '.'.join(path_list)}
 #         path_list.pop()

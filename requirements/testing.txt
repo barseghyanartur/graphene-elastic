@@ -1,8 +1,8 @@
--r code_style.txt
+#-r code_style.txt
 -r common.txt
--r debug.txt
--r django.txt
--r docs.txt
--r flask.txt
--r responder.txt
+#-r debug.txt
+#-r django.txt
+#-r docs.txt
+#-r flask.txt
+#-r responder.txt
 -r test.txt
