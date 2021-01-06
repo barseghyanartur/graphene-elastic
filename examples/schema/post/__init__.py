@@ -10,7 +10,10 @@ from .filtered_list import (
     Query as FilteredQuery,
     schema as filtered_schema,
 )
-from .object_type import Post, PostSuggest
+from .object_type import (
+    Post,
+    # PostSuggest,
+)
 from .simple_list import (
     SimpleQueryMixin,
     Query as SimpleQuery,

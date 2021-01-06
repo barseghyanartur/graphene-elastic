@@ -11,7 +11,7 @@ from graphene_elastic.filter_backends import (
     HighlightFilterBackend,
     SourceFilterBackend,
     ScoreFilterBackend,
-    SuggestFilterBackend,
+    # SuggestFilterBackend,
     SimpleQueryStringBackend,
     QueryStringBackend,
 )
@@ -294,7 +294,7 @@ class PostSuggest(ElasticsearchObjectType):
     class Meta:
 
         document = PostDocument
-        # interfaces = (Node,)
+        interfaces = (Node,)
         filter_backends = [
             # FilteringFilterBackend,
             # PostFilterFilteringBackend,
@@ -306,11 +306,11 @@ class PostSuggest(ElasticsearchObjectType):
             # ScoreFilterBackend,
             # OrderingFilterBackend,
             # DefaultOrderingFilterBackend,
-            SuggestFilterBackend,
+            # SuggestFilterBackend,
         ]
 
         # Suggester fields
-        suggester_fields = {
+        suggest_fields = {
             'title_suggest': {
                 'field': 'title.suggest',
                 'default_suggester': SUGGESTER_COMPLETION,

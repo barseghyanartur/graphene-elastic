@@ -298,3 +298,47 @@ class Direction(NoValue):
 
     ASC = 'asc'
     DESC = 'desc'
+
+
+# ***************************************************************
+# ************************* Completion **************************
+# ***************************************************************
+
+
+class SuggesterTerm(graphene.InputObjectType):
+    """Suggester term.
+
+        suggest:[
+            {category: {term: "tovse"}]}}
+        ]
+    """
+    text = graphene.String(required=True)
+    size = graphene.Int(required=False)
+
+
+class SuggesterPhrase(graphene.String):
+    """Suggester phrase.
+
+        suggest:[
+            {category: {phrase: "slith tovs"}]}}
+        ]
+    """
+
+    text = graphene.String(required=True)
+    size = graphene.Int(required=False)
+
+
+class SuggesterCompletion(graphene.InputObjectType):
+    """Geo polygon.
+
+        filter:[
+            {place: {geoBoundingBox: {
+                topLeft: {lat: "40.0", lon="70.0"},
+                bottomRight: {lat: "80.0", lon: "90.0"}
+            }}}
+        ]
+    """
+
+    text = graphene.String(required=True)
+    size = graphene.Int(required=False)
+    options = graphene.JSONString(required=False)
