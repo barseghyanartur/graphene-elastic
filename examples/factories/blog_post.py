@@ -82,6 +82,7 @@ class PostFactory(Factory):
     ])
     num_views = Faker('pyint', min_value=0, max_value=1000)
     tags = LazyAttribute(lambda x: random.sample(TAGS, 4))
+    user_id = FuzzyChoice(range(10))
 
     @factory.post_generation
     def comments(obj, create, extracted, **kwargs):

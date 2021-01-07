@@ -26,7 +26,6 @@ GRAPHENE = {
     ),
 }
 
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -36,6 +35,9 @@ DATABASES = {
 
 configure(locals(), django_admin=True)
 
+# ************************************************************************
+# ********************* graphene-elastic routes **************************
+# ************************************************************************
 from graphene_django.views import GraphQLView  # NOQA
 from graphene_elastic.settings import graphene_settings  # NOQA
 route(
@@ -45,6 +47,12 @@ route(
         middleware=graphene_settings.MIDDLEWARE
     ),
 )
+
+# ************************************************************************
+# **************************** django routes *****************************
+# ************************************************************************
+from django.contrib import admin
+route('admin/', admin.site.urls),
 
 if __name__ == '__main__':
     application = run()

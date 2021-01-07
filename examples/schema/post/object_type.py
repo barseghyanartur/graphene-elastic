@@ -31,6 +31,7 @@ from search_index.documents import Post as PostDocument
 __all__ = (
     "Post",
     "AlternativePost",
+    "PostForUser",
 )
 
 
@@ -284,3 +285,9 @@ class AlternativePost(ElasticsearchObjectType):
             # Elasticsearch document (`PostDocument`).
             "num_views",
         }
+
+
+class PostForUser(ElasticsearchObjectType):
+
+    class Meta(BasePostMeta):
+        pass
