@@ -84,6 +84,7 @@ class Post(Document):
         multi=True
     )
     num_views = Integer()
+    user_id = Integer()
 
     class Index:
         name = BLOG_POST_DOCUMENT_NAME

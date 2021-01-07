@@ -34,6 +34,7 @@ __all__ = (
     'Post',
     'PostSuggest',
     "AlternativePost",
+    "PostForUser",
 )
 
 
@@ -344,3 +345,9 @@ class PostSuggest(ElasticsearchObjectType):
             'publisher_suggest': 'publisher.suggest',
             'tag_suggest': 'tags.suggest',
         }
+
+
+class PostForUser(ElasticsearchObjectType):
+
+    class Meta(BasePostMeta):
+        pass
