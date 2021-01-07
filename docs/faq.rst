@@ -9,5 +9,12 @@ Additionally, all raised issues that were questions have been marked as
 
 Questions and answers
 ---------------------
-Q: What about authentication and/or filtering the results based on authenticated user.
-A: Check `this doc <https://github.com/barseghyanartur/graphene-elastic/blob/master/examples/apps/django_app/README.md>`__
+**Question**
+
+What about authentication and/or filtering the results based on authenticated user.
+
+**Answer**
+
+Check `this doc <https://github.com/barseghyanartur/graphene-elastic/blob/master/examples/apps/django_app/README.md>`__
+
+----
