@@ -34,7 +34,7 @@ def get_queryset_for_user(document, info, **args):
     try:
         user_id = info.context.user.id
     except AttributeError:
-        user_id = -1
+        user_id = -1  # There's no user with id equal to -1
     return document.search().filter('term', user_id=user_id)
 
 
