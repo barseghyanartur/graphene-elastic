@@ -62,6 +62,11 @@ Do you need a similar tool for Django REST Framework? Check
 `django-elasticsearch-dsl-drf
 <https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
 
+Demo
+====
+Check the `live demo app <https://graphene-elastic.herokuapp.com/?query=query%20%7B%0A%20%20allPostDocuments%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20content%0A%20%20%20%20%20%20%20%20tags%0A%20%20%20%20%20%20%20%20createdAt%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D>`__
+(FastAPI + Graphene 2 + Elasticsearch 7) hosted on Heroku and bonsai.io.
+
 Documentation
 =============
 Documentation is available on `Read the Docs
