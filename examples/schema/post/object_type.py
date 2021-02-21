@@ -15,7 +15,7 @@ from graphene_elastic.filter_backends import (
     QueryStringBackend,
 )
 from graphene_elastic.constants import (
-    LOOKUP_FILTER_PREFIX,
+    ALL_LOOKUP_FILTERS_AND_QUERIES, LOOKUP_FILTER_PREFIX,
     LOOKUP_FILTER_TERM,
     LOOKUP_FILTER_TERMS,
     LOOKUP_FILTER_WILDCARD,
@@ -23,6 +23,7 @@ from graphene_elastic.constants import (
     LOOKUP_QUERY_IN,
     LOOKUP_QUERY_CONTAINS,
 )
+from graphene_elastic.filter_backends.filtering.nested import NestedFilteringFilterBackend
 
 from search_index.documents import Post as PostDocument
 
@@ -46,6 +47,7 @@ class BasePostMeta:
         HighlightFilterBackend,
         SourceFilterBackend,
         FacetedSearchFilterBackend,
+        NestedFilteringFilterBackend,
         # CustomFilterBackend,
         ScoreFilterBackend,
         OrderingFilterBackend,
@@ -108,6 +110,21 @@ class BasePostMeta:
         # Elasticsearch document (`PostDocument`).
         "created_at": "created_at",
         "i_do_not_exist": "i_do_not_exist",
+    }
+
+    nested_filter_fields = {
+        "comments": {
+            "author": {
+                "lookups": ALL_LOOKUP_FILTERS_AND_QUERIES
+            },
+            "content": {
+                "lookups": [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_QUERY_CONTAINS
+                ]
+            }
+        }
     }
 
     # For `SearchFilterBackend` backend
