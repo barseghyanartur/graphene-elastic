@@ -120,13 +120,3 @@ def convert_field_to_jsonstring(field, registry=None):
         description=get_field_description(field, registry),
         required=field._required,
     )
-
-
-def convert_field_to_nested_field(field, registry=None):
-    from .types import ElasticObject
-
-    return List(
-        ElasticObject,
-        description=get_field_description(field, registry),
-        required=field._required,
-    )
