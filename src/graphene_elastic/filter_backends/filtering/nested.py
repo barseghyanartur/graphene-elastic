@@ -1,12 +1,15 @@
-import six
-from elasticsearch_dsl.query import Q, Query
+import operator
 from collections import OrderedDict
 from copy import deepcopy
 
+import six
+from elasticsearch_dsl.query import Q, Query
 from stringcase import pascalcase as to_pascal_case
 
 import graphene
-
+from graphene_elastic.filter_backends.filtering.mixins.nested import (
+    NestedFilteringFilterMixin,
+)
 from graphene_elastic.types.json_string import ElasticJSONString
 
 from ...constants import (
@@ -40,7 +43,10 @@ def is_nested_field(field):
     return field.type == ElasticJSONString
 
 
-class NestedFilteringFilterBackend(FilteringFilterBackend):
+class NestedFilteringFilterBackend(
+    NestedFilteringFilterMixin,
+    FilteringFilterBackend
+):
     """Nested filter backend."""
 
     prefix = "nested"
@@ -127,7 +133,6 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
     def get_field_type(
         self, field_name, sub_field_name, field_value, base_field_type=None
     ):
-        # TODO: 暂时都通过设置的dict来创建field type
         """Get field type.
 
         :return:
@@ -353,44 +358,6 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
                 )
         return query_params
 
-    @classmethod
-    def apply_filter(cls, queryset, path, lookup, kwargs):
-        return queryset.filter("nested", path=path, query={lookup: kwargs})
-
-    @classmethod
-    def apply_filter_terms(cls, queryset, option, value):
-        if isinstance(value, (list, tuple)):
-            __values = value
-
-        # Otherwise, we consider it to be a string and split it further.
-        else:
-            __values = cls.split_lookup_complex_value(value)
-
-        return cls.apply_filter(
-            queryset,
-            path=option["path"],
-            lookup="terms",
-            kwargs={option["field"]: __values},
-        )
-
-    @classmethod
-    def apply_filter_term(cls, queryset, option, value):
-        return cls.apply_filter(
-            queryset,
-            path=option["path"],
-            lookup="term",
-            kwargs={option["field"]: value},
-        )
-
-    @classmethod
-    def apply_query_contains(cls, queryset, option, value):
-        return cls.apply_filter(
-            queryset,
-            path=option["path"],
-            lookup="match",
-            kwargs={option["field"]: value},
-        )
-
     def filter(self, queryset):
         """Filter."""
         filter_query_params = self.get_filter_query_params()
@@ -408,31 +375,31 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
                         )
 
                     # `prefix` filter lookup
-                    # elif _option["lookup"] in (
-                    #     LOOKUP_FILTER_PREFIX,
-                    #     LOOKUP_QUERY_STARTSWITH,
-                    # ):
-                    #     queryset = self.apply_filter_prefix(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    elif _option["lookup"] in (
+                        LOOKUP_FILTER_PREFIX,
+                        LOOKUP_QUERY_STARTSWITH,
+                    ):
+                        queryset = self.apply_filter_prefix(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `range` filter lookup
-                    # elif _option["lookup"] == LOOKUP_FILTER_RANGE:
-                    #     queryset = self.apply_filter_range(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `range` filter lookup
+                    elif _option["lookup"] == LOOKUP_FILTER_RANGE:
+                        queryset = self.apply_filter_range(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `exists` filter lookup
-                    # elif _option["lookup"] == LOOKUP_FILTER_EXISTS:
-                    #     queryset = self.apply_query_exists(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `exists` filter lookup
+                    elif _option["lookup"] == LOOKUP_FILTER_EXISTS:
+                        queryset = self.apply_query_exists(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `wildcard` filter lookup
-                    # elif _option["lookup"] == LOOKUP_FILTER_WILDCARD:
-                    #     queryset = self.apply_query_wildcard(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `wildcard` filter lookup
+                    elif _option["lookup"] == LOOKUP_FILTER_WILDCARD:
+                        queryset = self.apply_query_wildcard(
+                            queryset, _option, _option["values"]
+                        )
 
                     # `contains` filter lookup
                     elif _option["lookup"] == LOOKUP_QUERY_CONTAINS:
@@ -440,53 +407,53 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
                             queryset, _option, _option["values"]
                         )
 
-                    # # `in` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_IN:
-                    #     queryset = self.apply_query_in(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `in` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_IN:
+                        queryset = self.apply_query_in(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `gt` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_GT:
-                    #     queryset = self.apply_query_gt(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `gt` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_GT:
+                        queryset = self.apply_query_gt(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `gte` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_GTE:
-                    #     queryset = self.apply_query_gte(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `gte` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_GTE:
+                        queryset = self.apply_query_gte(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `lt` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_LT:
-                    #     queryset = self.apply_query_lt(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `lt` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_LT:
+                        queryset = self.apply_query_lt(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `lte` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_LTE:
-                    #     queryset = self.apply_query_lte(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `lte` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_LTE:
+                        queryset = self.apply_query_lte(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `endswith` filter lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_ENDSWITH:
-                    #     queryset = self.apply_query_endswith(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `endswith` filter lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_ENDSWITH:
+                        queryset = self.apply_query_endswith(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `isnull` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_ISNULL:
-                    #     queryset = self.apply_query_isnull(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `isnull` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_ISNULL:
+                        queryset = self.apply_query_isnull(
+                            queryset, _option, _option["values"]
+                        )
 
-                    # # `exclude` functional query lookup
-                    # elif _option["lookup"] == LOOKUP_QUERY_EXCLUDE:
-                    #     queryset = self.apply_query_exclude(
-                    #         queryset, _option, _option["values"]
-                    #     )
+                    # `exclude` functional query lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_EXCLUDE:
+                        queryset = self.apply_query_exclude(
+                            queryset, _option, _option["values"]
+                        )
 
                     # `term` filter lookup. This is default if no `default_lookup`
                     # _option has been given or explicit lookup provided.

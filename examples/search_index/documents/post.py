@@ -41,6 +41,7 @@ html_strip = analyzer(
 class Comment(InnerDoc):
     author = Text(fields={'raw': Keyword()})
     content = Text(analyzer='snowball')
+    like_count = Integer()
     created_at = Date()
 
     def age(self):
@@ -77,12 +78,13 @@ class Post(Document):
             'blocks': {'read_only_allow_delete': None},
         }
 
-    def add_comment(self, author, content):
+    def add_comment(self, author, content, like_count=1):
         self.comments.append(
             Comment(
                 author=author,
                 content=content,
-                created_at=datetime.datetime.now()
+                created_at=datetime.datetime.now(),
+                like_count=like_count
             )
         )
 

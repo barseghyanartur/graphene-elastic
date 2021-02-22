@@ -30,6 +30,7 @@ class Comment(Serializable):
     def __init__(self, *args, **kwargs):
         self.author = kwargs.get('author')
         self.content = kwargs.get('content')
+        self.like_count = kwargs.get('like_count')
         self.created_at = kwargs.get('created_at')
 
 
@@ -45,6 +46,7 @@ class CommentFactory(Factory):
 
     author = Faker('name')
     content = Faker('text')
+    like_count = Faker('pyint', min_value=0, max_value=1000)
     created_at = Faker('date')
 
     class Meta(object):

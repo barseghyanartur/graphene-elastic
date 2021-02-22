@@ -3,7 +3,7 @@ import operator
 from elasticsearch_dsl.query import Q
 import six
 
-from ...constants import (
+from ....constants import (
     FALSE_VALUES,
     TRUE_VALUES,
     LOWER,
@@ -13,7 +13,7 @@ from ...constants import (
     BOOST,
 )
 
-__title__ = "graphene_elastic.filter_backends.filtering.mixins"
+__title__ = "graphene_elastic.filter_backends.filtering.mixins.common"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
 __copyright__ = "2019-2020 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"

@@ -1,34 +1,30 @@
 from elasticsearch_dsl import DateHistogramFacet, RangeFacet
+from search_index.documents import Post as PostDocument
+
 from graphene import Node
 from graphene_elastic import ElasticsearchObjectType
-from graphene_elastic.filter_backends import (
-    FacetedSearchFilterBackend,
-    FilteringFilterBackend,
-    SearchFilterBackend,
-    OrderingFilterBackend,
-    PostFilterFilteringBackend,
-    DefaultOrderingFilterBackend,
-    HighlightFilterBackend,
-    SourceFilterBackend,
-    ScoreFilterBackend,
-    SimpleQueryStringBackend,
-    QueryStringBackend,
-)
-from graphene_elastic.constants import (
-    ALL_LOOKUP_FILTERS_AND_QUERIES,
-    LOOKUP_FILTER_PREFIX,
-    LOOKUP_FILTER_TERM,
-    LOOKUP_FILTER_TERMS,
-    LOOKUP_FILTER_WILDCARD,
-    LOOKUP_QUERY_EXCLUDE,
-    LOOKUP_QUERY_IN,
-    LOOKUP_QUERY_CONTAINS,
-)
-from graphene_elastic.filter_backends.filtering.nested import (
-    NestedFilteringFilterBackend,
-)
-
-from search_index.documents import Post as PostDocument
+from graphene_elastic.constants import (ALL_LOOKUP_FILTERS_AND_QUERIES,
+                                        LOOKUP_FILTER_PREFIX,
+                                        LOOKUP_FILTER_TERM,
+                                        LOOKUP_FILTER_TERMS,
+                                        LOOKUP_FILTER_WILDCARD,
+                                        LOOKUP_QUERY_CONTAINS,
+                                        LOOKUP_QUERY_EXCLUDE, LOOKUP_QUERY_GT,
+                                        LOOKUP_QUERY_GTE, LOOKUP_QUERY_IN,
+                                        LOOKUP_QUERY_LT, LOOKUP_QUERY_LTE)
+from graphene_elastic.filter_backends import (DefaultOrderingFilterBackend,
+                                              FacetedSearchFilterBackend,
+                                              FilteringFilterBackend,
+                                              HighlightFilterBackend,
+                                              OrderingFilterBackend,
+                                              PostFilterFilteringBackend,
+                                              QueryStringBackend,
+                                              ScoreFilterBackend,
+                                              SearchFilterBackend,
+                                              SimpleQueryStringBackend,
+                                              SourceFilterBackend)
+from graphene_elastic.filter_backends.filtering.nested import \
+    NestedFilteringFilterBackend
 
 # from ..custom_backends import CustomFilterBackend
 
@@ -129,12 +125,18 @@ class BasePostMeta:
             "content": {
                 "field": "comments.content",
                 "path": "comments",
-                "lookups": [
-                    LOOKUP_FILTER_TERM,
-                    LOOKUP_FILTER_TERMS,
-                    LOOKUP_QUERY_CONTAINS,
-                ],
+                "lookups": ALL_LOOKUP_FILTERS_AND_QUERIES,
             },
+            "like_count": {
+                "field": "comments.like_count",
+                "path": "comments",
+                "lookups": [
+                    LOOKUP_QUERY_LT,
+                    LOOKUP_QUERY_LTE,
+                    LOOKUP_QUERY_GT,
+                    LOOKUP_QUERY_GTE
+                ]
+            }
         }
     }
 
