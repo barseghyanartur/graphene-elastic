@@ -61,25 +61,31 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
 
         params = self.get_backend_default_query_fields_params()
         for field, value in items:
-            print(is_filterable_func(field), is_nested_field(value))
             if is_filterable_func(field) and is_nested_field(value):
                 if self.field_belongs_to(field):
-                    for (
-                        sub_field_name,
-                        sub_field_value,
-                    ) in self.get_field_options(field).items():
-                        params.setdefault(field, {}).update(
+                    params[field] = graphene.Argument(
+                        type(
+                            "{}{}{}{}FilterOptionInput".format(
+                                DYNAMIC_CLASS_NAME_PREFIX,
+                                to_pascal_case(self.prefix),
+                                self.connection_field.type.__name__,
+                                to_pascal_case(field),
+                            ),
+                            (graphene.InputObjectType,),
                             {
-                                sub_field_name: self.get_field_type(
-                                    field_name=sub_field_name,
+                                sub_field: self.get_field_type(
+                                    field_name=field,
+                                    sub_field_name=sub_field,
                                     field_value=sub_field_value,
-                                    base_field_type=get_type_func(
-                                        sub_field_value
-                                    ),
+                                    base_field_type=None,  # NOTE: 暂时不管
                                 )
-                            }
+                                for sub_field, sub_field_value in self.get_field_options(
+                                    field
+                                ).items()
+                            },
                         )
-        print(params)
+                    )
+
         return {
             self.prefix: graphene.Argument(
                 type(
@@ -97,7 +103,13 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
     def get_field_options(self, field_name):
         return self.nested_fields.get(field_name, {})
 
-    def get_field_type(self, field_name, field_value, base_field_type):
+    def get_sub_field_options(self, field_name, sub_field_name):
+        return self.get_field_options(field_name).get(sub_field_name, {})
+
+    def get_field_type(
+        self, field_name, sub_field_name, field_value, base_field_type=None
+    ):
+        # TODO: 暂时都通过设置的dict来创建field type
         """Get field type.
 
         :return:
@@ -105,13 +117,18 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
         if not self.nested_fields:
             return None
 
-        field_options = self.get_field_options(field_name)
+        field_options = self.get_sub_field_options(field_name, sub_field_name)
+
         if isinstance(field_options, dict) and "lookups" in field_options:
             lookups = field_options.get("lookups", [])
         else:
             lookups = list(ALL_LOOKUP_FILTERS_AND_QUERIES)
 
-        params = {VALUE: base_field_type}
+        params = (
+            OrderedDict({VALUE: base_field_type})
+            if base_field_type
+            else OrderedDict()
+        )
         for lookup in lookups:
             query_cls = LOOKUP_FILTER_MAPPING.get(lookup)
             if not query_cls:
@@ -120,16 +137,18 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
 
         return graphene.Argument(
             type(
-                "{}{}{}{}".format(
+                "{}{}{}{}{}".format(
                     DYNAMIC_CLASS_NAME_PREFIX,
                     to_pascal_case(self.prefix),
                     self.connection_field.type.__name__,
                     to_pascal_case(field_name),
+                    to_pascal_case(sub_field_name),
                 ),
                 (graphene.InputObjectType,),
                 params,
             )
         )
 
-    def filter(self, queryset):
-        ...
+    @property
+    def filter_args_mapping(self):
+        return {field: field for field, value in self.nested_fields.items()}

@@ -15,7 +15,8 @@ from graphene_elastic.filter_backends import (
     QueryStringBackend,
 )
 from graphene_elastic.constants import (
-    ALL_LOOKUP_FILTERS_AND_QUERIES, LOOKUP_FILTER_PREFIX,
+    ALL_LOOKUP_FILTERS_AND_QUERIES,
+    LOOKUP_FILTER_PREFIX,
     LOOKUP_FILTER_TERM,
     LOOKUP_FILTER_TERMS,
     LOOKUP_FILTER_WILDCARD,
@@ -23,7 +24,9 @@ from graphene_elastic.constants import (
     LOOKUP_QUERY_IN,
     LOOKUP_QUERY_CONTAINS,
 )
-from graphene_elastic.filter_backends.filtering.nested import NestedFilteringFilterBackend
+from graphene_elastic.filter_backends.filtering.nested import (
+    NestedFilteringFilterBackend,
+)
 
 from search_index.documents import Post as PostDocument
 
@@ -115,15 +118,23 @@ class BasePostMeta:
     nested_filter_fields = {
         "comments": {
             "author": {
-                "lookups": ALL_LOOKUP_FILTERS_AND_QUERIES
-            },
-            "content": {
+                "field": "comments.author",
+                "path": "comments.author",
                 "lookups": [
                     LOOKUP_FILTER_TERM,
                     LOOKUP_FILTER_TERMS,
-                    LOOKUP_QUERY_CONTAINS
-                ]
-            }
+                    LOOKUP_QUERY_CONTAINS,
+                ],
+            },
+            "content": {
+                "field": "comments.content",
+                "path": "comments.content",
+                "lookups": [
+                    LOOKUP_FILTER_TERM,
+                    LOOKUP_FILTER_TERMS,
+                    LOOKUP_QUERY_CONTAINS,
+                ],
+            },
         }
     }
 
@@ -183,9 +194,7 @@ class BasePostMeta:
                 "post_tags": ["</b>"],
             },
         },
-        "content": {
-            "options": {"fragment_size": 50, "number_of_fragments": 3}
-        },
+        "content": {"options": {"fragment_size": 50, "number_of_fragments": 3}},
         "category": {},
     }
 
@@ -282,7 +291,6 @@ class BasePostMeta:
 
 
 class Post(ElasticsearchObjectType):
-
     class Meta(BasePostMeta):
         pass
 
@@ -305,6 +313,5 @@ class AlternativePost(ElasticsearchObjectType):
 
 
 class PostForUser(ElasticsearchObjectType):
-
     class Meta(BasePostMeta):
         pass
