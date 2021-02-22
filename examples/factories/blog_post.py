@@ -88,11 +88,14 @@ class PostFactory(Factory):
 
     @factory.post_generation
     def comments(obj, create, extracted, **kwargs):
-        if create:
+        if extracted:
+            obj.comments = [extracted]
+        elif create:
             obj.comments = CommentFactory.create_batch(
                 size=random.randint(1, 6)
             )
-
+        
+            
 
 class ManyViewsPostFactory(PostFactory):
     num_views = Faker('pyint', min_value=2000, max_value=10000)

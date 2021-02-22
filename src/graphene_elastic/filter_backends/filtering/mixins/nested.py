@@ -20,6 +20,14 @@ __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("NestedFilteringFilterMixin",)
 
 
+def _quote(string):
+  s = ""
+  for c in string:
+    if c in "*?[]()":
+      c = '\{}'.format(c)
+    s += c
+  return s
+
 class NestedFilteringFilterMixin(object):
     """Filtering filter mixin."""
 
@@ -434,8 +442,6 @@ class NestedFilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        value = repr(value)
-
         return cls.apply_query(
             queryset=queryset,
             options=options,
@@ -479,7 +485,7 @@ class NestedFilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        value = repr(value)
+        value = _quote(value)
 
         return cls.apply_query(
             queryset=queryset,
@@ -525,7 +531,7 @@ class NestedFilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
-        value = repr(value)
+        value = _quote(value)
 
         return cls.apply_query(
             queryset=queryset,
@@ -638,6 +644,7 @@ class NestedFilteringFilterMixin(object):
         return cls.apply_filter(
             queryset=queryset,
             options=options,
+            args=["nested"],
             kwargs={
                 "path": options["path"],
                 "query": Bool(
