@@ -1,4 +1,6 @@
-from collections import OrderedDict, ChainMap
+import six
+from elasticsearch_dsl.query import Q, Query
+from collections import OrderedDict
 from copy import deepcopy
 
 from stringcase import pascalcase as to_pascal_case
@@ -10,6 +12,22 @@ from graphene_elastic.types.json_string import ElasticJSONString
 from ...constants import (
     ALL_LOOKUP_FILTERS_AND_QUERIES,
     DYNAMIC_CLASS_NAME_PREFIX,
+    LOOKUP_FILTER_EXISTS,
+    LOOKUP_FILTER_PREFIX,
+    LOOKUP_FILTER_RANGE,
+    LOOKUP_FILTER_TERM,
+    LOOKUP_FILTER_TERMS,
+    LOOKUP_FILTER_WILDCARD,
+    LOOKUP_QUERY_CONTAINS,
+    LOOKUP_QUERY_ENDSWITH,
+    LOOKUP_QUERY_EXCLUDE,
+    LOOKUP_QUERY_GT,
+    LOOKUP_QUERY_GTE,
+    LOOKUP_QUERY_IN,
+    LOOKUP_QUERY_ISNULL,
+    LOOKUP_QUERY_LT,
+    LOOKUP_QUERY_LTE,
+    LOOKUP_QUERY_STARTSWITH,
     VALUE,
 )
 from .common import FilteringFilterBackend
@@ -151,4 +169,329 @@ class NestedFilteringFilterBackend(FilteringFilterBackend):
 
     @property
     def filter_args_mapping(self):
-        return {field: field for field, value in self.nested_fields.items()}
+        return {
+            field: list(self.nested_fields[field].keys())
+            for field in self.nested_fields
+        }
+
+    def prepare_filter_fields(self):
+        filter_args = dict(self.args).get(self.prefix)
+        if not filter_args:
+            return {}
+
+        filter_fields = {}
+        for field, value in filter_args.items():
+            sub_fields = self.filter_args_mapping.get(field, None)
+            if not sub_fields:
+                continue
+            for sub_field in sub_fields:
+                options = self.get_sub_field_options(field, sub_field)
+                if not options and isinstance(options, six.string_types):
+                    filter_fields.setdefault(field, {}).update(
+                        {
+                            sub_field: {
+                                "field": options or sub_field,
+                                "default_lookup": LOOKUP_FILTER_TERM,
+                                "lookups": ALL_LOOKUP_FILTERS_AND_QUERIES,
+                            }
+                        }
+                    )
+                elif isinstance(options, dict):
+                    filter_fields.setdefault(field, {}).update(
+                        {sub_field: options}
+                    )
+
+                if "field" not in filter_fields[field][sub_field]:
+                    filter_fields[field][sub_field]["field"] = sub_field
+
+                if "default_lookup" not in filter_fields[field][sub_field]:
+                    filter_fields[field][sub_field][
+                        "default_lookup"
+                    ] = LOOKUP_FILTER_TERM
+
+                if "lookups" not in filter_fields[field][sub_field]:
+                    filter_fields[field][sub_field][
+                        "lookups"
+                    ] = ALL_LOOKUP_FILTERS_AND_QUERIES
+
+        return filter_fields
+
+    def get_filter_query_params(self):
+        """Get query params to be filtered on.
+
+        We can either specify it like this:
+
+            query_params = {
+                'category': {
+                    'value': 'Elastic',
+                }
+            }
+
+        Or using specific lookup:
+
+            query_params = {
+                'category': {
+                    'term': 'Elastic',
+                    'range': {
+                        'lower': Decimal('3.0')
+                    }
+                }
+            }
+
+        Note, that `value` would only work on simple types (string, integer,
+        decimal). For complex types you would have to use complex param
+        anyway. Therefore, it should be forbidden to set `default_lookup` to a
+        complex field type.
+
+        Sample values:
+
+            query_params = {
+                'category': {
+                    'value': 'Elastic',
+                }
+            }
+
+            filter_fields = {
+                'category': {
+                    'field': 'category.raw',
+                    'default_lookup': 'term',
+                    'lookups': (
+                        'term',
+                        'terms',
+                        'range',
+                        'exists',
+                        'prefix',
+                        'wildcard',
+                        'contains',
+                        'in',
+                        'gt',
+                        'gte',
+                        'lt',
+                        'lte',
+                        'starts_with',
+                        'ends_with',
+                        'is_null',
+                        'exclude'
+                    )
+                }
+            }
+
+            field_name = 'category'
+        """
+        query_params = self.prepare_query_params()  # Shall be fixed
+
+        filter_query_params = {}
+        filter_fields = self.prepare_filter_fields()  # Correct
+
+        for field_name, field_params in query_params.items():
+
+            if field_name in filter_fields:
+                filter_query_params[field_name] = {}
+
+            for sub_field_name, sub_field_params in field_params.items():
+
+                if sub_field_name in filter_fields[field_name]:
+                    filter_query_params[field_name][sub_field_name] = []
+                    valid_lookups = filter_fields[field_name][sub_field_name][
+                        "lookups"
+                    ]
+
+                    default_lookup = filter_fields[field_name][
+                        sub_field_name
+                    ].get("default_lookup", None)
+
+                    for lookup_term, lookup_params in sub_field_params.items():
+                        lookup = None
+
+                        if lookup_term == VALUE:
+                            if default_lookup:
+                                lookup = default_lookup
+                        elif lookup_term in valid_lookups:
+                            lookup = lookup_term
+
+                        if lookup_params is not None:
+                            filter_query_params[field_name][
+                                sub_field_name
+                            ].append(
+                                {
+                                    "lookup": lookup,
+                                    "path": filter_fields[field_name][
+                                        sub_field_name
+                                    ].get(
+                                        "path", f"{field_name}.{sub_field_name}"
+                                    ),
+                                    "values": lookup_params,
+                                    "field": filter_fields[field_name][
+                                        sub_field_name
+                                    ].get("field", sub_field_name),
+                                    "type": self.doc_type.mapping.properties.name,
+                                }
+                            )
+
+        return filter_query_params
+
+    def prepare_query_params(self):
+        """Prepare query params.
+
+        :return:
+        """
+        filter_args = dict(self.args).get(self.prefix)
+        if not filter_args:
+            return {}
+
+        query_params = {}
+
+        for field, filters in filter_args.items():
+            if filters is None:
+                continue
+            for sub_field, sub_filters in filters.items():
+                options = self.get_sub_field_options(field, sub_field)
+                if not options:
+                    continue
+                query_params.setdefault(field, {}).update(
+                    {sub_field: sub_filters}
+                )
+        return query_params
+
+    @classmethod
+    def apply_filter(cls, queryset, path, lookup, kwargs):
+        return queryset.filter("nested", path=path, query={lookup: kwargs})
+
+    @classmethod
+    def apply_filter_terms(cls, queryset, option, value):
+        if isinstance(value, (list, tuple)):
+            __values = value
+
+        # Otherwise, we consider it to be a string and split it further.
+        else:
+            __values = cls.split_lookup_complex_value(value)
+
+        return cls.apply_filter(
+            queryset,
+            path=option["path"],
+            lookup="terms",
+            kwargs={option["field"]: __values},
+        )
+
+    @classmethod
+    def apply_filter_term(cls, queryset, option, value):
+        return cls.apply_filter(
+            queryset,
+            path=option["path"],
+            lookup="term",
+            kwargs={option["field"]: value},
+        )
+
+    @classmethod
+    def apply_query_contains(cls, queryset, option, value):
+        return cls.apply_filter(
+            queryset,
+            path=option["path"],
+            lookup="match",
+            kwargs={option["field"]: value},
+        )
+
+    def filter(self, queryset):
+        """Filter."""
+        filter_query_params = self.get_filter_query_params()
+
+        for options in filter_query_params.values():
+
+            # For all other cases, when we don't have multiple values,
+            # we follow the normal flow.
+            for option in options.values():
+
+                for _option in option:
+                    if _option["lookup"] == LOOKUP_FILTER_TERMS:
+                        queryset = self.apply_filter_terms(
+                            queryset, _option, _option["values"]
+                        )
+
+                    # `prefix` filter lookup
+                    # elif _option["lookup"] in (
+                    #     LOOKUP_FILTER_PREFIX,
+                    #     LOOKUP_QUERY_STARTSWITH,
+                    # ):
+                    #     queryset = self.apply_filter_prefix(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `range` filter lookup
+                    # elif _option["lookup"] == LOOKUP_FILTER_RANGE:
+                    #     queryset = self.apply_filter_range(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `exists` filter lookup
+                    # elif _option["lookup"] == LOOKUP_FILTER_EXISTS:
+                    #     queryset = self.apply_query_exists(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `wildcard` filter lookup
+                    # elif _option["lookup"] == LOOKUP_FILTER_WILDCARD:
+                    #     queryset = self.apply_query_wildcard(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # `contains` filter lookup
+                    elif _option["lookup"] == LOOKUP_QUERY_CONTAINS:
+                        queryset = self.apply_query_contains(
+                            queryset, _option, _option["values"]
+                        )
+
+                    # # `in` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_IN:
+                    #     queryset = self.apply_query_in(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `gt` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_GT:
+                    #     queryset = self.apply_query_gt(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `gte` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_GTE:
+                    #     queryset = self.apply_query_gte(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `lt` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_LT:
+                    #     queryset = self.apply_query_lt(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `lte` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_LTE:
+                    #     queryset = self.apply_query_lte(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `endswith` filter lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_ENDSWITH:
+                    #     queryset = self.apply_query_endswith(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `isnull` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_ISNULL:
+                    #     queryset = self.apply_query_isnull(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # # `exclude` functional query lookup
+                    # elif _option["lookup"] == LOOKUP_QUERY_EXCLUDE:
+                    #     queryset = self.apply_query_exclude(
+                    #         queryset, _option, _option["values"]
+                    #     )
+
+                    # `term` filter lookup. This is default if no `default_lookup`
+                    # _option has been given or explicit lookup provided.
+                    else:
+                        queryset = self.apply_filter_term(
+                            queryset, _option, _option["values"]
+                        )
+        return queryset

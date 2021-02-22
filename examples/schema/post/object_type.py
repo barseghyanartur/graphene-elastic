@@ -119,7 +119,7 @@ class BasePostMeta:
         "comments": {
             "author": {
                 "field": "comments.author",
-                "path": "comments.author",
+                "path": "comments",
                 "lookups": [
                     LOOKUP_FILTER_TERM,
                     LOOKUP_FILTER_TERMS,
@@ -128,7 +128,7 @@ class BasePostMeta:
             },
             "content": {
                 "field": "comments.content",
-                "path": "comments.content",
+                "path": "comments",
                 "lookups": [
                     LOOKUP_FILTER_TERM,
                     LOOKUP_FILTER_TERMS,
