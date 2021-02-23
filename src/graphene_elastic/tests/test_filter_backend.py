@@ -121,7 +121,11 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 title
                 content
                 numViews
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }
@@ -156,7 +160,11 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 title
                 content
                 numViews
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }

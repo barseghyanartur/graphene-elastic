@@ -57,7 +57,11 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 title
                 content
                 category
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }

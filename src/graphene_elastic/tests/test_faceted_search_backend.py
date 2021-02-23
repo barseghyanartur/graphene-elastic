@@ -66,7 +66,11 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
               node {
                 category
                 title
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }
@@ -94,7 +98,11 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
               node {
                 category
                 title
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }
