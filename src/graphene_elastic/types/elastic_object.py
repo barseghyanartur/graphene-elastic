@@ -49,7 +49,7 @@ def generate_dynamic_elastic_object_type(field, registry=None):
     })
 
     cls = type(
-        "{}{}ElasticObjectNode{}".format(DYNAMIC_CLASS_NAME_PREFIX, field.name, obj_counter()),
+        "{}{}ObjectNode{}".format(DYNAMIC_CLASS_NAME_PREFIX, field.name, obj_counter()),
         (ObjectType,),
         data
     )
