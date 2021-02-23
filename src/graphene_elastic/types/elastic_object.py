@@ -21,11 +21,6 @@ def counter():
 obj_counter = counter()
 
 
-def resolver(name, parent_resolver, value, info):
-    """default resolver"""
-    return value[name]
-
-
 def get_object_fields_mapping(field):
     properties = field._mapping.properties.properties
     return properties.to_dict()
@@ -44,12 +39,13 @@ def generate_dynamic_elastic_object_type(field, registry=None):
         name: convert_elasticsearch_field(_field)
         for name, _field in iteritems(mapping)
     }
-    data.update(Meta={
-        "default_resolver": resolver
-    })
 
     cls = type(
-        "{}{}ObjectNode{}".format(DYNAMIC_CLASS_NAME_PREFIX, field.name, obj_counter()),
+        "{}{}ObjectNode{}".format(
+            DYNAMIC_CLASS_NAME_PREFIX,
+            field.name,
+            obj_counter()
+        ),
         (ObjectType,),
         data
     )
