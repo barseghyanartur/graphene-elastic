@@ -35,6 +35,7 @@ def generate_dynamic_elastic_object_type(field, registry=None):
     """
 
     mapping = get_object_fields_mapping(field)
+
     data = {
         name: convert_elasticsearch_field(_field)
         for name, _field in iteritems(mapping)
@@ -43,7 +44,7 @@ def generate_dynamic_elastic_object_type(field, registry=None):
     cls = type(
         "{}{}ObjectNode{}".format(
             DYNAMIC_CLASS_NAME_PREFIX,
-            field.name,
+            field.name.capitalize(),
             obj_counter()
         ),
         (ObjectType,),
