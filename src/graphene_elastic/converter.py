@@ -4,7 +4,7 @@ from graphene import (
     Boolean,
     DateTime,
     # Dynamic,
-    # Field,
+    Field,
     Float,
     Int,
     # List,
@@ -111,12 +111,22 @@ def convert_field_to_datetime(field, registry=None):
 #     )
 
 
-@convert_elasticsearch_field.register(elasticsearch_fields.Object)
-@convert_elasticsearch_field.register(elasticsearch_fields.Nested)
 def convert_field_to_jsonstring(field, registry=None):
     from .types import ElasticJSONString
 
     return ElasticJSONString(
         description=get_field_description(field, registry),
         required=field._required,
+    )
+
+
+@convert_elasticsearch_field.register(elasticsearch_fields.Object)
+@convert_elasticsearch_field.register(elasticsearch_fields.Nested)
+def convert_field_to_complex_object(field, registry=None):
+    from .types import generate_dynamic_elastic_object_type
+
+    return Field(
+        generate_dynamic_elastic_object_type(field, registry),
+        description=get_field_description(field, registry),
+        required=field._required
     )
