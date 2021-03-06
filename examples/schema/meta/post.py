@@ -87,6 +87,20 @@ class AbstractPostDocumentMeta:
         'created_at': 'created_at',
 
         'i_do_not_exist': 'i_do_not_exist',
+
+        'comments': {
+            'type': 'nested',
+            'properties': {
+                'author': {
+                    'field': 'author.raw',
+                },
+                'tag': {
+                    'field': 'tag.raw',
+                },
+                'content': 'content',
+                'createdAt': 'createdAt'
+            }
+        }
     }
 
     # For `SearchFilterBackend` backend

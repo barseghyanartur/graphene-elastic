@@ -1,4 +1,5 @@
 from .elastic_types import *
+from .elastic_object import *
 from .json_string import *
 
 __title__ = 'graphene_elastic.types'

@@ -30,6 +30,7 @@ class Comment(Serializable):
 
     def __init__(self, *args, **kwargs):
         self.author = kwargs.get('author')
+        self.tag = kwargs.get('tag')
         self.content = kwargs.get('content')
         self.created_at = kwargs.get('created_at')
 
@@ -45,6 +46,14 @@ class CommentFactory(Factory):
     """Comment factory."""
 
     author = Faker('name')
+    tag = FuzzyChoice([
+        'Elastic',
+        'MongoDB',
+        'Machine Learning',
+        'Model Photography',
+        'Python',
+        'Django',
+    ])
     content = Faker('text')
     created_at = Faker('date')
 
