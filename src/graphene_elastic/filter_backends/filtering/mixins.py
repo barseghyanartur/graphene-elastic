@@ -3,7 +3,7 @@ import operator
 from elasticsearch_dsl.query import Q
 import six
 
-from ...constants import (
+from graphene_elastic.constants import (
     FALSE_VALUES,
     TRUE_VALUES,
     LOWER,
@@ -13,11 +13,15 @@ from ...constants import (
     BOOST,
 )
 
-__title__ = "graphene_elastic.filter_backends.filtering.mixins"
-__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
-__license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
-__all__ = ("FilteringFilterMixin",)
+
+def QParams(lookup, options, query=None):
+    if query is None:
+        query = {options["field"]: options["values"]}
+
+    if options["path"]:
+        # Nested query
+        return Q("nested", query={lookup: query}, path=options["path"])
+    return Q(lookup, **query)
 
 
 class FilteringFilterMixin(object):
@@ -181,11 +185,12 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+
+        q = QParams("term", options)
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["term"],
-            kwargs={options["field"]: value},
+            args=[q],
         )
 
     @classmethod
@@ -233,11 +238,12 @@ class FilteringFilterMixin(object):
         else:
             __values = cls.split_lookup_complex_value(value)
 
+        q = QParams("terms", options, {options["field"]: __values})
+
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["terms"],
-            kwargs={options["field"]: __values},
+            args=[q]
         )
 
     @classmethod
@@ -276,16 +282,15 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("range", options, {options["field"]: cls.get_range_params(
+            value,
+            options.get('options', {})
+        )})
+
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["range"],
-            kwargs={
-                options["field"]: cls.get_range_params(
-                    value,
-                    options.get('options', {})
-                )
-            },
+            args=[q]
         )
 
     @classmethod
@@ -321,17 +326,18 @@ class FilteringFilterMixin(object):
         :rtype: elasticsearch_dsl.search.Search
         """
         _value_lower = value  # TODO: clean up?
+        q = QParams("exists", options, query={"field": options["field"]})
         if _value_lower in TRUE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[Q("exists", field=options["field"])],
+                args=[q],
             )
         elif _value_lower in FALSE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[~Q("exists", field=options["field"])],
+                args=[~q],
             )
         return queryset
 
@@ -368,11 +374,12 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("prefix", options)
+
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["prefix"],
-            kwargs={options["field"]: value},
+            args=[q],
         )
 
     @classmethod
@@ -408,10 +415,12 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("wildcard", options)
+
         return cls.apply_query(
             queryset=queryset,
             options=options,
-            args=[Q("wildcard", **{options["field"]: value})],
+            args=[q],
         )
 
     @classmethod
@@ -447,10 +456,13 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("wildcard", options, query={
+                    options["field"]: "*{}*".format(value)})
+
         return cls.apply_query(
             queryset=queryset,
             options=options,
-            args=[Q("wildcard", **{options["field"]: "*{}*".format(value)})],
+            args=[q],
         )
 
     @classmethod
@@ -485,10 +497,13 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("wildcard", options, query={
+                    options["field"]: "*{}".format(value)})
+
         return cls.apply_query(
             queryset=queryset,
             options=options,
-            args=[Q("wildcard", **{options["field"]: "*{}".format(value)})],
+            args=[q],
         )
 
     @classmethod
@@ -538,7 +553,8 @@ class FilteringFilterMixin(object):
 
         _queries = []
         for _value in _values:
-            _queries.append(Q("term", **{options["field"]: _value}))
+            _queries.append(QParams("term", options, query={
+                            options["field"]: _value}))
 
         if _queries:
             queryset = cls.apply_query(
@@ -583,17 +599,13 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("range", options, {options["field"]: cls.get_gte_lte_params(value,
+                                                                                "gt",
+                                                                                options.get("options", {}))})
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["range"],
-            kwargs={
-                options["field"]: cls.get_gte_lte_params(
-                    value,
-                    "gt",
-                    options.get('options', {})
-                )
-            },
+            args=[q]
         )
 
     @classmethod
@@ -630,17 +642,13 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("range", options, {options["field"]: cls.get_gte_lte_params(value,
+                                                                                "gte",
+                                                                                options.get("options", {}))})
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["range"],
-            kwargs={
-                options["field"]: cls.get_gte_lte_params(
-                    value,
-                    "gte",
-                    options.get('options', {})
-                )
-            },
+            args=[q]
         )
 
     @classmethod
@@ -677,17 +685,14 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("range", options, {options["field"]: cls.get_gte_lte_params(value,
+                                                                                "lt",
+                                                                                options.get("options", {}))})
+
         return cls.apply_filter(
             queryset=queryset,
             options=options,
-            args=["range"],
-            kwargs={
-                options["field"]: cls.get_gte_lte_params(
-                    value,
-                    "lt",
-                    options.get('options', {})
-                )
-            },
+            args=[q]
         )
 
     @classmethod
@@ -724,6 +729,10 @@ class FilteringFilterMixin(object):
         :return: Modified queryset.
         :rtype: elasticsearch_dsl.search.Search
         """
+        q = QParams("range", options, {options["field"]: cls.get_gte_lte_params(value,
+                                                                                "lt",
+                                                                                options.get("options", {}))})
+
         return cls.apply_filter(
             queryset=queryset,
             options=options,
@@ -771,17 +780,19 @@ class FilteringFilterMixin(object):
         :rtype: elasticsearch_dsl.search.Search
         """
         _value_lower = value  # TODO: clean up?
+        q = QParams("exists", options, query={"field": options["field"]})
+
         if _value_lower in TRUE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[~Q("exists", field=options["field"])],
+                args=[~q],
             )
         elif _value_lower in FALSE_VALUES:
             return cls.apply_query(
                 queryset=queryset,
                 options=options,
-                args=[Q("exists", field=options["field"])],
+                args=[q],
             )
         return queryset
 
@@ -841,7 +852,8 @@ class FilteringFilterMixin(object):
 
         __queries = []
         for __value in __values:
-            __queries.append(~Q("term", **{options["field"]: __value}))
+            __queries.append(~QParams("term", options, query={
+                             options["field"]: __value}))
 
         if __queries:
             queryset = cls.apply_query(

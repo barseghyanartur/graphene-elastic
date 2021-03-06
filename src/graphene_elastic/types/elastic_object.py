@@ -2,6 +2,7 @@ import graphene
 from ..constants import DYNAMIC_CLASS_NAME_PREFIX
 from ..converter import convert_elasticsearch_field
 from graphene.types import ObjectType
+from .json_string import ElasticJSONString
 from six import iteritems
 
 __all__ = ("generate_dynamic_elastic_object_type",)
@@ -35,6 +36,8 @@ def generate_dynamic_elastic_object_type(field, registry=None):
     """
 
     mapping = get_object_fields_mapping(field)
+    if not mapping:
+        return ElasticJSONString
 
     data = {
         name: convert_elasticsearch_field(_field)

@@ -41,6 +41,7 @@ html_strip = analyzer('html_strip',
 
 class Comment(InnerDoc):
     author = Text(fields={'raw': Keyword()})
+    tag = Text(fields={'raw': Keyword()})
     content = Text(analyzer='snowball')
     created_at = Date()
 
@@ -77,11 +78,12 @@ class Post(Document):
             'blocks': {'read_only_allow_delete': None},
         }
 
-    def add_comment(self, author, content):
+    def add_comment(self, author, tag, content):
         self.comments.append(
             Comment(
                 author=author,
                 content=content,
+                tag=tag,
                 created_at=datetime.datetime.now()
             )
         )
