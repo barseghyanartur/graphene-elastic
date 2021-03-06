@@ -35,6 +35,7 @@ before_install:
   - sudo apt-get remove --purge elasticsearch -y
   - sudo apt-get update && sudo apt-get install elasticsearch -y
   - sudo -i service elasticsearch restart
+  - pip install --upgrade pip
 
 install: pip install -r requirements/test.txt
 
