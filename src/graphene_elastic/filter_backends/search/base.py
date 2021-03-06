@@ -1,8 +1,7 @@
 """Base search backend."""
 
-from django.core.exceptions import ImproperlyConfigured
-
 from ..base import BaseBackend
+from ...exceptions import ImproperlyConfigured
 
 
 from ...constants import MATCHING_OPTIONS, DEFAULT_MATCHING_OPTION
