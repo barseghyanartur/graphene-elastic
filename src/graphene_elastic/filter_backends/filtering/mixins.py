@@ -18,7 +18,7 @@ def QParams(lookup, options, query=None):
     if query is None:
         query = {options["field"]: options["values"]}
 
-    if options["path"]:
+    if options.get("path"):
         # Nested query
         return Q("nested", query={lookup: query}, path=options["path"])
     return Q(lookup, **query)

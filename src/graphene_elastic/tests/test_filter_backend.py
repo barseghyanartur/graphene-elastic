@@ -58,8 +58,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 start_date="+1d", end_date="+30d"
             )
         )
-        # for _post in self.elastic_posts:
-        #     _post.save()
+        for _post in self.elastic_posts:
+            _post.save()
 
         self.num_django_posts = 3
         self.django_posts = factories.PostFactory.create_batch(
@@ -69,8 +69,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 start_date="+1d", end_date="+30d"
             )
         )
-        # for _post in self.django_posts:
-        #     _post.save()
+        for _post in self.django_posts:
+            _post.save()
 
         self.num_python_posts = 2
         self.python_posts = factories.ManyViewsPostFactory.create_batch(
@@ -80,8 +80,8 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 start_date="-30d", end_date="-1d"
             )
         )
-        # for _post in self.python_posts:
-        #     _post.save()
+        for _post in self.python_posts:
+            _post.save()
 
         self.num_all_posts = (
             self.num_elastic_posts +
@@ -137,6 +137,55 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             len(executed['data']['allPostDocuments']['edges']),
             num_posts
         )
+
+    def __test_nested_filter_lookups(self,
+                                     *fields,    
+                                     lookup, 
+                                     value,  
+                                     num_posts): 
+        """Test nested filter lookups and check num of results.
+        
+        :param fields: fields hierachy
+        :param lookup:
+        :param value:
+        :param num_posts: num of results
+        :return:
+        """
+        def _query_params():
+            s = ""
+            for field in fields:
+                s += "{}:{{".format(field)
+            s += "{}: {}".format(lookup, value)
+            s += "}" * len(fields)
+            return s
+
+        _query = """
+        query {
+            %s(filter:{%s}) {
+                edges {
+                    node {
+                        category
+                        title
+                        content
+                        numViews
+                        comments{
+                            author
+                            tag
+                            content
+                            createdAt
+                        }
+                    }
+                }
+            }
+        }
+        """% (self.endpoint, _query_params())
+        executed = self.client.execute(_query)
+        self.assertEqual(
+            len(executed["data"][self.endpoint]["edges"]),
+            num_posts,
+            _query
+        )
+
 
     def __test_filter_number_lookups(self,
                                      field,
@@ -468,6 +517,42 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 lookup=LOOKUP_FILTER_RANGE
             )
 
+    def _test_filter_nested_lookup(self):
+        
+        with self.subTest('Test filter on field `comments.tag`'
+                          'using `term` lookup'):
+            _count = 0
+            for p in self.all_posts:
+                for pcomment in p.comments:
+                    if pcomment.tag == "Python":
+                        _count += 1
+                        break
+
+            self.__test_nested_filter_lookups(
+                "comments",
+                "tag",
+                lookup="term",
+                value='"Python"',
+                num_posts=_count
+            )
+        
+        with self.subTest('Test filter on field `comments.tag`'
+                          'using `terms` lookup'):
+            _count = 0
+            for p in self.all_posts:
+                for pcomment in p.comments:
+                    if pcomment.tag in ["Python", "MongoDB"]:
+                        _count += 1
+                        break
+
+            self.__test_nested_filter_lookups(
+                "comments",
+                "tag",
+                lookup="terms",
+                value='["Python", "MongoDB"]',
+                num_posts=_count
+            )   
+
     # TODO: Test range dates
 
     def test_all(self):
@@ -482,7 +567,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self._test_filter_exclude_lookup()
         self._test_filter_exists_is_null_lookups()
         self._test_filter_gt_gte_lt_lte_range_lookups()
-
+        self._test_filter_nested_lookup()
 
 if __name__ == '__main__':
     unittest.main()
