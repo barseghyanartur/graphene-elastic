@@ -2,7 +2,7 @@ from .fields import ElasticsearchConnectionField
 from .types import ElasticsearchObjectType
 
 __title__ = 'graphene-elastic'
-__version__ = '0.6.3'
+__version__ = '0.7'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2019-2020 Artur Barseghyan'
 __license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'

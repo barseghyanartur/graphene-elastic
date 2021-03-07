@@ -1,4 +1,5 @@
 import unittest
+import logging
 import factories
 from .base import BaseGrapheneElasticTestCase
 from ..constants import ALL, VALUE
@@ -6,6 +7,8 @@ from ..constants import ALL, VALUE
 __all__ = (
     'ScoreBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ScoreBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -57,7 +60,7 @@ class ScoreBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % search
-        print(query)
+        logger.info(query)
         executed = self.client.execute(query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),

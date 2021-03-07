@@ -1,4 +1,5 @@
 import datetime
+import logging
 import unittest
 import dateutil
 import factories
@@ -7,6 +8,8 @@ from .base import BaseGrapheneElasticTestCase
 __all__ = (
     'PaginationTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class PaginationTestCase(BaseGrapheneElasticTestCase):
@@ -113,7 +116,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (self.query_name, _query_args)
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         # TODO: Perhaps, check firsts and lasts?
@@ -149,7 +152,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         self.assertIn('errors', executed)
         self.assertIn('message', executed['errors'][0])
@@ -189,7 +192,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % last
-        print(_query)
+        logger.info(_query)
 
         executed = self.client.execute(_query)
         # fields_values_sorted = []

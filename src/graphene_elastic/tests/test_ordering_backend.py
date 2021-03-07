@@ -1,3 +1,4 @@
+import logging
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -6,6 +7,8 @@ from ..filter_backends.queries import Direction
 __all__ = (
     'OrderingBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -75,7 +78,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (field, direction.name)
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         for edge in executed['data']['allPostDocuments']['edges']:
@@ -110,7 +113,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         for edge in executed['data']['allPostDocuments']['edges']:

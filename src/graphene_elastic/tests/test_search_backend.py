@@ -1,3 +1,4 @@
+import logging
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -7,6 +8,8 @@ __all__ = (
     'SearchBackendElasticTestCase',
     'CompoundSearchBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -76,7 +79,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (self.query_name, search)
-        print(query)
+        logger.info(query)
         executed = self.client.execute(query)
         self.assertEqual(
             len(executed['data'][self.query_name]['edges']),

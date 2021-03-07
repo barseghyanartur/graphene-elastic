@@ -1,4 +1,5 @@
 import datetime
+import logging
 import unittest
 from graphene.utils.str_converters import to_camel_case
 import factories
@@ -35,6 +36,8 @@ from .base import BaseGrapheneElasticTestCase
 __all__ = (
     'PostFilterBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -128,7 +131,7 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (field, lookup, query)
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),
@@ -168,7 +171,7 @@ class PostFilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (field, lookup, value)
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),

@@ -1,4 +1,5 @@
 import datetime
+import logging
 import unittest
 
 from graphene.utils.str_converters import to_camel_case
@@ -36,6 +37,8 @@ from .base import BaseGrapheneElasticTestCase
 __all__ = (
     'FilterBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -131,7 +134,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (self.endpoint, field, lookup, query)
-        print(_query)
+        logger.debug(_query)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),
@@ -178,14 +181,14 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 }
             }
         }
-        """% (self.endpoint, _query_params())
+        """ % (self.endpoint, _query_params())
+        logger.info(_query)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed["data"][self.endpoint]["edges"]),
             num_posts,
             _query
         )
-
 
     def __test_filter_number_lookups(self,
                                      field,
@@ -219,6 +222,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (self.endpoint, field, lookup, value)
+        logger.debug(_query)
         executed = self.client.execute(_query)
         self.assertEqual(
             len(executed['data']['allPostDocuments']['edges']),
@@ -522,9 +526,9 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `comments.tag`'
                           'using `term` lookup'):
             _count = 0
-            for p in self.all_posts:
-                for pcomment in p.comments:
-                    if pcomment.tag == "Python":
+            for _post in self.all_posts:
+                for _post_comment in _post.comments:
+                    if _post_comment.tag == "Python":
                         _count += 1
                         break
 
@@ -539,9 +543,9 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         with self.subTest('Test filter on field `comments.tag`'
                           'using `terms` lookup'):
             _count = 0
-            for p in self.all_posts:
-                for pcomment in p.comments:
-                    if pcomment.tag in ["Python", "MongoDB"]:
+            for _post in self.all_posts:
+                for _post_comment in _post.comments:
+                    if _post_comment.tag in ["Python", "MongoDB"]:
                         _count += 1
                         break
 
@@ -568,6 +572,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self._test_filter_exists_is_null_lookups()
         self._test_filter_gt_gte_lt_lte_range_lookups()
         self._test_filter_nested_lookup()
+
 
 if __name__ == '__main__':
     unittest.main()

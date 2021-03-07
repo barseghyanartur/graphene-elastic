@@ -1,4 +1,5 @@
 import time
+import logging
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -6,6 +7,8 @@ from .base import BaseGrapheneElasticTestCase
 __all__ = (
     'FacetedSearchBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -76,7 +79,7 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """
-        print(query)
+        logger.info(query)
         executed = self.client.execute(query)
         data = executed.get('data', {}).get('allPostDocuments', {})
         self.assertIn('facets', data)
@@ -108,7 +111,7 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """
-        print(query)
+        logger.info(query)
         executed = self.client.execute(query)
         data = executed.get('data', {}).get('allPostDocuments', {})
         self.assertIn('facets', data)

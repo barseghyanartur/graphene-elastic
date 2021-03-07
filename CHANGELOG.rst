@@ -17,10 +17,17 @@ are used for versioning (schema follows below):
 
 0.7
 ---
-2020-xx-xx (not yet released)
+2021-03-08
+
+.. note::
+
+    Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
+    and all the victims of Turkish and Azerbaijani aggression.
 
 - Simple search query backend.
 - Deprecating old search backend.
+- ``ObjectField``/``NestedField`` to ``ObjectType`` and added nested filter to
+  ``FilteringFilterBackend``.
 
 0.6.3
 -----
