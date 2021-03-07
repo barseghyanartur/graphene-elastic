@@ -43,3 +43,4 @@ codebin.py
 /src/graphene_elastic.egg-info
 /graphene_elastic.egg-info
 yarn.lock
+examples/apps/flask_app/local_overrides.py

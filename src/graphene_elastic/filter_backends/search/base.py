@@ -2,8 +2,6 @@
 
 from ..base import BaseBackend
 from ...exceptions import ImproperlyConfigured
-
-
 from ...constants import MATCHING_OPTIONS, DEFAULT_MATCHING_OPTION
 
 __title__ = 'graphene_elastic.filter_backends.search.common'
