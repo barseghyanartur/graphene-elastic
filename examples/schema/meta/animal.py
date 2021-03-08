@@ -8,6 +8,15 @@ from graphene_elastic.constants import (
     LOOKUP_QUERY_EXCLUDE,
     LOOKUP_QUERY_IN,
 )
+from graphene_elastic.filter_backends import (
+    FilteringFilterBackend,
+    PostFilterFilteringBackend,
+    SearchFilterBackend,
+    OrderingFilterBackend,
+    DefaultOrderingFilterBackend,
+    SimpleQueryStringBackend,
+    # CompoundSearchFilterBackend,
+)
 
 __all__ = (
     'AbstractAnimalDocumentMeta',
@@ -17,7 +26,15 @@ __all__ = (
 class AbstractAnimalDocumentMeta:
 
     document: Document
-    filter_backends: list
+    filter_backends = [
+        FilteringFilterBackend,
+        PostFilterFilteringBackend,
+        SearchFilterBackend,
+        # CompoundSearchFilterBackend,
+        OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
+        SimpleQueryStringBackend,
+    ]
 
     interfaces = (Node,)
     # For filter backend

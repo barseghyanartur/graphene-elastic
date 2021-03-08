@@ -708,7 +708,7 @@ class FilteringFilterMixin(object):
                 options["field"]: cls.get_gte_lte_params(
                     value,
                     "lt",
-                     options.get("options", {})
+                    options.get("options", {})
                 )
             }
         )

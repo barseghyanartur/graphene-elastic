@@ -30,7 +30,7 @@ def get_object_fields_mapping(field):
 def generate_dynamic_elastic_object_type(field, registry=None):
     """Generate an InputObjectType by field's properties
 
-    :param field: 
+    :param field:
     :registry:
     :return InputObjectType:
     """

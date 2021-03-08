@@ -141,14 +141,16 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             num_posts
         )
 
-    def __test_nested_filter_lookups(self,
-                                     *fields,    
-                                     lookup, 
-                                     value,  
-                                     num_posts): 
+    def __test_nested_filter_lookups(
+        self,
+        *fields,
+        lookup,
+        value,
+        num_posts
+    ):
         """Test nested filter lookups and check num of results.
-        
-        :param fields: fields hierachy
+
+        :param fields: fields hierarchy
         :param lookup:
         :param value:
         :param num_posts: num of results
@@ -522,7 +524,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
             )
 
     def _test_filter_nested_lookup(self):
-        
+
         with self.subTest('Test filter on field `comments.tag`'
                           'using `term` lookup'):
             _count = 0
@@ -539,7 +541,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 value='"Python"',
                 num_posts=_count
             )
-        
+
         with self.subTest('Test filter on field `comments.tag`'
                           'using `terms` lookup'):
             _count = 0
@@ -555,7 +557,7 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 lookup="terms",
                 value='["Python", "MongoDB"]',
                 num_posts=_count
-            )   
+            )
 
     # TODO: Test range dates
 

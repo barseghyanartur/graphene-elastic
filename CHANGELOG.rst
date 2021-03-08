@@ -21,6 +21,10 @@ are used for versioning (schema follows below):
 
 .. note::
 
+    First beta release.
+
+.. note::
+
     Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
     and all the victims of Turkish and Azerbaijani aggression.
 

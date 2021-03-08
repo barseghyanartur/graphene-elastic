@@ -15,14 +15,25 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
-0.6.6
------
-2020-12-25
+0.7
+---
+2021-03-08
+
+.. note::
+
+    First beta release.
 
 .. note::
 
     Release dedicated to defenders of Armenia and Artsakh (Nagorno Karabakh)
     and all the victims of Turkish and Azerbaijani aggression.
+
+- ``ObjectField``/``NestedField`` to ``ObjectType`` and added nested filter to
+  ``FilteringFilterBackend``.
+
+0.6.6
+-----
+2020-12-26
 
 - Enable middleware.
 - Tested against Python 3.9 and 3.10.

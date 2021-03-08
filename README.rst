@@ -28,10 +28,6 @@ integration for `Graphene <http://graphene-python.org/>`__.
     :target: https://coveralls.io/github/barseghyanartur/graphene-elastic?branch=master
     :alt: Coverage
 
-.. note::
-
-    Project status is alpha.
-
 Prerequisites
 =============
 - Graphene 2.x. *Support for Graphene 1.x is not intended.*

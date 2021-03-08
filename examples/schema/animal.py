@@ -3,15 +3,6 @@ from graphene_elastic import (
     ElasticsearchObjectType,
     ElasticsearchConnectionField,
 )
-from graphene_elastic.filter_backends import (
-    FilteringFilterBackend,
-    PostFilterFilteringBackend,
-    SearchFilterBackend,
-    OrderingFilterBackend,
-    DefaultOrderingFilterBackend,
-    SimpleQueryStringBackend,
-    # CompoundSearchFilterBackend,
-)
 
 from search_index.documents import Animal as AnimalDocument
 from .meta.animal import AbstractAnimalDocumentMeta
@@ -29,15 +20,6 @@ class Animal(ElasticsearchObjectType):
     class Meta(AbstractAnimalDocumentMeta):
 
         document = AnimalDocument
-        filter_backends = [
-            FilteringFilterBackend,
-            PostFilterFilteringBackend,
-            SearchFilterBackend,
-            # CompoundSearchFilterBackend,
-            OrderingFilterBackend,
-            DefaultOrderingFilterBackend,
-            SimpleQueryStringBackend,
-        ]
 
 
 class Query(graphene.ObjectType):

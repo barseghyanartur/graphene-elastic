@@ -1,6 +1,5 @@
 from copy import deepcopy
 import graphene
-import six
 from stringcase import pascalcase as to_pascal_case
 
 from ..base import BaseBackend
@@ -34,7 +33,7 @@ __copyright__ = "2019-2020 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("FilteringFilterBackend",)
 
-    
+
 class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
     """Filtering filter backend."""
 
@@ -95,7 +94,12 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
         field_options = self.get_field_options(field_name)
         if isinstance(field_options, dict) and "type" in field_options:
             if field_options["type"] in ("nested", "object"):
-                return self.get_nested_field_type(field_name, field_value, base_field_type, field_options)
+                return self.get_nested_field_type(
+                    field_name,
+                    field_value,
+                    base_field_type,
+                    field_options
+                )
 
         if isinstance(field_options, dict) and "lookups" in field_options:
             lookups = field_options.get("lookups", [])
@@ -122,16 +126,24 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             )
         )
 
-    def get_nested_field_type(self, field_name, field_value, base_field_type, field_options):
+    def get_nested_field_type(
+        self,
+        field_name,
+        field_value,
+        base_field_type,
+        field_options
+    ):
         params = {}
         for sub_field_name in field_options.get("properties", []):
             _field_name = "{}.{}".format(field_name, sub_field_name)
             _field_type = self.get_field_type(
                 _field_name, field_value, base_field_type)
-            _field_type.__name__ = "{}{}{}{}".format(DYNAMIC_CLASS_NAME_PREFIX,
-                                                     to_pascal_case(self.prefix),
-                                                     self.connection_field.type.__name__,
-                                                     to_pascal_case(_field_name.replace(".", "_")))
+            _field_type.__name__ = "{}{}{}{}".format(
+                DYNAMIC_CLASS_NAME_PREFIX,
+                to_pascal_case(self.prefix),
+                self.connection_field.type.__name__,
+                to_pascal_case(_field_name.replace(".", "_"))
+            )
             params.update({sub_field_name: _field_type})
 
         return graphene.Argument(
@@ -184,7 +196,7 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
 
             filter_fields = {
                 'title': {
-                    'type': 'normal|object|nested', 
+                    'type': 'normal|object|nested',
                     'field': 'title'    # custom field name
                     'lookups': [
                         ... # custom lookup list
@@ -231,8 +243,12 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
                 }
             }
         """
-        def _recursive_correct_filter_fields(filter_fields, root_field=None, is_nested=False):
-            # TODO: 生成完整的filter_fields
+        def _recursive_correct_filter_fields(
+            filter_fields,
+            root_field=None,
+            is_nested=False
+        ):
+            # TODO: Generate complete filter_fields
             data = {}
             for field_name, field_options in filter_fields.items():
                 data[field_name] = {}
@@ -264,9 +280,12 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
                     data[field_name]["lookups"] = lookups
                     data[field_name]["default_lookup"] = default_lookup
                 else:
-                    data[field_name]["properties"] = _recursive_correct_filter_fields(field_options["properties"],
-                                                                                      root_field=field,
-                                                                                      is_nested=field_type == "nested")
+                    data[field_name]["properties"] = \
+                        _recursive_correct_filter_fields(
+                            field_options["properties"],
+                            root_field=field,
+                            is_nested=field_type == "nested"
+                        )
                 if is_nested:
                     data[field_name]["path"] = root_field
             return data
@@ -410,15 +429,31 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             }
 
             field_name = 'category'
-            {'inventory_type': {'value': '1'}, 'spu': {'supplier_entityms_entity_id': {'contains': 'Elastic'}, 'brand': {'code': {'term': 'Elastic'}}}}
+            {
+                'inventory_type': {'value': '1'},
+                'spu': {
+                    'supplier_entityms_entity_id': {
+                        'contains': 'Elastic'
+                    },
+                    'brand': {
+                        'code': {
+                            'term': 'Elastic'
+                        }
+                    }
+                }
+            }
         """
 
         query_params = self.prepare_query_params()     # Shall be fixed
         filter_query_params = []
         filter_fields = self.prepare_filter_fields()   # Correct
 
-        def _recursive_get_lookup_param_options(query_dict: dict, predefined_filter_fields: dict, ret=None):
-            """深度遍历树状字典, 生成查询列表"""
+        def _recursive_get_lookup_param_options(
+            query_dict: dict,
+            predefined_filter_fields: dict,
+            ret=None
+        ):
+            """In-depth traversal of the tree dict to generate a query list."""
             filter_fields = deepcopy(predefined_filter_fields)
             for field_name, lookup_params in query_dict.items():
                 if field_name not in filter_fields:
@@ -428,10 +463,13 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
                 field_type = field_options["type"]
 
                 if field_type in ("nested", "object"):
-                    _recursive_get_lookup_param_options(query_dict=lookup_params,
-                                                        predefined_filter_fields=filter_fields[
-                                                            field_name]["properties"],
-                                                        ret=ret)
+                    _recursive_get_lookup_param_options(
+                        query_dict=lookup_params,
+                        predefined_filter_fields=filter_fields[
+                            field_name
+                        ]["properties"],
+                        ret=ret
+                    )
                 else:
                     valid_lookup = field_options.get("lookups", ())
                     default_lookup = field_options.get("default_lookup", None)
@@ -448,13 +486,18 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
                                 "lookup": lookup,
                                 "values": lookup_options,
                                 "path": field_options.get("path"),
-                                "field": field_options.get("field", field_name),
-                                "type": self.doc_type.mapping.properties.name
+                                "field": field_options.get(
+                                    "field",
+                                    field_name
+                                ),
+                                "type": self.doc_type.mapping.properties.name,
                             })
 
-        _recursive_get_lookup_param_options(query_dict=query_params,
-                                            predefined_filter_fields=filter_fields,
-                                            ret=filter_query_params)
+        _recursive_get_lookup_param_options(
+            query_dict=query_params,
+            predefined_filter_fields=filter_fields,
+            ret=filter_query_params
+        )
         return filter_query_params
 
     def filter(self, queryset):
@@ -582,7 +625,10 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             # `term` filter lookup. This is default if no `default_lookup`
             # filter_query has been given or explicit lookup provided.
             else:
-                queryset = super(FilteringFilterBackend, self).apply_filter_term(
+                queryset = super(
+                    FilteringFilterBackend,
+                    self
+                ).apply_filter_term(
                     queryset,
                     filter_query,
                     filter_query['values']
