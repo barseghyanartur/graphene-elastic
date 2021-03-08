@@ -28,10 +28,6 @@ integration for `Graphene <http://graphene-python.org/>`__.
     :target: https://coveralls.io/github/barseghyanartur/graphene-elastic?branch=master
     :alt: Coverage
 
-.. note::
-
-    Project status is alpha.
-
 Prerequisites
 =============
 - Graphene 2.x. *Support for Graphene 1.x is not intended.*
@@ -61,6 +57,11 @@ See the `Road-map`_ for what's yet planned to implemented.
 Do you need a similar tool for Django REST Framework? Check
 `django-elasticsearch-dsl-drf
 <https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
+
+Demo
+====
+Check the `live demo app <https://graphene-elastic.herokuapp.com/?query=query%20%7B%0A%20%20allPostDocuments%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20content%0A%20%20%20%20%20%20%20%20tags%0A%20%20%20%20%20%20%20%20createdAt%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D>`__
+(FastAPI + Graphene 2 + Elasticsearch 7) hosted on Heroku and bonsai.io.
 
 Documentation
 =============
@@ -555,10 +556,9 @@ Road-map
 ========
 Road-map and development plans.
 
-This package was designed after `django-elasticsearch-dsl-drf
-<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
-It's intended to offer similar functionality in ``graphene-elastic`` (this
-package).
+This package is designed after `django-elasticsearch-dsl-drf
+<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__ and
+is intended to offer similar functionality.
 
 Lots of features are planned to be released in the upcoming Beta releases:
 

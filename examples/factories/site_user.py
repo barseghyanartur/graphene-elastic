@@ -1,15 +1,16 @@
 from factory import Faker
-from factory.base import Factory
+# from factory.base import Factory
 
 from search_index.documents import User
 
+from .elasticsearch_dsl_factory import ElasticsearchFactory
 
 __all__ = (
     'UserFactory',
 )
 
 
-class UserFactory(Factory):
+class UserFactory(ElasticsearchFactory):
     """User factory."""
 
     class Meta(object):

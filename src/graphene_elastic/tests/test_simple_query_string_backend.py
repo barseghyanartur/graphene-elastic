@@ -64,7 +64,12 @@ class SimpleQueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
               node {
                 category
                 title
-                comments
+                comments {
+                  author
+                  tag
+                  content
+                  createdAt
+                }
               }
             }
           }
@@ -74,6 +79,7 @@ class SimpleQueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
         )
         logger.debug_json(query)
         executed = self.client.execute(query)
+        logger.debug(executed)
         self.assertEqual(
             len(executed["data"]["allPostDocuments"]["edges"]),
             num_posts,

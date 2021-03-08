@@ -1,6 +1,7 @@
 from .common import *
-from .simple_query_string import *
+from .compound import *
 from .query_string import *
+from .simple_query_string import *
 
 __title__ = "graphene_elastic.filter_backends.search"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"

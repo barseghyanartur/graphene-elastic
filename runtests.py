@@ -1,8 +1,44 @@
 #!/usr/bin/env python
+from logging import config
 import os
 import sys
 
 import pytest
+
+LOGGING_CONFIG = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} '
+                      '{thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'graphene_elastic': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
+    },
+}
+
+config.dictConfig(LOGGING_CONFIG)
 
 
 def main():
