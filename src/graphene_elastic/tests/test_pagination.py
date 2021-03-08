@@ -1,4 +1,5 @@
 import datetime
+import logging
 import unittest
 import dateutil
 import factories
@@ -8,8 +9,12 @@ __all__ = (
     'PaginationTestCase',
 )
 
+logger = logging.getLogger(__name__)
+
 
 class PaginationTestCase(BaseGrapheneElasticTestCase):
+
+    query_name = 'allPostDocuments'
 
     def setUp(self):
         super(PaginationTestCase, self).setUp()
@@ -24,16 +29,16 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             category='Elastic',
             tags=None
         )
-        for _post in self.elastic_posts:
-            _post.save()
+        # for _post in self.elastic_posts:
+        #     _post.save()
 
         self.num_django_posts = 11
         self.django_posts = factories.PostFactory.create_batch(
             self.num_django_posts,
             category='Django'
         )
-        for _post in self.django_posts:
-            _post.save()
+        # for _post in self.django_posts:
+        #     _post.save()
 
         self.num_all_posts = self.num_elastic_posts + self.num_django_posts
         self.all_posts = (
@@ -45,16 +50,16 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             self.num_future_users,
             created_at=self.faker.future_datetime()
         )
-        for _post in self.future_users:
-            _post.save()
+        # for _post in self.future_users:
+        #     _post.save()
 
         self.num_past_users = 59
         self.past_users = factories.UserFactory.create_batch(
             self.num_past_users,
             created_at=self.faker.past_datetime()
         )
-        for _post in self.past_users:
-            _post.save()
+        # for _post in self.past_users:
+        #     _post.save()
 
         self.num_all_users = self.num_past_users + self.num_future_users
         self.all_users = self.past_users + self.future_users
@@ -92,7 +97,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
 
         _query = """
         {
-          allPostDocuments%s {
+          %s%s {
             pageInfo {
               startCursor
               endCursor
@@ -110,25 +115,19 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
             }
           }
         }
-        """ % _query_args
-        print(_query)
+        """ % (self.query_name, _query_args)
+        logger.info(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         # TODO: Perhaps, check firsts and lasts?
         self.assertEqual(
-            len(executed['data']['allPostDocuments']['edges']),
+            len(executed['data'][self.query_name]['edges']),
             expected_num_results
         )
 
     def __test_pagination_required_first_or_last(self):
         """Test pagination.
 
-        :param expected_num_results:
-        :param first:
-        :param last:
-        :param after:
-        :param before:
-        :param ordering:
         :return:
         """
         _query = """
@@ -153,7 +152,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         self.assertIn('errors', executed)
         self.assertIn('message', executed['errors'][0])
@@ -193,7 +192,7 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % last
-        print(_query)
+        logger.info(_query)
 
         executed = self.client.execute(_query)
         # fields_values_sorted = []
@@ -243,6 +242,11 @@ class PaginationTestCase(BaseGrapheneElasticTestCase):
         tests.
         """
         self._test_pagination()
+
+
+class PaginationCompoundTestCase(PaginationTestCase):
+
+    query_name = 'allReadOnlyPostDocuments'
 
 
 if __name__ == '__main__':

@@ -1,0 +1,23 @@
+import json
+import os
+
+
+__all__ = (
+    'ELASTICSEARCH_CONNECTION',
+)
+
+ELASTICSEARCH_CONNECTION_DEFAULTS = {
+    'hosts': ['localhost'],
+    'timeout': 5,
+}
+
+ELASTICSEARCH_CONNECTION = os.environ.get(
+    "ELASTICSEARCH_CONNECTION",
+    ELASTICSEARCH_CONNECTION_DEFAULTS
+)
+
+if isinstance(ELASTICSEARCH_CONNECTION, str):
+    try:
+        ELASTICSEARCH_CONNECTION = json.loads(ELASTICSEARCH_CONNECTION)
+    except:
+        ELASTICSEARCH_CONNECTION = ELASTICSEARCH_CONNECTION_DEFAULTS

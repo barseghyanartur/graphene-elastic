@@ -1,3 +1,4 @@
+import logging
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -6,6 +7,8 @@ from ..filter_backends.queries import Direction
 __all__ = (
     'OrderingBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -23,24 +26,24 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
             category='Elastic',
             tags=None
         )
-        for _post in self.elastic_posts:
-            _post.save()
+        # for _post in self.elastic_posts:
+        #     _post.save()
 
         self.num_django_posts = 3
         self.django_posts = factories.PostFactory.create_batch(
             self.num_django_posts,
             category='Django'
         )
-        for _post in self.django_posts:
-            _post.save()
+        # for _post in self.django_posts:
+        #     _post.save()
 
         self.num_python_posts = 2
         self.python_posts = factories.ManyViewsPostFactory.create_batch(
             self.num_python_posts,
             category='Python',
         )
-        for _post in self.python_posts:
-            _post.save()
+        # for _post in self.python_posts:
+        #     _post.save()
 
         self.num_all_posts = (
             self.num_elastic_posts +
@@ -81,7 +84,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % (document_type_name, field, direction.name)
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         for edge in executed['data'][document_type_name]['edges']:
@@ -122,7 +125,7 @@ class OrderingBackendElasticTestCase(BaseGrapheneElasticTestCase):
           }
         }
         """ % document_type_name
-        print(_query)
+        logger.info(_query)
         executed = self.client.execute(_query)
         fields_values_sorted = []
         for edge in executed['data'][document_type_name]['edges']:

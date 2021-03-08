@@ -1,8 +1,9 @@
 from faker import Faker as OriginalFaker
-from factory.base import Factory
+# from factory.base import Factory
 from factory import Faker, LazyAttribute
 
 from search_index.documents import Animal
+from .elasticsearch_dsl_factory import ElasticsearchFactory
 
 FAKER = OriginalFaker()
 
@@ -11,7 +12,7 @@ __all__ = (
 )
 
 
-class AnimalFactory(Factory):
+class AnimalFactory(ElasticsearchFactory):
     """Animal factory."""
 
     class Meta(object):

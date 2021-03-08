@@ -1,3 +1,4 @@
+import logging
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -5,13 +6,19 @@ from ..constants import ALL, VALUE
 
 __all__ = (
     'SearchBackendElasticTestCase',
+    'CompoundSearchBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
 
+    query_name = 'allPostDocuments'
+
     def setUp(self):
         super(SearchBackendElasticTestCase, self).setUp()
+
         self.alice = "Alice"
         self.num_alice_posts = 9
         self.alice_posts = factories.PostFactory.create_batch(
@@ -42,8 +49,8 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.other_posts = factories.PostFactory.create_batch(
             self.num_other_posts
         )
-        for _post in self.other_posts:
-            _post.save()
+        # for _post in self.other_posts:
+        #     _post.save()
 
         self.sleep(2)
 
@@ -57,22 +64,27 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         """
         query = """
         query {
-          allPostDocuments(search:%s) {
+          %s(search:%s) {
             edges {
               node {
                 category
                 title
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }
         }
-        """ % search
-        print(query)
+        """ % (self.query_name, search)
+        logger.info(query)
         executed = self.client.execute(query)
         self.assertEqual(
-            len(executed['data']['allPostDocuments']['edges']),
-            num_posts
+            len(executed['data'][self.query_name]['edges']),
+            num_posts,
+            query
         )
 
     def _test_search_content(self):
@@ -113,6 +125,11 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         tests.
         """
         self._test_search_content()
+
+
+class CompoundSearchBackendElasticTestCase(SearchBackendElasticTestCase):
+
+    query_name = 'allReadOnlyPostDocuments'
 
 
 if __name__ == '__main__':

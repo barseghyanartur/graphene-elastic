@@ -6,9 +6,11 @@ from graphene_elastic import (
 )
 from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
+    PostFilterFilteringBackend,
     SearchFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
+    CompoundSearchFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -37,8 +39,10 @@ class ReadOnlyAnimal(ElasticsearchObjectType):
         document = ReadOnlyAnimalDocument
         interfaces = (Node,)
         filter_backends = [
-            # FilteringFilterBackend,
-            SearchFilterBackend,
+            FilteringFilterBackend,
+            PostFilterFilteringBackend,
+            # SearchFilterBackend,
+            CompoundSearchFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
         ]
@@ -75,6 +79,26 @@ class ReadOnlyAnimal(ElasticsearchObjectType):
             'id',
             'publish_date'
         )
+
+        # For filter backend
+        post_filter_fields = {
+            'id': {
+                'field': 'id',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'action': {
+                'field': 'action.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'entity': {
+                'field': 'entity.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+            'app': {
+                'field': 'app.raw',
+                'default_lookup': LOOKUP_FILTER_TERM,
+            },
+        }
 
 
 class Query(graphene.ObjectType):

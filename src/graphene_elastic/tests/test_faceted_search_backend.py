@@ -1,4 +1,5 @@
 import time
+import logging
 import unittest
 import factories
 from .base import BaseGrapheneElasticTestCase
@@ -6,6 +7,8 @@ from .base import BaseGrapheneElasticTestCase
 __all__ = (
     'FacetedSearchBackendElasticTestCase',
 )
+
+logger = logging.getLogger(__name__)
 
 
 class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
@@ -47,8 +50,8 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         self.other_posts = factories.PostFactory.create_batch(
             self.num_other_posts
         )
-        for _post in self.other_posts:
-            _post.save()
+        # for _post in self.other_posts:
+        #     _post.save()
 
         time.sleep(2)
 
@@ -66,13 +69,17 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
               node {
                 category
                 title
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }
         }
         """
-        print(query)
+        logger.info(query)
         executed = self.client.execute(query)
         data = executed.get('data', {}).get('allPostDocuments', {})
         self.assertIn('facets', data)
@@ -94,13 +101,17 @@ class FacetedSearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
               node {
                 category
                 title
-                comments
+                comments{
+                    author
+                    content
+                    createdAt
+                }
               }
             }
           }
         }
         """
-        print(query)
+        logger.info(query)
         executed = self.client.execute(query)
         data = executed.get('data', {}).get('allPostDocuments', {})
         self.assertIn('facets', data)

@@ -560,10 +560,9 @@ Road-map
 ========
 Road-map and development plans.
 
-This package was designed after `django-elasticsearch-dsl-drf
-<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
-It's intended to offer similar functionality in ``graphene-elastic`` (this
-package).
+This package is designed after `django-elasticsearch-dsl-drf
+<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__ and
+is intended to offer similar functionality.
 
 Lots of features are planned to be released in the upcoming Beta releases:
 

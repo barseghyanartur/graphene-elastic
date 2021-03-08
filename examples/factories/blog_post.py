@@ -6,6 +6,7 @@ from factory.fuzzy import FuzzyChoice
 
 from search_index.documents import Post
 
+from .elasticsearch_dsl_factory import ElasticsearchFactory
 
 __all__ = (
     'Comment',
@@ -29,6 +30,7 @@ class Comment(Serializable):
 
     def __init__(self, *args, **kwargs):
         self.author = kwargs.get('author')
+        self.tag = kwargs.get('tag')
         self.content = kwargs.get('content')
         self.created_at = kwargs.get('created_at')
 
@@ -44,6 +46,14 @@ class CommentFactory(Factory):
     """Comment factory."""
 
     author = Faker('name')
+    tag = FuzzyChoice([
+        'Elastic',
+        'MongoDB',
+        'Machine Learning',
+        'Model Photography',
+        'Python',
+        'Django',
+    ])
     content = Faker('text')
     created_at = Faker('date')
 
@@ -62,7 +72,7 @@ TAGS = (
 )
 
 
-class PostFactory(Factory):
+class PostFactory(ElasticsearchFactory):
     """Post factory."""
 
     class Meta(object):
