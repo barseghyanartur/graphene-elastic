@@ -28,10 +28,6 @@ integration for `Graphene <http://graphene-python.org/>`__.
     :target: https://coveralls.io/github/barseghyanartur/graphene-elastic?branch=master
     :alt: Coverage
 
-.. note::
-
-    Project status is alpha.
-
 Prerequisites
 =============
 - Graphene 2.x. *Support for Graphene 1.x is not intended.*
@@ -560,10 +556,9 @@ Road-map
 ========
 Road-map and development plans.
 
-This package was designed after `django-elasticsearch-dsl-drf
-<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__.
-It's intended to offer similar functionality in ``graphene-elastic`` (this
-package).
+This package is designed after `django-elasticsearch-dsl-drf
+<https://github.com/barseghyanartur/django-elasticsearch-dsl-drf>`__ and
+is intended to offer similar functionality.
 
 Lots of features are planned to be released in the upcoming Beta releases:
 

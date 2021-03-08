@@ -64,7 +64,12 @@ class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
               node {
                 category
                 title
-                comments
+                comments {
+                  author
+                  tag
+                  content
+                  createdAt
+                }
               }
             }
           }

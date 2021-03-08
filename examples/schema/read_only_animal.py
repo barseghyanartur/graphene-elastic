@@ -6,9 +6,11 @@ from graphene_elastic import (
 )
 from graphene_elastic.filter_backends import (
     FilteringFilterBackend,
+    PostFilterFilteringBackend,
     SearchFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
+    CompoundSearchFilterBackend,
 )
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,
@@ -20,7 +22,7 @@ from graphene_elastic.constants import (
 )
 
 from search_index.documents import ReadOnlyAnimal as ReadOnlyAnimalDocument
-
+from .meta.animal import AbstractAnimalDocumentMeta
 
 __all__ = (
     'ReadOnlyAnimal',
@@ -32,49 +34,9 @@ __all__ = (
 class ReadOnlyAnimal(ElasticsearchObjectType):
     """Read-only animal."""
 
-    class Meta:
+    class Meta(AbstractAnimalDocumentMeta):
 
         document = ReadOnlyAnimalDocument
-        interfaces = (Node,)
-        filter_backends = [
-            # FilteringFilterBackend,
-            SearchFilterBackend,
-            OrderingFilterBackend,
-            DefaultOrderingFilterBackend,
-        ]
-        filter_fields = {
-            'id': {
-                'field': 'id',
-                'default_lookup': LOOKUP_FILTER_TERM,
-            },
-            'action': {
-                'field': 'action.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
-            },
-            'entity': {
-                'field': 'entity.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
-            },
-            'app': {
-                'field': 'app.raw',
-                'default_lookup': LOOKUP_FILTER_TERM,
-            },
-        }
-        search_fields = {
-            'action': None,
-            'entity': None,
-        }
-        ordering_fields = {
-            'id': 'id',
-            'publish_date': 'publish_date',
-            'action': 'action.raw',
-            'entity': 'entity.raw',
-        }
-
-        ordering_defaults = (
-            'id',
-            'publish_date'
-        )
 
 
 class Query(graphene.ObjectType):
