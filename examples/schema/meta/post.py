@@ -291,3 +291,19 @@ class AbstractPostDocumentMeta:
 
         "i_do_not_exist": "i_do_not_exist",
     }
+
+    search_nested_fields = {
+        "comments": {
+            "path": "comments",
+            "fields": [
+                "author", 
+                {
+                    "field": "tag"
+                },
+                {
+                    "field": "content", 
+                    "boost": 4
+                }
+            ]
+        }
+    }
