@@ -61,7 +61,10 @@ class HighlightBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 content
                 category
                 comments{
-                    author
+                    author {
+                      name
+                      age
+                    }
                     content
                     createdAt
                 }

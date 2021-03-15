@@ -81,8 +81,9 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 category
                 title
                 comments{
-                    author{
-                        name
+                    author {
+                      name
+                      age
                     }
                     content
                     createdAt
