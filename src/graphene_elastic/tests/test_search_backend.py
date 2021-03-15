@@ -161,7 +161,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         tests.
         """
         self._test_search_content()
-        # self._test_search_nested_tag()
+        self._test_search_nested_tag()
 
 
 class CompoundSearchBackendElasticTestCase(SearchBackendElasticTestCase):
