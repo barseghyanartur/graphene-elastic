@@ -10,6 +10,8 @@ from .elasticsearch_dsl_factory import ElasticsearchFactory
 
 __all__ = (
     'Comment',
+    'CommentAuthor',
+    'CommentAuthorFactory',
     'CommentFactory',
     'PostFactory',
     'ManyViewsPostFactory',
@@ -25,6 +27,13 @@ class Serializable(object):
         return self.__dict__
 
 
+class CommentAuthor(Serializable):
+    """Comment Author model (we need one for factories)."""
+
+    def __init__(self, *args, **kwargs):
+        self.name = kwargs.get('name')
+        self.age = kwargs.get('age')
+
 class Comment(Serializable):
     """Comment model (we need one for factories)."""
 
@@ -34,7 +43,6 @@ class Comment(Serializable):
         self.content = kwargs.get('content')
         self.created_at = kwargs.get('created_at')
 
-
 class Tag(Serializable):
     """Tag model (we need one for factories)."""
 
@@ -42,10 +50,18 @@ class Tag(Serializable):
         self.name = kwargs.get('name')
 
 
+class CommentAuthorFactory(Factory):
+
+    name = Faker('name')
+    age = Faker('pyint', min_value=10, max_value=40)
+
+    class Meta:
+        model = CommentAuthor
+
 class CommentFactory(Factory):
     """Comment factory."""
 
-    author = Faker('name')
+    author = CommentAuthorFactory.create()
     tag = FuzzyChoice([
         'Elastic',
         'MongoDB',

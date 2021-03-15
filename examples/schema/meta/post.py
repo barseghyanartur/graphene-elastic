@@ -296,13 +296,27 @@ class AbstractPostDocumentMeta:
         "comments": {
             "path": "comments",
             "fields": [
-                "author", 
+                "tag",
                 {
-                    "field": "tag"
+                    "content": {
+                        "field": "content.raw"
+                    }
+                }
+            ]
+        },
+        "author": {
+            "path": "comments.author",
+            "fields": [
+                {
+                    "name": {
+                        "field": "name.raw",
+                        "boost": 2
+                    }
                 },
                 {
-                    "field": "content", 
-                    "boost": 4
+                    "age": {
+                        "field": "age"
+                    }
                 }
             ]
         }
