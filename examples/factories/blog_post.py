@@ -61,7 +61,6 @@ class CommentAuthorFactory(Factory):
 class CommentFactory(Factory):
     """Comment factory."""
 
-    author = CommentAuthorFactory.create()
     tag = FuzzyChoice([
         'Elastic',
         'MongoDB',
@@ -72,6 +71,11 @@ class CommentFactory(Factory):
     ])
     content = Faker('text')
     created_at = Faker('date')
+
+    @factory.post_generation
+    def author(obj, create, extracted, **kwargs):
+        if create:
+            obj.author = CommentAuthorFactory.create()
 
     class Meta(object):
         model = Comment

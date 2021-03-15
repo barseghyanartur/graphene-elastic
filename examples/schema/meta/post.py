@@ -299,7 +299,8 @@ class AbstractPostDocumentMeta:
                 "tag",
                 {
                     "content": {
-                        "field": "content.raw"
+                        "field": "content.raw",
+                        "boost": 3
                     }
                 }
             ]
@@ -311,11 +312,6 @@ class AbstractPostDocumentMeta:
                     "name": {
                         "field": "name.raw",
                         "boost": 2
-                    }
-                },
-                {
-                    "age": {
-                        "field": "age"
                     }
                 }
             ]

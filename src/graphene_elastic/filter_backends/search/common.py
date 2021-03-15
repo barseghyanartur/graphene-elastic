@@ -24,6 +24,7 @@ __copyright__ = "2019-2020 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("SearchFilterBackend",)
 
+nested_input_count = 0
 
 class SearchFilterBackend(BaseBackend):
     """Search filter backend."""
@@ -177,10 +178,9 @@ class SearchFilterBackend(BaseBackend):
         TODO: required
         """
 
-        nested_input_count = 0
 
         def get_graphene_argument_type(name, params):
-            nonlocal nested_input_count
+            global nested_input_count
             nested_input_count += 1
             return graphene.Argument(
                 type(
@@ -211,7 +211,6 @@ class SearchFilterBackend(BaseBackend):
                         fields = root_field_type._meta.fields
                     else:
                         fields = root_field_type._type._of_type._meta.fields
-                    print(name, fields.get(name))
                     params = {
                         VALUE: fields.get(name),
                         BOOST: graphene.Int(),
@@ -518,6 +517,22 @@ class SearchFilterBackend(BaseBackend):
 
         return _queries
 
+    def clean_all_query_params(self):
+        """
+        Get cleaned query params.
+        Remove query lookup.
+        """
+        def _recursive_remove_query_lookup(params):
+            root = deepcopy(params)
+            for lookup, value in root.items():
+                if isinstance(value, dict):
+                    params[lookup].pop(ALL, None)
+                    _recursive_remove_query_lookup(params[lookup])
+
+        all_query_params = deepcopy(self.get_all_query_params())
+        _recursive_remove_query_lookup(all_query_params)
+        return all_query_params
+
     def construct_nested_search(self):
         """Construct nested search.
 
@@ -577,6 +592,13 @@ class SearchFilterBackend(BaseBackend):
             for search_field, search_terms in self.get_all_query_params().items()
             if search_field in search_fields
         }
+        queries = []
+
+        def get_query(queries):
+            if len(queries) > 1:
+                return six.moves.reduce(operator.or_, queries)
+            elif len(queries) == 1:
+                return queries[0]
 
         def recursive_construct_search(
             query_params, current_search=None, searched_path=None
@@ -584,36 +606,46 @@ class SearchFilterBackend(BaseBackend):
             _queries = []
             for search_field, search_terms in query_params.items():
                 if search_field in search_fields:
-                    # another nested field
-                    r = recursive_construct_search(
+                    # dive in nested field
+                    __queries = recursive_construct_search(
                         search_terms,
                         current_search=search_field,
                         searched_path=search_fields[search_field]["path"],
                     )
-                    _queries.append(
-                        Q(
-                            "nested",
-                            path=search_fields[search_field]["path"],
-                            query=six.moves.reduce(operator.or_, r),
+                    query = get_query(__queries)
+
+                    if query:
+                        queries.append(
+                            Q(
+                                "nested",
+                                path=search_fields[search_field]["path"],
+                                query=query
+                            )
                         )
-                    )
                 elif search_field == ALL:
                     # query all fields downside
                     search_terms = self.get_search_nested_fields_tree(
                         start=searched_path, value={VALUE: search_terms}
                     )
-                    r = recursive_construct_search(
+                    cleaned_query_params = self.clean_all_query_params()
+                    for path in searched_path.split("."):
+                        cleaned_query_params = cleaned_query_params[path]
+                    search_terms[current_search].update(cleaned_query_params)
+                    __queries = recursive_construct_search(
                         search_terms[current_search],
                         current_search=current_search,
                         searched_path=searched_path,
                     )
-                    _queries.append(
-                        Q(
-                            "nested",
-                            path=search_fields[current_search]["path"],
-                            query=six.moves.reduce(operator.or_, r),
+                    query = get_query(__queries)
+
+                    if query:
+                        queries.append(
+                            Q(
+                                "nested",
+                                path=search_fields[current_search]["path"],
+                                query=query
+                            )
                         )
-                    )
                 else:
                     # normal field in a nested field
                     path = search_fields[current_search]["path"]
@@ -629,11 +661,11 @@ class SearchFilterBackend(BaseBackend):
                     field_kwargs = {field: {"query": query}}
                     if field_option:
                         field_kwargs[field].update(field_option)
-
                     _queries.append(Q("match", **field_kwargs))
+
             return _queries
 
-        queries = recursive_construct_search(all_query_params, None)
+        recursive_construct_search(all_query_params, None)
         return queries
 
     def filter(self, queryset):
@@ -655,5 +687,4 @@ class SearchFilterBackend(BaseBackend):
         if _queries:
             queryset = queryset.query("bool", should=_queries)
 
-        print(queryset.to_dict())
         return queryset

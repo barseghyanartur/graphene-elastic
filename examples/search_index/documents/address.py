@@ -17,55 +17,52 @@ try:
     from elasticsearch import logger
 except ImportError:
     import logging
+
     logger = logging.getLogger(__name__)
 
-__all__ = (
-    'Address',
-)
+__all__ = ("Address",)
 
 connections.create_connection(**ELASTICSEARCH_CONNECTION)
 
 
 html_strip = analyzer(
-    'html_strip',
+    "html_strip",
     tokenizer="standard",
     filter=["lowercase", "stop", "snowball"],
-    char_filter=["html_strip"]
+    char_filter=["html_strip"],
 )
 
 
 class Address(Document):
 
-    street = Text(fields={'raw': Keyword()})
+    street = Text(fields={"raw": Keyword()})
     house_number = Keyword()
-    zip_code = Text(fields={'raw': Keyword()})
+    zip_code = Text(fields={"raw": Keyword()})
     city = Nested(
         properties={
-            'name': Text(
+            "name": Text(
                 analyzer=html_strip,
-                fields={
-                    'raw': Keyword(),
-                    'country': Nested(
-                        properties={
-                            'name': Text(
-                                analyzer=html_strip,
-                                fields={
-                                    'raw': Keyword(),
-                                }
-                            )
-                        }
+                fields={"raw": Keyword()},
+            ),
+            "country": Nested(
+                properties={
+                    "name": Text(
+                        analyzer=html_strip,
+                        fields={
+                            "raw": Keyword(),
+                        },
                     )
                 }
-            )
+            ),
         }
     )
 
     class Index:
         name = ADDRESS_ADDRESS_DOCUMENT_NAME
         settings = {
-            'number_of_shards': 1,
-            'number_of_replicas': 1,
-            'blocks': {'read_only_allow_delete': None},
+            "number_of_shards": 1,
+            "number_of_replicas": 1,
+            "blocks": {"read_only_allow_delete": None},
         }
 
 
