@@ -12,6 +12,7 @@ from graphene_elastic.filter_backends import (
     DefaultOrderingFilterBackend,
     HighlightFilterBackend,
     SourceFilterBackend,
+    SearchFilterBackend
 )
 
 from search_index.documents import ReadOnlyPost as ReadOnlyPostDocument
@@ -36,6 +37,7 @@ class ReadOnlyPost(ElasticsearchObjectType):
             HighlightFilterBackend,
             SourceFilterBackend,
             FacetedSearchFilterBackend,
+            SearchFilterBackend,
             # CustomFilterBackend,
             OrderingFilterBackend,
             DefaultOrderingFilterBackend,
