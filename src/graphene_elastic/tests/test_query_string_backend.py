@@ -65,7 +65,10 @@ class QueryStringBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 category
                 title
                 comments {
-                  author
+                  author{
+                      name
+                      age
+                  }
                   tag
                   content
                   createdAt

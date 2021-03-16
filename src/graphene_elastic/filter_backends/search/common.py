@@ -108,7 +108,7 @@ class SearchFilterBackend(BaseBackend):
 
         {
             'country': {
-                'name': {},   # {} or None represents no more leaves downside.
+                'name': {},   # {} or None represents no more leaves.
                 'city': {
                     'name': {}
                 }
@@ -153,7 +153,7 @@ class SearchFilterBackend(BaseBackend):
                     option["path"].startswith(_path)
                     and len(splited_path) - len(_splited_path) > 0
                 ):
-                    # Note: because we don't sure whether whole path was built over, we should traverse the tree
+                    # Note: because we don't sure whether whole path was built, we should traverse the tree
                     # and find the proper place to put this node inside it.
                     t = tree
                     for __splited in splited_path[:-1]:
@@ -165,7 +165,7 @@ class SearchFilterBackend(BaseBackend):
                         inserted = True
                         break
 
-            if not inserted:  # no other node can take this node.
+            if not inserted:  # no other node can contain this node.
                 tree.update({field: node})
 
         return tree
@@ -536,46 +536,94 @@ class SearchFilterBackend(BaseBackend):
     def construct_nested_search(self):
         """Construct nested search.
 
-        We have to deal with two types of structures:
-
         Type 1:
 
         >>> search_nested_fields = {
-        >>>     'country': {
-        >>>         'path': 'country',
-        >>>         'fields': ['name'],
-        >>>     },
-        >>>     'city': {
-        >>>         'path': 'country.city',
-        >>>         'fields': ['name'],
-        >>>     },
+        >>>     "comments": {
+        >>>         "path": "comments",
+        >>>         "fields": [
+        >>>             "tag",
+        >>>             "content"
+        >>>        ]
         >>> }
 
         Type 2:
 
         >>> search_nested_fields = {
-        >>>     'country': {
-        >>>         'path': 'country',
-        >>>         'fields': [{'name': {'boost': 2}}]
-        >>>     },
-        >>>     'city': {
-        >>>         'path': 'country.city',
-        >>>         'fields': [{'name': {'boost': 2}}]
-        >>>     },
+        >>>     "comments": {
+        >>>         "path": "comments",
+        >>>         "fields": [
+        >>>             {
+        >>>                 "tag": {
+        >>>                     "field": "tag.raw",
+        >>>                     "boost": 4
+        >>>                 }
+        >>>             },
+        >>>             {
+        >>>                 "content": {
+        >>>                     "field": "content",
+        >>>                     "boost": 2
+        >>>                 }            
+        >>>             }
+        >>>        ]
         >>> }
 
+        In GraphQL shall be:
 
-        field_kwargs = {field: search_term}
+            query {
+              allPostDocuments(search:{
+                    comments: {
+                        tag: {
+                            value: "Python",
+                            boost: 2
+                        }
+                    }
+                }) {
+                pageInfo {
+                  startCursor
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
+                edges {
+                  cursor
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    comments{
+                        tag
+                    }
+                  }
+                }
+              }
+            }
 
-        queries.append(Q("match", **field_kwargs))
+        Or simply:
 
-        __queries.append(
-            Q(
-                "nested",
-                path=path,
-                query=six.moves.reduce(operator.or_, queries),
-            )
-        )
+            query {
+              allPostDocuments(search:{query:"Python"}) {
+                pageInfo {
+                  startCursor
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
+                edges {
+                  cursor
+                  node {
+                    category
+                    title
+                    content
+                    numViews
+                    comments{
+                        tag
+                    }
+                  }
+                }
+              }
+            }
 
         :return: Updated queryset.
         :rtype: elasticsearch_dsl.search.Search
@@ -623,7 +671,7 @@ class SearchFilterBackend(BaseBackend):
                             )
                         )
                 elif search_field == ALL:
-                    # query all fields downside
+                    # query all fields
                     search_terms = self.get_search_nested_fields_tree(
                         start=searched_path, value={VALUE: search_terms}
                     )
