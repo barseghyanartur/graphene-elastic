@@ -3,6 +3,7 @@ import importlib
 import json
 import os
 import logging
+import traceback
 
 import six
 
@@ -99,7 +100,7 @@ def get_setting(key, default=None):
         json_value = json.loads(value)
         return json_value
     except Exception as err:
-        print(err)
+        traceback.print_exc()
     return value
 
 
@@ -122,7 +123,7 @@ class GrapheneSettings(object):
     @property
     def user_settings(self):
         if not hasattr(self, "_user_settings"):
-            self._user_settings = get_setting("GRAPHENE_ELASTIC", {})
+            self._user_settings = get_setting("GRAPHENE_ELASTIC", "{}")
 
         return self._user_settings
 
