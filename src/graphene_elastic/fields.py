@@ -235,13 +235,13 @@ class ElasticsearchConnectionField(ConnectionField):
                     hydrated_references[arg_name] = reference_obj
             args.update(hydrated_references)
 
+        qs = document.search()
         if self._get_queryset:
             queryset_or_filters = self._get_queryset(document, info, **args)
             if isinstance(queryset_or_filters, elasticsearch_dsl.Search):
-                return queryset_or_filters
+                qs = queryset_or_filters
             else:
                 args.update(queryset_or_filters)
-        qs = document.search()
 
         for backend_cls in self.filter_backends:
             backend = backend_cls(self, args=dict(args))
