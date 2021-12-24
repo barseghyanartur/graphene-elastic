@@ -92,6 +92,9 @@ class OrderingMixin(object):
         _ordering_params = []
         if isinstance(ordering_params, dict):
             for ordering_param, ordering_direction in ordering_params.items():
+                if not ordering_direction:
+                    continue
+
                 field = ordering_fields[ordering_param]
                 entry = {
                     field['field']: {
