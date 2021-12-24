@@ -456,7 +456,7 @@ class FilteringFilterBackend(BaseBackend, FilteringFilterMixin):
             """In-depth traversal of the tree dict to generate a query list."""
             filter_fields = deepcopy(predefined_filter_fields)
             for field_name, lookup_params in query_dict.items():
-                if field_name not in filter_fields:
+                if field_name not in filter_fields or not lookup_params:
                     continue
 
                 field_options = filter_fields[field_name]
