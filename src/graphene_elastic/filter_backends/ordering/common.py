@@ -95,7 +95,7 @@ class OrderingMixin(object):
                 field = ordering_fields[ordering_param]
                 entry = {
                     field['field']: {
-                        'order': ordering_direction,
+                        'order': ordering_direction.value,
                     }
                 }
 
