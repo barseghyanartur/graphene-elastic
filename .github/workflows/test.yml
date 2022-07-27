@@ -70,12 +70,12 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install pip-tools
         python -m pip install tox
-        pip-compile examples/requirements/${{ matrix.requirements }}.in
-        pip-compile examples/requirements/elastic_${{ matrix.es-version }}x.in
-        pip-compile examples/requirements/test.in
-        python -m pip install -r examples/requirements/${{ matrix.requirements }}.txt
-        python -m pip install -r examples/requirements/elastic_${{ matrix.es-version }}x.txt
-        python -m pip install -r examples/requirements/test.txt
+        pip-compile requirements/${{ matrix.requirements }}.in
+        pip-compile requirements/elastic_${{ matrix.es-version }}x.in
+        pip-compile requirements/test.in
+        python -m pip install -r requirements/${{ matrix.requirements }}.txt
+        python -m pip install -r requirements/elastic_${{ matrix.es-version }}x.txt
+        python -m pip install -r requirements/test.txt
     - name: Run tests
       uses: nick-invision/retry@v2
       with:
