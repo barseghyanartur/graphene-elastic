@@ -1,11 +1,11 @@
 attrs==19.1.0
 factory-boy==2.12.0
-Faker==2.0.1
-pytest-cov==2.6.1
+Faker==8.1.4
+pytest-cov==2.12.0
 pytest-pythonpath
 pytest-ordering==0.6
-pytest==4.3.0
-tox==3.7.0
-coverage==4.5.4
+pytest==6.2.4
+tox==3.23.1
+coverage>=4.5.4
 coveralls==1.2.0
-mock==3.0.5
+mock
