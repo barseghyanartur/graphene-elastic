@@ -15,5 +15,5 @@ RUN pip3 install pip-tools
 RUN mkdir /code
 WORKDIR /code
 COPY . /code/
-RUN pip-compile /code/requirements/testing.in
-RUN pip3 install -r /code/requirements/testing.txt
+#RUN pip-compile /code/requirements/testing_7x.in
+#RUN pip3 install -r /code/requirements/testing_7x.txt
