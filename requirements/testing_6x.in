@@ -1,4 +1,4 @@
 -r common.in
 -r django.in
--r elastic.in
+-r elastic_6x.in
 -r test.in
