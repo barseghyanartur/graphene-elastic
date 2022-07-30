@@ -3,11 +3,10 @@ version: '3'
 services:
 
   elasticsearch:
-    container_name: graphene_elastic_elasticsearch
+    container_name: graphene_elastic_run_elasticsearch
     build:
       context: .
       dockerfile: ./docker/elasticsearch/Dockerfile
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
     volumes:
     - esdata:/usr/share/elasticsearch/data
     ports:
@@ -22,11 +21,25 @@ services:
     - cluster.routing.allocation.disk.watermark.flood_stage=99%
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
-#    backend:
-#      container_name: graphene_elastic_backend
-#      build:
-#        context: .
-#        dockerfile: ./docker/backend/Dockerfile
+  backend:
+    stdin_open: true
+    tty: true
+    container_name: graphene_elastic_run_backend
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    volumes:
+    - .:/code
+    entrypoint:
+      - /code/docker/backend/run.sh
+    depends_on:
+    - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+    ports:
+      - 8000:8000
+    environment:
+      - 'ELASTICSEARCH_CONNECTION={"hosts": ["elasticsearch"], "timeout": 5}'
 
 volumes:
   esdata:
