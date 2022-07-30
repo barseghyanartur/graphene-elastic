@@ -1,5 +1,6 @@
-from collections import OrderedDict
 import graphene
+from collections import OrderedDict
+from copy import deepcopy
 from stringcase import pascalcase as to_pascal_case
 
 from ..constants import (
@@ -35,7 +36,7 @@ class BaseBackend(object):
 
     def __init__(self, connection_field, args=None):
         self.connection_field = connection_field
-        self.args = args or {}
+        self.args = deepcopy(args) or {}
         assert self.prefix
 
     def field_belongs_to(self, field_name):

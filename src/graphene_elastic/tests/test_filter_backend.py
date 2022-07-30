@@ -125,7 +125,10 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 content
                 numViews
                 comments{
-                    author
+                    author{
+                        name
+                        age
+                    }
                     content
                     createdAt
                 }
@@ -174,7 +177,10 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                         content
                         numViews
                         comments{
-                            author
+                            author{
+                                name
+                                age
+                            }
                             tag
                             content
                             createdAt
@@ -215,7 +221,10 @@ class FilterBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 content
                 numViews
                 comments{
-                    author
+                    author{
+                        name
+                        age
+                    }
                     content
                     createdAt
                 }

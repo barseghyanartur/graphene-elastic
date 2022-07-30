@@ -2,7 +2,8 @@ from __future__ import absolute_import
 
 # from decimal import Decimal
 
-from collections import Iterable, OrderedDict
+from collections.abc import Iterable
+from collections import OrderedDict
 from functools import partial, reduce
 
 import graphene

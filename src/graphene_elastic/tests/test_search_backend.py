@@ -52,6 +52,17 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         # for _post in self.other_posts:
         #     _post.save()
 
+        self.unique_term="Graphene"
+        self.num_nested_posts = 20
+        self.nested_posts = factories.PostFactory.create_batch(
+            self.num_nested_posts
+        )
+        for _post in self.nested_posts:
+            _post.comments=factories.CommentFactory.create(
+                tag=self.unique_term,
+            )
+            _post.save()
+
         self.sleep(2)
 
     def __test_search_content(self, search, num_posts):
@@ -70,7 +81,10 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
                 category
                 title
                 comments{
-                    author
+                    author{
+                        name
+                        age
+                    }
                     content
                     createdAt
                 }
@@ -86,6 +100,29 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
             num_posts,
             query
         )
+
+    def _test_search_nested_tag(self):
+        """Test search tag in nested field `comments`
+        
+        :return:
+        """
+
+        # Covering all field lookups `search:{comments:{query:"Graphene"}}`
+        with self.subTest('Test search content in nested field `comments'
+                          'on term "Python"'):
+            self.__test_search_content(
+                '{comments:{%s: "%s"}}' % (ALL, self.unique_term),
+                self.num_nested_posts
+            )
+        
+        # Covering specific field lookups `search:{comments:{tag:{value: "Graphene"}}}`
+        with self.subTest('Test search content in nested field `comments`'
+                          'on term "Python"'):
+            self.__test_search_content(
+                '{comments:{tag: {%s: "%s"} } }' % (VALUE, self.unique_term),
+                self.num_nested_posts
+            )
+
 
     def _test_search_content(self):
         """"Test search content.
@@ -125,6 +162,7 @@ class SearchBackendElasticTestCase(BaseGrapheneElasticTestCase):
         tests.
         """
         self._test_search_content()
+        self._test_search_nested_tag()
 
 
 class CompoundSearchBackendElasticTestCase(SearchBackendElasticTestCase):

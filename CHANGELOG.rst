@@ -15,6 +15,12 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.7.1
+-----
+2022-07-28
+
+- Belated migration to GitHub Actions.
+
 0.7
 ---
 2021-03-08
