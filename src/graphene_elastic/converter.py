@@ -22,7 +22,7 @@ from anysearch.search_dsl import (
 from .utils import import_single_dispatch, get_field_description
 
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
+__copyright__ = "2019-2022 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = (
     "singledispatch",
