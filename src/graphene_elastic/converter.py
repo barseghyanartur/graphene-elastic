@@ -14,17 +14,28 @@ from graphene import (
     # is_node,
 )
 
-from elasticsearch_dsl import (
+from anysearch.search_dsl import (
     # InnerDoc,
     field as elasticsearch_fields,
 )
 
 from .utils import import_single_dispatch, get_field_description
 
-__title__ = "graphene_elastic.converter"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
 __copyright__ = "2019-2020 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
+__all__ = (
+    "singledispatch",
+    "ElasticsearchConversionError",
+    "convert_elasticsearch_field",
+    "convert_field_to_string",
+    "convert_field_to_int",
+    "convert_field_to_boolean",
+    "convert_field_to_float",
+    "convert_field_to_datetime",
+    "convert_field_to_jsonstring",
+    "convert_field_to_complex_object",
+)
 
 singledispatch = import_single_dispatch()
 

@@ -6,7 +6,7 @@ import graphene
 from graphene.types.field import source_resolver
 import six
 
-from elasticsearch_dsl.query import Q
+from anysearch.search_dsl.query import Q
 from stringcase import pascalcase as to_pascal_case
 
 from ..base import BaseBackend
@@ -18,13 +18,13 @@ from ...constants import (
     BOOST,
 )
 
-__title__ = "graphene_elastic.filter_backends.search.common"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
+__copyright__ = "2019-2022 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("SearchFilterBackend",)
 
 nested_input_count = 0
+
 
 class SearchFilterBackend(BaseBackend):
     """Search filter backend."""

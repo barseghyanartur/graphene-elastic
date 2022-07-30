@@ -3,15 +3,17 @@ from __future__ import unicode_literals
 import inspect
 from collections import OrderedDict
 
-import elasticsearch_dsl
-from elasticsearch_dsl import field as elasticsearch_fields
+from anysearch.search_dsl import (
+    field as elasticsearch_fields,
+    InnerDoc,
+    Document,
+)
 
 from graphene import Node
 # from graphene.utils.trim_docstring import trim_docstring
 
-__title__ = "graphene_elastic.converter"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
+__copyright__ = "2019-2022 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = (
     "get_document_fields",
@@ -38,8 +40,8 @@ def get_document_fields(document, excluding=None):
 
 def is_valid_elasticsearch_document(document):
     return inspect.isclass(document) and (
-        issubclass(document, elasticsearch_dsl.Document)
-        or issubclass(document, elasticsearch_dsl.InnerDoc)
+        issubclass(document, Document)
+        or issubclass(document, InnerDoc)
     )
 
 
