@@ -10,6 +10,8 @@ alabaster==0.7.12
     # via sphinx
 aniso8601==7.0.0
     # via graphene
+anysearch==0.2.1
+    # via -r requirements/common.in
 apispec==5.2.2
     # via responder
 apistar==0.7.2

@@ -1,8 +1,7 @@
-import datetime
-from elasticsearch_dsl import connections
-from elasticsearch_dsl import (
+from anysearch.search_dsl import (
     analyzer,
     Boolean,
+    connections,
     Completion,
     Date,
     Document,

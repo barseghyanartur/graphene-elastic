@@ -1,7 +1,6 @@
-from graphene_elastic.types.json_string import JSONString
 from graphene_elastic.filter_backends.base import BaseBackend
 
-from elasticsearch_dsl import A
+from anysearch.search_dsl import A
 
 __all__ = (
     'CustomFilterBackend',
