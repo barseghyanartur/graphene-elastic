@@ -1,0 +1,13 @@
+-r common.in
+-r django.in
+
+factory-boy
+Faker
+pytest-cov
+pytest-pythonpath
+pytest-ordering
+pytest
+tox
+coverage
+coveralls
+mock

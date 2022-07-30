@@ -39,9 +39,14 @@ html_strip = analyzer(
     char_filter=["html_strip"]
 )
 
+class CommentAuthor(InnerDoc):
+    name = Text(fields={'raw': Keyword()})
+    age = Integer()
+
 
 class Comment(InnerDoc):
-    author = Text(fields={'raw': Keyword()})
+    author = Nested(CommentAuthor)
+    # author = Text(fields={'raw': Keyword()})
     tag = Text(fields={'raw': Keyword()})
     content = Text(analyzer='snowball')
     created_at = Date()

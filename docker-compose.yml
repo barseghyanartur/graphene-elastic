@@ -22,5 +22,11 @@ services:
     - cluster.routing.allocation.disk.watermark.flood_stage=99%
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
+#    backend:
+#      container_name: graphene_elastic_backend
+#      build:
+#        context: .
+#        dockerfile: ./docker/backend/Dockerfile
+
 volumes:
   esdata:
