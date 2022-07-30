@@ -12,10 +12,6 @@ integration for `Graphene <http://graphene-python.org/>`__.
     :target: https://pypi.python.org/pypi/graphene-elastic/
     :alt: Supported Python versions
 
-.. image:: https://travis-ci.org/barseghyanartur/graphene-elastic.svg?branch=master
-    :target: https://travis-ci.org/barseghyanartur/graphene-elastic
-    :alt: Build Status
-
 .. image:: https://github.com/barseghyanartur/graphene-elastic/workflows/test/badge.svg
    :target: https://github.com/barseghyanartur/graphene-elastic/actions?query=workflow%3Atest
    :alt: Build Status
