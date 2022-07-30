@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: ./docker/elasticsearch/Dockerfile_6x
     volumes:
-      - estest6xdata1:/usr/share/elasticsearch/data
+      - estest6xdata2:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
@@ -27,11 +27,11 @@ services:
     container_name: graphene_elastic_test_test6x
     build:
       context: .
-      dockerfile: ./docker/testing/Dockerfile
+      dockerfile: ./docker/backend/Dockerfile
     volumes:
     - .:/code
     entrypoint:
-      - /code/docker/testing/entrypoint_6x.sh
+      - /code/docker/backend/test_6x.sh
     depends_on:
     - elasticsearch
     links:
@@ -40,4 +40,4 @@ services:
       - 'ELASTICSEARCH_CONNECTION={"hosts": ["elasticsearch"], "timeout": 5}'
 
 volumes:
-  estest6xdata1:
+  estest6xdata2:
