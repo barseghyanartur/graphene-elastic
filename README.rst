@@ -16,6 +16,10 @@ integration for `Graphene <http://graphene-python.org/>`__.
     :target: https://travis-ci.org/barseghyanartur/graphene-elastic
     :alt: Build Status
 
+.. image:: https://github.com/barseghyanartur/graphene-elastic/workflows/test/badge.svg
+   :target: https://github.com/barseghyanartur/graphene-elastic/actions?query=workflow%3Atest
+   :alt: Build Status
+
 .. image:: https://readthedocs.org/projects/graphene-elastic/badge/?version=latest
     :target: http://graphene-elastic.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
