@@ -1,3 +1,6 @@
+-r common.in
+-r django.in
+
 factory-boy
 Faker
 pytest-cov
