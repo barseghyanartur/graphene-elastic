@@ -14,12 +14,8 @@ bson==0.5.10
     # via -r requirements/common.in
 certifi==2022.6.15
     # via requests
-cffi==1.15.1
-    # via cryptography
 charset-normalizer==2.0.12
     # via requests
-colorama==0.4.5
-    # via twine
 coverage[toml]==6.2
     # via
     #   -r requirements/test.in
@@ -27,8 +23,6 @@ coverage[toml]==6.2
     #   pytest-cov
 coveralls==3.3.1
     # via -r requirements/test.in
-cryptography==37.0.4
-    # via secretstorage
 distlib==0.3.5
     # via virtualenv
 django==2.2.28
@@ -73,20 +67,10 @@ graphql-relay==2.0.1
     # via graphene
 idna==3.3
     # via requests
-importlib-metadata==4.8.3
-    # via
-    #   keyring
-    #   twine
 iniconfig==1.1.1
     # via pytest
 iso8601==1.0.2
     # via -r requirements/common.in
-jeepney==0.7.1
-    # via
-    #   keyring
-    #   secretstorage
-keyring==23.4.1
-    # via twine
 mock==4.0.3
     # via -r requirements/test.in
 packaging==21.3
@@ -94,8 +78,6 @@ packaging==21.3
     #   bleach
     #   pytest
     #   tox
-pkginfo==1.8.3
-    # via twine
 platformdirs==2.4.0
     # via virtualenv
 pluggy==1.0.0
@@ -111,8 +93,6 @@ py==1.11.0
     # via
     #   pytest
     #   tox
-pycparser==2.21
-    # via cffi
 pygments==2.12.0
     # via readme-renderer
 pyparsing==3.0.9
@@ -144,25 +124,16 @@ pytz==2022.1
 pyyaml==6.0
     # via -r requirements/common.in
 readme-renderer==34.0
-    # via
-    #   -r requirements/common.in
-    #   twine
+    # via -r requirements/common.in
 requests==2.27.1
     # via
     #   -r requirements/common.in
     #   coveralls
     #   requests-toolbelt
-    #   twine
 requests-toolbelt==0.9.1
-    # via
-    #   -r requirements/common.in
-    #   twine
-rfc3986==1.5.0
-    # via twine
+    # via -r requirements/common.in
 rx==1.6.1
     # via graphql-core
-secretstorage==3.3.2
-    # via keyring
 singledispatch==3.7.0
     # via
     #   -r requirements/common.in
@@ -198,19 +169,12 @@ tomli==1.2.3
 tox==3.25.1
     # via -r requirements/test.in
 tqdm==4.64.0
-    # via
-    #   -r requirements/common.in
-    #   twine
-twine==3.8.0
     # via -r requirements/common.in
 urllib3==1.26.11
     # via
     #   elasticsearch
     #   requests
-    #   twine
 virtualenv==20.16.2
     # via tox
 webencodings==0.5.1
     # via bleach
-zipp==3.6.0
-    # via importlib-metadata
