@@ -27,7 +27,7 @@ services:
     container_name: graphene_elastic_test_test6x
     build:
       context: .
-      dockerfile: ./docker/backend/Dockerfile
+      dockerfile: ./docker/backend/Dockerfile_6x
     volumes:
     - .:/code
     entrypoint:

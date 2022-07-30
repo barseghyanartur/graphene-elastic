@@ -36,6 +36,8 @@ services:
     - elasticsearch
     links:
       - elasticsearch:elasticsearch
+    ports:
+      - 8000:8000
     environment:
       - 'ELASTICSEARCH_CONNECTION={"hosts": ["elasticsearch"], "timeout": 5}'
 

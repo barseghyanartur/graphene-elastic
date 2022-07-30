@@ -13,4 +13,4 @@ echo "Running Elasticsearch 7.x: Clean up"
 
 # Running tests
 echo "Running Elasticsearch 7.x: Running app"
-python examples/apps/django_app/run.py runserver
+python examples/apps/django_app/run.py runserver 0.0.0.0:8000 --traceback -v 3
