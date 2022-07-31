@@ -53,7 +53,10 @@ jobs:
         ports:
           - 9200:9200
         options: >-
+          -e="http.host=0.0.0.0"
+          -e="transport.host=127.0.0.1"
           -e="discovery.type=single-node"
+          -e="plugins.security.disabled=true"
           --health-cmd="curl http://localhost:9200/_cluster/health"
           --health-interval=10s
           --health-timeout=5s
