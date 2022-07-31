@@ -2,6 +2,8 @@ import unittest
 import mock
 from importlib import reload
 
+from anysearch import check_if_package_is_installed
+
 __author__ = 'Artur Barseghyan'
 __copyright__ = '2019-2022 Artur Barseghyan'
 __license__ = 'GPL-2.0-only OR LGPL-2.1-or-later'
@@ -15,6 +17,10 @@ class VersionsTest(unittest.TestCase):
     def setUp(self):
         pass
 
+    @unittest.skipUnless(
+        check_if_package_is_installed("elasticsearch-dsl"),
+        "elasticsearch-dsl is not installed",
+    )
     @mock.patch('elasticsearch_dsl.__version__', [6, 3, 0])
     def test_elasticsearch_dsl_6_3_0(self):
         """
@@ -51,6 +57,10 @@ class VersionsTest(unittest.TestCase):
         self.assertFalse(versions.ELASTICSEARCH_GTE_7_0)
         self.assertFalse(versions.ELASTICSEARCH_GTE_8_0)
 
+    @unittest.skipUnless(
+        check_if_package_is_installed("elasticsearch-dsl"),
+        "elasticsearch-dsl is not installed",
+    )
     @mock.patch('elasticsearch_dsl.__version__', [7, 0, 0])
     def test_elasticsearch_dsl_7_0_0(self):
         """
