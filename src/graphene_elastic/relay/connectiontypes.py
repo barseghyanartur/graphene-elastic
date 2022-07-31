@@ -5,9 +5,8 @@ this module isn't formatted in accordance with the rest of the package.
 Pull requests code-style changes wouldn't be accepted.
 """
 
-__title__ = 'graphene_elastic.relay.connectiontypes'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019-2020 Artur Barseghyan'
+__copyright__ = '2019-2022 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = (
     'Connection',

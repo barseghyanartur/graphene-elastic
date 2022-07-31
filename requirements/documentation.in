@@ -1,0 +1,5 @@
+-r common.in
+-r django.in
+-r docs.in
+-r elastic.in
+-r test.in

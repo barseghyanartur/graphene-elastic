@@ -1,6 +1,6 @@
 from typing import Callable
 import operator
-from elasticsearch_dsl.query import Q
+from anysearch.search_dsl.query import Q
 import six
 
 from graphene_elastic.constants import (
@@ -11,6 +11,13 @@ from graphene_elastic.constants import (
     GTE,
     LTE,
     BOOST,
+)
+
+__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
+__copyright__ = '2019-2022 Artur Barseghyan'
+__license__ = 'GPL 2.0/LGPL 2.1'
+__all__ = (
+    'FilteringFilterMixin',
 )
 
 

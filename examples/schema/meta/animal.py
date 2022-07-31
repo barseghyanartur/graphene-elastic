@@ -1,4 +1,4 @@
-from elasticsearch_dsl import Document
+from anysearch.search_dsl import Document
 from graphene import Node
 from graphene_elastic.constants import (
     LOOKUP_FILTER_PREFIX,

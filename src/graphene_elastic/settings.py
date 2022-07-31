@@ -3,12 +3,13 @@ import importlib
 import json
 import os
 import logging
+import traceback
 
 import six
 
 __title__ = "graphene_elastic.settings"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
+__copyright__ = "2019-2022 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("graphene_settings",)
 
@@ -99,7 +100,7 @@ def get_setting(key, default=None):
         json_value = json.loads(value)
         return json_value
     except Exception as err:
-        print(err)
+        traceback.print_exc()
     return value
 
 
@@ -122,7 +123,7 @@ class GrapheneSettings(object):
     @property
     def user_settings(self):
         if not hasattr(self, "_user_settings"):
-            self._user_settings = get_setting("GRAPHENE_ELASTIC", {})
+            self._user_settings = get_setting("GRAPHENE_ELASTIC", "{}")
 
         return self._user_settings
 

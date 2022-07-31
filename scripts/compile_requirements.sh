@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+cd requirements/
+pip-compile code_style.in "$@"
+pip-compile common.in "$@"
+pip-compile debug.in "$@"
+#pip-compile deployment.in "$@"
+pip-compile dev.in "$@"
+pip-compile docs.in "$@"
+pip-compile documentation.in "$@"
+pip-compile elastic.in "$@"
+pip-compile elastic_6x.in "$@"
+pip-compile elastic_7x.in "$@"
+pip-compile fastapi.in "$@"
+pip-compile flask.in "$@"
+#pip-compile responder.in "$@"
+pip-compile test.in "$@"
+pip-compile testing.in "$@"

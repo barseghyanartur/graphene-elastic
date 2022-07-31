@@ -2,8 +2,8 @@ from setuptools import find_packages, setup
 
 setup(
     name="graphene-elastic",
-    version="0.7",
-    description="Graphene Elasticsearch (DSL) integration",
+    version="0.8",
+    description="Graphene Elasticsearch/OpenSearch (DSL) integration",
     long_description=open("README.rst").read(),
     url="https://github.com/barseghyanartur/graphene-elastic",
     project_urls={
@@ -27,8 +27,8 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    keywords="api graphql protocol rest relay graphene elasticsearch "
-    "elasticsearch-dsl",
+    keywords="api graphql protocol rest relay graphene anysearch "
+    "elasticsearch elasticsearch-dsl opensearch opensearch-dsl",
     package_dir={"": "src"},
     packages=find_packages(
         where="./src",
@@ -36,13 +36,22 @@ setup(
     ),
     install_requires=[
         "graphene>=2.1.3,<3",
-        "elasticsearch>=6.0",
-        "elasticsearch-dsl>=6.0",
         "singledispatch>=3.4.0.3",
         "iso8601>=0.1.12",
         "stringcase",
         'typing;python_version<"3.7"',  # Used in Python < 3.6 dist
+        "anysearch>=0.2.1",
     ],
+    extras_require={
+        "elasticsearch": [
+            "elasticsearch>=6.0",
+            "elasticsearch-dsl>=6.0<8.0",
+        ],
+        "opensearch": [
+            "opensearch-py",
+            "opensearch-dsl",
+        ],
+    },
     python_requires=">=3.6",
     zip_safe=True,
     tests_require=[

@@ -1,5 +1,6 @@
-from collections import OrderedDict
 import graphene
+from collections import OrderedDict
+from copy import deepcopy
 from stringcase import pascalcase as to_pascal_case
 
 from ..constants import (
@@ -10,9 +11,8 @@ from ..constants import (
     SEPARATOR_LOOKUP_COMPLEX_MULTIPLE_VALUE,
 )
 
-__title__ = "graphene_elastic.filter_backends.base"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
+__copyright__ = "2019-2022 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("BaseBackend",)
 
@@ -35,7 +35,7 @@ class BaseBackend(object):
 
     def __init__(self, connection_field, args=None):
         self.connection_field = connection_field
-        self.args = args or {}
+        self.args = deepcopy(args) or {}
         assert self.prefix
 
     def field_belongs_to(self, field_name):

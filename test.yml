@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+
+  elasticsearch:
+    container_name: graphene_elastic_test_elasticsearch
+    build:
+      context: .
+      dockerfile: ./docker/elasticsearch/Dockerfile
+    volumes:
+      - estestdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      #    - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - cluster.routing.allocation.disk.watermark.low=97%
+      - cluster.routing.allocation.disk.watermark.high=98%
+      - cluster.routing.allocation.disk.watermark.flood_stage=99%
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  test:
+    stdin_open: true
+    tty: true
+    container_name: graphene_elastic_test_test
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile_test
+    volumes:
+    - .:/code
+    entrypoint:
+      - /code/docker/backend/test.sh
+    depends_on:
+    - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+    environment:
+      - 'ELASTICSEARCH_CONNECTION={"hosts": ["elasticsearch"], "timeout": 5}'
+
+volumes:
+  estestdata1:
