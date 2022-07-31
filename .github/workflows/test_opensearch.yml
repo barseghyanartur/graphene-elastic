@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Test
+    name: Test OpenSearch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -81,7 +81,7 @@ jobs:
       with:
         command: ANYSEARCH_PREFERRED_BACKEND=OpenSearch python runtests.py
         timeout_minutes: 15
-        max_attempts: 3
+        max_attempts: 4
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2
     - name: Coveralls

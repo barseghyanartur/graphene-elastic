@@ -85,6 +85,13 @@ Or latest development version from GitHub:
 
 Examples
 ========
+.. note::
+
+    In the examples, we use ``elasticsearch_dsl`` package for schema definition.
+    You can however use ``opensearch_dsl`` or if you want to achieve
+    portability between ``Elasticsearch`` and ``OpenSearch``, use ``anysearch``
+    package. Read more `here <https://github.com/barseghyanartur/anysearch>`__.
+
 Install requirements
 --------------------
 .. code-block:: sh
@@ -577,8 +584,14 @@ Testing
 =======
 Project is covered with tests.
 
-Running tests
--------------
+Testing with Docker
+-------------------
+.. code-block:: sh
+
+    make docker-test
+
+Running tests with virtualenv or tox
+------------------------------------
 By defaults tests are executed against the Elasticsearch 7.x.
 
 **Run Elasticsearch 7.x with Docker**
@@ -624,12 +637,6 @@ type:
 
     ./runtests.py src/graphene_elastic/tests/test_filter_backend.py::FilterBackendElasticTestCase
 
-Testing with Docker
--------------------
-.. code-block:: sh
-
-    docker-compose -f docker-compose.yml -f docker-compose-test.yml up --build test
-
 Debugging
 =========
 For development purposes, you could use the flask app (easy to debug). Standard
@@ -670,7 +677,8 @@ GPL-2.0-only OR LGPL-2.1-or-later
 
 Support
 =======
-For any issues contact me at the e-mail given in the `Author`_ section.
+For any security issues contact me at the e-mail given in the `Author`_ section.
+For overall issues, go to `GitHub <https://github.com/barseghyanartur/graphene-elastic/issues>`_.
 
 Author
 ======

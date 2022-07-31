@@ -36,8 +36,6 @@ setup(
     ),
     install_requires=[
         "graphene>=2.1.3,<3",
-        # "elasticsearch>=6.0",
-        # "elasticsearch-dsl>=6.0",
         "singledispatch>=3.4.0.3",
         "iso8601>=0.1.12",
         "stringcase",

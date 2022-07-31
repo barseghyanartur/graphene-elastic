@@ -6,6 +6,8 @@
 #
 aniso8601==7.0.0
     # via graphene
+anysearch==0.2.1
+    # via -r requirements/common.in
 attrs==22.1.0
     # via pytest
 bleach==5.0.1

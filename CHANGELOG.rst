@@ -16,15 +16,22 @@ are used for versioning (schema follows below):
 - All backwards incompatible changes are mentioned in this document.
 
 0.8
------
+---
 2022-07-31
 
-- Added support for OpenSearch.
+.. note::
 
-0.7.1
------
-2022-07-28
+    The ``elasticsearch`` and ``elasticsearch-dsl`` packages are no longer
+    installed by default. You must either install them explicitly in your
+    requirements or install alongside this package as optional dependencies as
+    follows: ```pip install graphene-elastic[elasticsearch]```.
+    Alternatively, you can use ``opensearch-py`` and ``opensearch-dsl``.
+    You would then need to install the ``opensearch-py`` and ``opensearch-dsl``
+    packages explicitly in your requirements or install alongside this
+    package as optional dependencies as
+    follows: ```pip install graphene-elastic[opensearch]```.
 
+- Added support for OpenSearch (1.x and 2.x).
 - Belated migration to GitHub Actions.
 
 0.7
