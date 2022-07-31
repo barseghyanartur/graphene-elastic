@@ -88,11 +88,11 @@ Or latest development version from GitHub:
     Staring from version 0.8, the ``elasticsearch`` and ``elasticsearch-dsl``
     packages are no longer installed by default. You must either install them
     explicitly in your requirements or install as optional dependencies as
-    follows: ```pip install graphene-elastic[elasticsearch]```.
+    follows: ``pip install graphene-elastic[elasticsearch]``.
     Alternatively, you can use ``opensearch-py`` and ``opensearch-dsl``.
     You would then need to install the ``opensearch-py`` and ``opensearch-dsl``
     packages explicitly in your requirements or install them as optional
-    dependencies as follows: ```pip install graphene-elastic[opensearch]```.
+    dependencies as follows: ``pip install graphene-elastic[opensearch]``.
 
 Examples
 ========
