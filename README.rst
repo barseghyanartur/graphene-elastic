@@ -33,6 +33,7 @@ Prerequisites
 - Graphene 2.x. *Support for Graphene 1.x is not intended.*
 - Python 3.6, 3.7, 3.8, 3.9 and 3.10. *Support for Python 2 is not intended.*
 - Elasticsearch 6.x, 7.x. *Support for Elasticsearch 5.x is not intended.*
+- OpenSearch 1.x, 2.x.
 
 Main features and highlights
 ============================
