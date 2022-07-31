@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Test
+    name: Test Elasticsearch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -70,14 +70,15 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install pip-tools
         python -m pip install tox
+        rm requirements/testing_${{ matrix.es-version }}x.txt
         pip-compile requirements/testing_${{ matrix.es-version }}x.in
         python -m pip install -r requirements/testing_${{ matrix.es-version }}x.txt
     - name: Run tests
       uses: nick-invision/retry@v2
       with:
-        command: python runtests.py
+        command: ANYSEARCH_PREFERRED_BACKEND=Elasticearch python runtests.py
         timeout_minutes: 15
-        max_attempts: 3
+        max_attempts: 4
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2
     - name: Coveralls

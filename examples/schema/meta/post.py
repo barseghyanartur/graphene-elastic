@@ -1,4 +1,4 @@
-from elasticsearch_dsl import (
+from anysearch.search_dsl import (
     DateHistogramFacet,
     RangeFacet,
 )

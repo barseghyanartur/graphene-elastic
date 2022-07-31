@@ -7,19 +7,27 @@ authentication checks working):
 
 1. Create a Django user
 
-```./scripts/run_django.sh createsuperuser```
+```shell
+./scripts/run_django.sh createsuperuser
+```
 
 2. Run Elasticsearch
 
-```docker-compose up```
+```shell
+docker-compose up
+```
 
 3. Add some data to the Elasticsearch
 
-```./scripts/populate_elasticsearch_data.sh```
+```shell
+./scripts/populate_elasticsearch_data.sh
+```
 
 4. Run the example project:
 
-```./scripts/run_django.sh runserver```
+```shell
+./scripts/run_django.sh runserver
+```
 
 5. Go to http://localhost:8000/admin/ and enter your credentials
 

@@ -1,9 +1,5 @@
--r code_style.in
 -r common.in
--r debug.in
 -r django.in
 -r docs.in
 -r elastic.in
--r flask.in
--r responder.in
 -r test.in

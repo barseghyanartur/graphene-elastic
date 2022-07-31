@@ -1,9 +1,8 @@
 import datetime
-import os
-from elasticsearch_dsl import connections
-from elasticsearch_dsl import (
+from anysearch.search_dsl import (
     analyzer,
     Boolean,
+    connections,
     Completion,
     Date,
     Document,
@@ -38,6 +37,7 @@ html_strip = analyzer(
     filter=["lowercase", "stop", "snowball"],
     char_filter=["html_strip"]
 )
+
 
 class CommentAuthor(InnerDoc):
     name = Text(fields={'raw': Keyword()})

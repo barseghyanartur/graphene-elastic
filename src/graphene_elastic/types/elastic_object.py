@@ -1,9 +1,11 @@
 import graphene
+from graphene.types import ObjectType
+from six import iteritems
+
 from ..constants import DYNAMIC_CLASS_NAME_PREFIX
 from ..converter import convert_elasticsearch_field
-from graphene.types import ObjectType
 from .json_string import ElasticJSONString
-from six import iteritems
+
 
 __all__ = ("generate_dynamic_elastic_object_type",)
 

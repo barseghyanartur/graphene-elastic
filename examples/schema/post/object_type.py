@@ -31,6 +31,7 @@ from search_index.documents import Post as PostDocument
 
 # from ..custom_backends import CustomFilterBackend
 from ..meta.post import AbstractPostDocumentMeta
+
 __all__ = (
     'Post',
     'PostSuggest',
