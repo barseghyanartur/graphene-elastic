@@ -1,7 +1,8 @@
 ================
 graphene-elastic
 ================
-`Elasticsearch (DSL) <https://elasticsearch-dsl.readthedocs.io/en/latest/>`__
+`Elasticsearch (DSL) <https://elasticsearch-dsl.readthedocs.io/en/latest/>`__/
+`OpenSearch (DSL) <https://opensearch.org/docs/latest/clients/python/>`__
 integration for `Graphene <http://graphene-python.org/>`__.
 
 .. image:: https://img.shields.io/pypi/v/graphene-elastic.svg
