@@ -73,7 +73,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install pip-tools
         python -m pip install tox
-        rm requirements/testing_opensearch_${{ matrix.es-version }}x.txt
+        rm -rf requirements/testing_opensearch_${{ matrix.es-version }}x.txt
         pip-compile requirements/testing_opensearch_${{ matrix.es-version }}x.in
         python -m pip install -r requirements/testing_opensearch_${{ matrix.es-version }}x.txt
     - name: Run tests
