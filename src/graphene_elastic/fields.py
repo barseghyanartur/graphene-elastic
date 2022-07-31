@@ -9,7 +9,7 @@ from functools import partial, reduce
 import graphene
 # from graphene import NonNull
 # from graphql_relay import connection_from_list
-import elasticsearch_dsl
+from anysearch.search_dsl import InnerDoc, Search
 from promise import Promise
 from graphene.relay import ConnectionField, PageInfo
 from graphene.types.argument import to_arguments
@@ -40,7 +40,7 @@ from .utils import get_node_from_global_id  # get_model_reference_fields
 
 __title__ = "graphene_elastic.fields"
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2019-2020 Artur Barseghyan"
+__copyright__ = "2019-2022 Artur Barseghyan"
 __license__ = "GPL-2.0-only OR LGPL-2.1-or-later"
 __all__ = ("ElasticsearchConnectionField",)
 
@@ -210,7 +210,7 @@ class ElasticsearchConnectionField(ConnectionField):
                 if _type:
                     node = _type._type._meta
                     if "id" in node.fields and not issubclass(
-                        node.document, (elasticsearch_dsl.InnerDoc,)
+                        node.document, (InnerDoc,)
                     ):
                         r.update({kv[0]: node.fields["id"]._type.of_type()})
             return r
@@ -237,7 +237,7 @@ class ElasticsearchConnectionField(ConnectionField):
 
         if self._get_queryset:
             queryset_or_filters = self._get_queryset(document, info, **args)
-            if isinstance(queryset_or_filters, elasticsearch_dsl.Search):
+            if isinstance(queryset_or_filters, Search):
                 return queryset_or_filters
             else:
                 args.update(queryset_or_filters)

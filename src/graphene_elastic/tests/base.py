@@ -3,7 +3,7 @@ import time
 import unittest
 from faker import Faker
 from graphene.test import Client
-from elasticsearch import Elasticsearch
+from anysearch.search import AnySearch as Elasticsearch
 from schema import schema
 from search_index.documents.settings import (
     BLOG_POST_DOCUMENT_NAME,

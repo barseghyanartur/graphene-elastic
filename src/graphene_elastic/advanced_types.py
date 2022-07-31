@@ -1,6 +1,17 @@
 import base64
 import graphene
 
+__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
+__copyright__ = '2019-2022 Artur Barseghyan'
+__license__ = 'GPL 2.0/LGPL 2.1'
+__all__ = (
+    'FileFieldType',
+    '_CoordinatesTypeField',
+    'PointFieldType',
+    'PolygonFieldType',
+    'MultiPolygonFieldType',
+)
+
 
 class FileFieldType(graphene.ObjectType):
 

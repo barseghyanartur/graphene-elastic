@@ -4,7 +4,7 @@ import operator
 import graphene
 import six
 
-from elasticsearch_dsl.query import Q
+from anysearch.search_dsl.query import Q
 from stringcase import pascalcase as to_pascal_case
 
 from ..base import BaseBackend
@@ -15,6 +15,9 @@ from ...constants import (
     BOOST,
 )
 
+__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
+__copyright__ = '2019-2022 Artur Barseghyan'
+__license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = ("SimpleQueryStringBackend",)
 
 

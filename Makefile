@@ -78,9 +78,18 @@ test:
 docker-run:
 	docker-compose up --abort-on-container-exit
 
+docker-build:
+	docker-compose build
+
+docker-build-%:
+	docker-compose build $*
+
 docker-test:
 	docker-compose -f test.yml up --abort-on-container-exit
 	docker-compose -f test_6x.yml up --abort-on-container-exit
+
+docker-pip-compile:
+	docker-compose exec backend pip-compile requirements/dev.in
 
 release:
 	python setup.py register

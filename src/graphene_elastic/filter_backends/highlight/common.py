@@ -7,9 +7,8 @@ from stringcase import pascalcase as to_pascal_case
 from ...constants import DYNAMIC_CLASS_NAME_PREFIX
 from ..base import BaseBackend
 
-__title__ = 'graphene_elastic.filter_backends.highlight.common'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2019-2020 Artur Barseghyan'
+__copyright__ = '2019-2022 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = (
     'HighlightFilterBackend',

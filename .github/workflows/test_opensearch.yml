@@ -4,13 +4,13 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Test Elasticsearch
+    name: Test OpenSearch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
-        es-version: ['6', '7']
+        es-version: ['1', '2']
         include:
         - python-version: '3.6'
           tox_env: py36-elastic6
@@ -49,11 +49,14 @@ jobs:
 
     services:
       elasticsearch:
-        image: bitnami/elasticsearch:${{ matrix.es-version }}
+        image: opensearchproject/opensearch:${{ matrix.es-version }}
         ports:
           - 9200:9200
         options: >-
+          -e="http.host=0.0.0.0"
+          -e="transport.host=127.0.0.1"
           -e="discovery.type=single-node"
+          -e="plugins.security.disabled=true"
           --health-cmd="curl http://localhost:9200/_cluster/health"
           --health-interval=10s
           --health-timeout=5s
@@ -70,13 +73,13 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install pip-tools
         python -m pip install tox
-        rm requirements/testing_${{ matrix.es-version }}x.txt
-        pip-compile requirements/testing_${{ matrix.es-version }}x.in
-        python -m pip install -r requirements/testing_${{ matrix.es-version }}x.txt
+        rm -rf requirements/testing_opensearch_${{ matrix.es-version }}x.txt
+        pip-compile requirements/testing_opensearch_${{ matrix.es-version }}x.in
+        python -m pip install -r requirements/testing_opensearch_${{ matrix.es-version }}x.txt
     - name: Run tests
       uses: nick-invision/retry@v2
       with:
-        command: ANYSEARCH_PREFERRED_BACKEND=Elasticearch python runtests.py
+        command: ANYSEARCH_PREFERRED_BACKEND=OpenSearch python runtests.py
         timeout_minutes: 15
         max_attempts: 4
     - name: Upload to Codecov
