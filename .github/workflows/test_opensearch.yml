@@ -1,4 +1,4 @@
-name: test
+name: test_opensearch
 
 on: [push, pull_request]
 
