@@ -15,6 +15,14 @@ are used for versioning (schema follows below):
   0.3.4 to 0.4).
 - All backwards incompatible changes are mentioned in this document.
 
+0.8.1
+-----
+Unreleased
+
+- Drop support for Python 3.6. No specific code changes. However, since it's
+  no longer possible to pull Python 3.6 directly from GitHub CI, to simplify
+  things we simply drop it.
+
 0.8
 ---
 2022-07-31

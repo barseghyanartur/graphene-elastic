@@ -9,15 +9,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10']
         es-version: ['6', '7']
         include:
-        - python-version: '3.6'
-          tox_env: py36-elastic6
-          requirements: elastic_6x
-        - python-version: '3.6'
-          tox_env: py36-elastic7
-          requirements: elastic_7x
 
         - python-version: '3.7'
           tox_env: py37-elastic6
