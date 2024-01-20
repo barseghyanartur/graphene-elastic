@@ -45,7 +45,7 @@ setup(
     extras_require={
         "elasticsearch": [
             "elasticsearch>=6.0",
-            "elasticsearch-dsl>=6.0<8.0",
+            "elasticsearch-dsl>=6.0,<8.0",
         ],
         "opensearch": [
             "opensearch-py",
