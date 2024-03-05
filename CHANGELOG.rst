@@ -17,8 +17,9 @@ are used for versioning (schema follows below):
 
 0.8.1
 -----
-Unreleased
+2024-02-05
 
+- Fixes in the setup.py.
 - Drop support for Python 3.6. No specific code changes. However, since it's
   no longer possible to pull Python 3.6 directly from GitHub CI, to simplify
   things we simply drop it.
